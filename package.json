@@ -2,8 +2,8 @@
   "name": "bagofcli",
   "description": "A bag-of-holding containing CLI utility functions.",
   "keywords": [
-    "request",
-    "proxy"
+    "cli",
+    "command line"
   ],
   "version": "0.0.2",
   "homepage": "http://github.com/cliffano/bagofcli",
