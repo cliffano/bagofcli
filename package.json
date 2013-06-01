@@ -1,0 +1,44 @@
+{
+  "name": "bagofcli",
+  "description": "A bag-of-holding containing CLI utility functions.",
+  "keywords": [
+    "request",
+    "proxy"
+  ],
+  "version": "0.0.1",
+  "homepage": "http://github.com/cliffano/bagofcli",
+  "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
+  "contributors": [
+    "All contributors (https://github.com/cliffano/bagofcli/graphs/contributors)"
+  ],
+  "main": "./lib/bagofcli",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/cliffano/bagofcli.git"
+  },
+  "bugs": {
+    "url": "http://github.com/cliffano/bagofcli/issues"
+  },
+  "directories": {
+    "lib": "./lib",
+    "test": "./test"
+  },
+  "dependencies": {
+    "async": "0.2.6",
+    "commander": "1.1.1",
+    "lodash": "1.2.1"
+  },
+  "devDependencies": {
+    "buster": "0.6.12"
+  },
+  "scripts": {},
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/cliffano/bagofcli/raw/master/LICENSE"
+    }
+  ]
+}
