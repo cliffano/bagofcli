@@ -1,6 +1,7 @@
 var buster = require('buster'),
   bag = require('../lib/bagofcli'),
   childProcess = require('child_process'),
+  colors = require('colors'),
   commander = require('commander'),
   fs = require('fs');
 
@@ -66,7 +67,7 @@ buster.testCase('cli - exec', {
     this.mockConsole = this.mock(console);
   },
  'should log and camouflage error to callback when an error occurs and fallthrough is allowed': function (done) {
-    this.mockConsole.expects('error').once().withExactArgs('Error: somestderr');
+    this.mockConsole.expects('error').once().withExactArgs('Error: %s'.red, 'somestderr');
     this.stub(childProcess, 'exec', function (command, cb) {
       assert.equals(command, 'somecommand');
       cb(new Error('someerror'), null, 'somestderr');
@@ -78,7 +79,7 @@ buster.testCase('cli - exec', {
     });
   },
   'should log and pass error to callback when an error occurs and fallthrough is not allowed': function (done) {
-    this.mockConsole.expects('error').once().withExactArgs('Error: somestderr');
+    this.mockConsole.expects('error').once().withExactArgs('Error: %s'.red, 'somestderr');
     this.stub(childProcess, 'exec', function (command, cb) {
       assert.equals(command, 'somecommand');
       cb(new Error('someerror'), null, 'somestderr');
@@ -90,7 +91,7 @@ buster.testCase('cli - exec', {
     });
   },
   'should log output and pass success callback when there is no error': function (done) {
-    this.mockConsole.expects('log').once().withExactArgs('somestdout');
+    this.mockConsole.expects('log').once().withExactArgs('somestdout'.green);
     this.stub(childProcess, 'exec', function (command, cb) {
       assert.equals(command, 'somecommand');
       cb(null, 'somestdout');
@@ -113,7 +114,7 @@ buster.testCase('cli - exit', {
     bag.exit();
   },
   'should exit with status code 1 and logs the error message when error exists': function () {
-    this.mockConsole.expects('error').once().withExactArgs('someerror');
+    this.mockConsole.expects('error').once().withExactArgs('someerror'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     bag.exit(new Error('someerror'));
   }
@@ -125,12 +126,12 @@ buster.testCase('cli - exitCb', {
     this.mockProcess = this.mock(process);
   },
   'should exit with status code 0 and logs the result when error does not exist and no success callback is specified': function () {
-    this.mockConsole.expects('log').once().withExactArgs('some success');
+    this.mockConsole.expects('log').once().withExactArgs('some success'.green);
     this.mockProcess.expects('exit').once().withExactArgs(0);
     bag.exitCb()(null, 'some success');
   },
   'should exit with status code 1 and logs the error message when error exists and no error callback is specified': function () {
-    this.mockConsole.expects('error').once().withExactArgs('some error');
+    this.mockConsole.expects('error').once().withExactArgs('some error'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     bag.exitCb()(new Error('some error'));
   },
@@ -218,8 +219,8 @@ buster.testCase('cli - spawn', {
     this.mockProcessStderr = this.mock(process.stderr);
   },
   'should write data via stdout and stderr when data event is emitted': function () {
-    this.mockProcessStdout.expects('write').once().withExactArgs('somestdoutdata');
-    this.mockProcessStderr.expects('write').once().withExactArgs('somestderrdata');
+    this.mockProcessStdout.expects('write').once().withExactArgs('somestdoutdata'.green);
+    this.mockProcessStderr.expects('write').once().withExactArgs('somestderrdata'.red);
     var mockSpawn = {
       stdout: {
         on: function (event, cb) {
