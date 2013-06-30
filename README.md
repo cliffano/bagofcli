@@ -1,4 +1,4 @@
-Bag Of CLI [![Build Status](https://secure.travis-ci.org/cliffano/bagofcli.png?branch=master)](http://travis-ci.org/cliffano/bagofcli) [![Dependencies Status](https://david-dm.org/cliffano/bagofcli.png)](http://david-dm.org/cliffano/bagofcli)
+Bag Of CLI [![Build Status](https://secure.travis-ci.org/cliffano/bagofcli.png?branch=master)](http://travis-ci.org/cliffano/bagofcli) [![Dependencies Status](https://david-dm.org/cliffano/bagofcli.png)](http://david-dm.org/cliffano/bagofcli) [![Published Version](https://badge.fury.io/js/bagofcli.png)](http://badge.fury.io/js/bagofcli)
 --------------
 <img align="right" src="https://raw.github.com/cliffano/bagofcli/master/avatar.jpg" alt="Avatar"/>
 
