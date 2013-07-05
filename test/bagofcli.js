@@ -64,13 +64,22 @@ buster.testCase('cli - command', {
 
 buster.testCase('cli - exec', {
   setUp: function () {
-    this.mockConsole = this.mock(console);
+    this.mockProcessStdout = this.mock(process.stdout);
+    this.mockProcessStderr = this.mock(process.stderr);
   },
- 'should log and camouflage error to callback when an error occurs and fallthrough is allowed': function (done) {
-    this.mockConsole.expects('error').once().withExactArgs('Error: %s'.red, 'somestderr');
+ 'should log stdout output and camouflage error to callback when an error occurs and fallthrough is allowed': function (done) {
+    this.mockProcessStdout.expects('write').once().withExactArgs('somestdout'.green);
+    this.mockProcessStdout.expects('write').once().withArgs();
+    var mockExec = {
+      stdout: { on: function (event, cb) {
+        cb('somestdout');
+      }},
+      stderr: { on: function (event, cb) {} }
+    };
     this.stub(childProcess, 'exec', function (command, cb) {
       assert.equals(command, 'somecommand');
       cb(new Error('someerror'), null, 'somestderr');
+      return mockExec;
     });
     bag.exec('somecommand', true, function cb(err, result) {
       assert.isNull(err);
@@ -78,26 +87,21 @@ buster.testCase('cli - exec', {
       done();
     });
   },
-  'should log and pass error to callback when an error occurs and fallthrough is not allowed': function (done) {
-    this.mockConsole.expects('error').once().withExactArgs('Error: %s'.red, 'somestderr');
+  'should log stderr output and pass error to callback when an error occurs and fallthrough is not allowed': function (done) {
+    this.mockProcessStderr.expects('write').once().withExactArgs('somestderr'.red);
+    var mockExec = {
+      stdout: { on: function (event, cb) {} },
+      stderr: { on: function (event, cb) {
+        cb('somestderr');
+      }}
+    };
     this.stub(childProcess, 'exec', function (command, cb) {
       assert.equals(command, 'somecommand');
       cb(new Error('someerror'), null, 'somestderr');
+      return mockExec;
     });
     bag.exec('somecommand', false, function cb(err, result) {
       assert.equals(err.message, 'someerror');
-      assert.equals(result, undefined);
-      done();
-    });
-  },
-  'should log output and pass success callback when there is no error': function (done) {
-    this.mockConsole.expects('log').once().withExactArgs('somestdout'.green);
-    this.stub(childProcess, 'exec', function (command, cb) {
-      assert.equals(command, 'somecommand');
-      cb(null, 'somestdout');
-    });
-    bag.exec('somecommand', false, function cb(err, result) {
-      assert.equals(err, undefined);
       assert.equals(result, undefined);
       done();
     });
