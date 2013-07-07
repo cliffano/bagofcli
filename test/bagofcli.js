@@ -62,6 +62,63 @@ buster.testCase('cli - command', {
   }
 });
 
+buster.testCase('cli - _validate', {
+  setUp: function () {
+    this.mockConsole = this.mock(console);
+    this.mockProcess = this.mock(process);
+  },
+  'should return without error when args is empty': function (done) {
+    var err, result;
+    try {
+      result = bag._validate();
+    } catch (e) {
+      err = e;
+    }
+    assert.equals(result, undefined);
+    done(err);
+  },
+  'should return without error when commands config is not set up with any args': function (done) {
+    var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commands = { somecommand: {} },
+      err, result;
+    try {
+      result = bag._validate(args, commands);
+    } catch (e) {
+      err = e;
+    }
+    assert.equals(result, undefined);
+    done(err);
+  },
+  'should log usage message and exit when commands config has args but the command does not provide any argument': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2>'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ]}, { name: 'arg2', rules: [ 'isNumeric' ] }] } },
+      result = bag._validate(args, commands);
+    assert.equals(result, undefined);
+  },
+  'should log error message when there is an invalid argument': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be isNumeric'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ] }] } },
+      result = bag._validate(args, commands);
+    assert.equals(result, undefined);
+  },
+  'should return without error when command has valid argument as configured in commands setup file': function (done) {
+    var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ] }] } },
+      err, result;
+    try {
+      result = bag._validate(args, commands);
+    } catch (e) {
+      err = e;
+    }
+    assert.equals(result, undefined);
+    done(err);
+  }
+});
+
 buster.testCase('cli - exec', {
   setUp: function () {
     this.mockProcessStdout = this.mock(process.stdout);
