@@ -62,15 +62,16 @@ buster.testCase('cli - command', {
   }
 });
 
-buster.testCase('cli - _validate', {
+buster.testCase('cli - _postCommand', {
   setUp: function () {
+    this.mockCommander = this.mock(commander);
     this.mockConsole = this.mock(console);
     this.mockProcess = this.mock(process);
   },
   'should return without error when args is empty': function (done) {
     var err, result;
     try {
-      result = bag._validate();
+      result = bag._postCommand();
     } catch (e) {
       err = e;
     }
@@ -82,7 +83,7 @@ buster.testCase('cli - _validate', {
       commands = { somecommand: {} },
       err, result;
     try {
-      result = bag._validate(args, commands);
+      result = bag._postCommand(args, commands);
     } catch (e) {
       err = e;
     }
@@ -94,7 +95,7 @@ buster.testCase('cli - _validate', {
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ]}, { name: 'arg2', rules: [ 'isNumeric' ] }] } },
-      result = bag._validate(args, commands);
+      result = bag._postCommand(args, commands);
     assert.equals(result, undefined);
   },
   'should log error message when there is an invalid argument': function () {
@@ -102,7 +103,7 @@ buster.testCase('cli - _validate', {
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ] }] } },
-      result = bag._validate(args, commands);
+      result = bag._postCommand(args, commands);
     assert.equals(result, undefined);
   },
   'should return without error when command has valid argument as configured in commands setup file': function (done) {
@@ -110,7 +111,18 @@ buster.testCase('cli - _validate', {
       commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ] }] } },
       err, result;
     try {
-      result = bag._validate(args, commands);
+      result = bag._postCommand(args, commands);
+    } catch (e) {
+      err = e;
+    }
+    assert.equals(result, undefined);
+    done(err);
+  },
+  'should call commander help when arguments is empty': function (done) {
+    this.mockCommander.expects('help').once().withExactArgs();
+    var err, result;
+    try {
+      result = bag._postCommand([]);
     } catch (e) {
       err = e;
     }
