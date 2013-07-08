@@ -2,6 +2,7 @@
 * Change exec to display stdout and stderr in chunks
 * Add command arguments validation support
 * Display help when command is unspecified
+* Display error message when command is unknown
 
 ### 0.0.2
 * Colourise success and error output

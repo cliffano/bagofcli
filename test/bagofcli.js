@@ -128,6 +128,14 @@ buster.testCase('cli - _postCommand', {
     }
     assert.equals(result, undefined);
     done(err);
+  },
+  'should log error message and exit when command is unknown': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Unknown command: blah, use --help for more info'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    var args = ['blah'],
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ]}, { name: 'arg2', rules: [ 'isNumeric' ] }] } },
+      result = bag._postCommand(args, commands);
+    assert.equals(result, undefined);
   }
 });
 
