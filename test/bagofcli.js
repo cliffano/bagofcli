@@ -62,6 +62,39 @@ buster.testCase('cli - command', {
   }
 });
 
+buster.testCase('cli - _preCommand', {
+  setUp: function () {
+    this.mockCommander = this.mock(commander);
+    this.mockConsole = this.mock(console);
+  },
+  'should not log anything when commands do not have any examples': function () {
+    this.mockCommander.expects('on').once().withArgs('--help').callsArgWith(1);
+
+    var commands = {
+      somecommand1: {},
+      somecommand2: { examples: [] }
+    };
+    bag._preCommand(commands);
+  },
+  'should log examples when configured in commands': function () {
+    this.mockConsole.expects('log').once().withExactArgs('  Examples:\n');
+    this.mockConsole.expects('log').once().withExactArgs('    %s:', 'somecommand1');
+    this.mockConsole.expects('log').once().withExactArgs('      %s', 'example1');
+    this.mockConsole.expects('log').once().withExactArgs('      %s', 'example2');
+    this.mockConsole.expects('log').once().withExactArgs('    %s:', 'somecommand2');
+    this.mockConsole.expects('log').once().withExactArgs('      %s', 'example3');
+    this.mockCommander.expects('on').once().withArgs('--help').callsArgWith(1);
+
+    var commands = {
+      somecommand1: { examples: ['example1', 'example2'] },
+      somecommand1a: {},
+      somecommand2: { examples: ['example3'] },
+      somecommand2b: { examples: [] }
+    };
+    bag._preCommand(commands);
+  }
+});
+
 buster.testCase('cli - _postCommand', {
   setUp: function () {
     this.mockCommander = this.mock(commander);
