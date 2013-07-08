@@ -1,4 +1,7 @@
-### 0.0.3-pre
+### 0.0.4-pre
+*
+
+### 0.0.3
 * Change exec to display stdout and stderr in chunks
 * Add command arguments validation support
 * Display help when command is unspecified
