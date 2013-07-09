@@ -67,12 +67,21 @@ buster.testCase('cli - _preCommand', {
     this.mockCommander = this.mock(commander);
     this.mockConsole = this.mock(console);
   },
-  'should not log anything when commands do not have any examples': function () {
+  'should not log anything when commands have empty examples array': function () {
+    this.mockCommander.expects('on').once().withArgs('--help').callsArgWith(1);
+
+    var commands = {
+      somecommand1: { examples: [] },
+      somecommand2: { examples: [] }
+    };
+    bag._preCommand(commands);
+  },
+  'should not log anything when commands do not have any examples fields': function () {
     this.mockCommander.expects('on').once().withArgs('--help').callsArgWith(1);
 
     var commands = {
       somecommand1: {},
-      somecommand2: { examples: [] }
+      somecommand2: {}
     };
     bag._preCommand(commands);
   },

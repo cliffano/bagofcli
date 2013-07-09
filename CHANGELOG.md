@@ -1,5 +1,5 @@
 ### 0.0.4-pre
-*
+* Fix TypeError when none of the commands have any examples
 
 ### 0.0.3
 * Change exec to display stdout and stderr in chunks
