@@ -1,4 +1,7 @@
-### 0.0.4-pre
+### 0.0.5-pre
+*
+
+### 0.0.4
 * Fix TypeError when none of the commands have any examples
 
 ### 0.0.3
