@@ -161,6 +161,7 @@ buster.testCase('cli - _postCommand', {
     done(err);
   },
   'should call commander help when arguments is empty': function (done) {
+    process.argv = ['node', 'somecommand'];
     this.mockCommander.expects('help').once().withExactArgs();
     var err, result;
     try {

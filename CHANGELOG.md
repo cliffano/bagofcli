@@ -1,8 +1,8 @@
 ### 0.0.5-pre
-*
+* Fix no args detection, commands with opt no longer displays help
 
 ### 0.0.4
-* Fix TypeError when none of the commands have any examples
+* Fix TypeError when none of the commands has any examples
 
 ### 0.0.3
 * Change exec to display stdout and stderr in chunks
