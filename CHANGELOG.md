@@ -1,4 +1,7 @@
-### 0.0.5-pre
+### 0.0.6-pre
+*
+
+### 0.0.5
 * Fix no args detection, commands with opt no longer displays help
 * Add optional arg support for usage display
 
