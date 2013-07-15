@@ -132,6 +132,17 @@ buster.testCase('cli - _postCommand', {
     assert.equals(result, undefined);
     done(err);
   },
+  'should return without error when command line includes opt flag (commander.args is empty for some reason)': function (done) {
+    process.argv = ['node', 'somecommand', '--someopt'];
+    var err, result;
+    try {
+      result = bag._postCommand([]);
+    } catch (e) {
+      err = e;
+    }
+    assert.equals(result, undefined);
+    done(err);
+  },
   'should log usage message and exit when commands config has args but the command does not provide any argument': function () {
     this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2>'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
