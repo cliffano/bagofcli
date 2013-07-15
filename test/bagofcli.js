@@ -177,7 +177,7 @@ buster.testCase('cli - _postCommand', {
   },
   'should return without error when command has valid argument as configured in commands setup file': function (done) {
     var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ] }] } },
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ] }, { name: 'arg2', optional: true }] } },
       err, result;
     try {
       result = bag._postCommand(args, commands);
