@@ -1,5 +1,6 @@
 ### 0.0.5-pre
 * Fix no args detection, commands with opt no longer displays help
+* Add optional arg support for usage display
 
 ### 0.0.4
 * Fix TypeError when none of the commands has any examples

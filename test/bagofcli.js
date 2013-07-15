@@ -140,6 +140,22 @@ buster.testCase('cli - _postCommand', {
       result = bag._postCommand(args, commands);
     assert.equals(result, undefined);
   },
+  'should log usage message when there is a mix of mandatory and optional args': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2> [arg3]'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ]}, { name: 'arg2', rules: [ 'isNumeric' ]}, { name: 'arg3', optional: true }] } },
+      result = bag._postCommand(args, commands);
+    assert.equals(result, undefined);
+  },
+  'should log usage message when there are multiple optional args': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> [arg2] [arg3]'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ]}, { name: 'arg2', optional: true}, { name: 'arg3', optional: true }] } },
+      result = bag._postCommand(args, commands);
+    assert.equals(result, undefined);
+  },
   'should log error message when there is an invalid argument': function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be isNumeric'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
