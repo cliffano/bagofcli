@@ -8,7 +8,6 @@
 
 Bag Of CLI
 ----------
-<img align="right" src="https://raw.github.com/cliffano/bagofcli/master/avatar.jpg" alt="Avatar"/>
 
 Bag Of CLI contains cli utility functions.
 
