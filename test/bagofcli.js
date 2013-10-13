@@ -3,7 +3,8 @@ var buster = require('buster'),
   childProcess = require('child_process'),
   colors = require('colors'),
   commander = require('commander'),
-  fs = require('fs');
+  fs = require('fs'),
+  wrench = require('wrench');
 
 buster.testCase('cli - command', {
   setUp: function () {
@@ -299,6 +300,46 @@ buster.testCase('cli - exitCb', {
       assert.equals(err.message, 'some error');
       done();
     })(new Error('some error'));
+  }
+});
+
+buster.testCase('cli - files', {
+  setUp: function () {
+    this.mockFs = this.mock(fs);
+    this.mockWrench = this.mock(wrench);
+    this.trueFn = function () { return true; };
+    this.falseFn = function () { return false; };
+  },
+  'should return files as-is when all items are files': function () {
+    this.mockFs.expects('statSync').withExactArgs('file1').returns({ isFile: this.trueFn });
+    this.mockFs.expects('statSync').withExactArgs('file2').returns({ isFile: this.trueFn });
+    var files = bag.files(['file1', 'file2']);
+    assert.equals(files, ['file1', 'file2']);
+  },
+  'should return files under a directory': function () {
+    this.mockWrench.expects('readdirSyncRecursive').withExactArgs('dir1').returns(['file1', 'file2']);
+    this.mockFs.expects('statSync').withExactArgs('dir1').returns({ isFile: this.falseFn, isDirectory: this.trueFn });
+    this.mockFs.expects('statSync').withExactArgs('dir1/file1').returns({ isFile: this.trueFn });
+    this.mockFs.expects('statSync').withExactArgs('dir1/file2').returns({ isFile: this.trueFn });
+    var files = bag.files(['dir1']);
+    assert.equals(files, ['dir1/file1', 'dir1/file2']);
+  },
+  'should only return matching files when match opt is specified': function () {
+    this.mockWrench.expects('readdirSyncRecursive').withExactArgs('dir1').returns(['file1', 'file2']);
+    this.mockFs.expects('statSync').withExactArgs('dir1').returns({ isFile: this.falseFn, isDirectory: this.trueFn });
+    this.mockFs.expects('statSync').withExactArgs('dir1/file1').returns({ isFile: this.trueFn });
+    this.mockFs.expects('statSync').withExactArgs('dir1/file2').returns({ isFile: this.trueFn });
+    this.mockFs.expects('statSync').withExactArgs('file2').returns({ isFile: this.trueFn });
+    var files = bag.files(['dir1', 'file2'], { match: '2$' });
+    assert.equals(files, ['dir1/file2', 'file2']);
+  },
+  'should return nothing when no match is found': function () {
+    this.mockWrench.expects('readdirSyncRecursive').withExactArgs('dir1').returns(['file1']);
+    this.mockFs.expects('statSync').withExactArgs('dir1').returns({ isFile: this.falseFn, isDirectory: this.trueFn });
+    this.mockFs.expects('statSync').withExactArgs('dir1/file1').returns({ isFile: this.trueFn });
+    this.mockFs.expects('statSync').withExactArgs('file1').returns({ isFile: this.trueFn });
+    var files = bag.files(['dir1', 'file1'], { match: '2$' });
+    assert.equals(files, []);
   }
 });
 

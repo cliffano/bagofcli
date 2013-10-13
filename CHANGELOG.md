@@ -1,5 +1,5 @@
 ### 0.0.6-pre
-*
+* Add files function
 
 ### 0.0.5
 * Fix no args detection, commands with opt no longer displays help
