@@ -340,6 +340,18 @@ buster.testCase('cli - files', {
     this.mockFs.expects('statSync').withExactArgs('file1').returns({ isFile: this.trueFn });
     var files = bag.files(['dir1', 'file1'], { match: '2$' });
     assert.equals(files, []);
+  },
+  'should return nothing when directory contains non-directory and non-file': function () {
+    this.mockWrench.expects('readdirSyncRecursive').withExactArgs('dir1').returns(['item1']);
+    this.mockFs.expects('statSync').withExactArgs('dir1').returns({ isFile: this.falseFn, isDirectory: this.trueFn });
+    this.mockFs.expects('statSync').withExactArgs('dir1/item1').returns({ isFile: this.falseFn, isDirectory: this.falseFn });
+    var files = bag.files(['dir1']);
+    assert.equals(files, []);
+  },
+  'should return nothing when items are non-directory and non-file': function () {
+    this.mockFs.expects('statSync').withExactArgs('item1').returns({ isFile: this.falseFn, isDirectory: this.falseFn });
+    var files = bag.files(['item1']);
+    assert.equals(files, []);
   }
 });
 
