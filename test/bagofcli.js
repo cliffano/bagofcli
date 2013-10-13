@@ -1,10 +1,12 @@
-var buster = require('buster'),
+var assertions = require('buster-assertions'),
+  buster = require('buster-node'),
   bag = require('../lib/bagofcli'),
   childProcess = require('child_process'),
   colors = require('colors'),
   commander = require('commander'),
   fs = require('fs'),
-  wrench = require('wrench');
+  wrench = require('wrench'),
+  assert = assertions.assert;
 
 buster.testCase('cli - command', {
   setUp: function () {
@@ -217,7 +219,6 @@ buster.testCase('cli - exec', {
   },
  'should log stdout output and camouflage error to callback when an error occurs and fallthrough is allowed': function (done) {
     this.mockProcessStdout.expects('write').once().withExactArgs('somestdout'.green);
-    this.mockProcessStdout.expects('write').once().withArgs();
     var mockExec = {
       stdout: { on: function (event, cb) {
         cb('somestdout');

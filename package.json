@@ -32,7 +32,8 @@
     "wrench": "~1.5.1"
   },
   "devDependencies": {
-    "buster": "~0.6.12"
+    "buster-assertions": "~0.10.4",
+    "buster-node": "~0.7.0"
   },
   "scripts": {},
   "engines": {
