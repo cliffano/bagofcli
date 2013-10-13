@@ -1,5 +1,5 @@
 ### 0.0.7-pre
-*
+* Replace buster with buster-node for test dep
 
 ### 0.0.6
 * Add files function
