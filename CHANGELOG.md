@@ -2,7 +2,7 @@
 *
 
 ### 0.0.8
-* Replace buster with buster-node for test dep
+* Change test lib to buster-node + referee
 
 ### 0.0.6
 * Add files function

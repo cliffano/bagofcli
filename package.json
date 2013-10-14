@@ -32,12 +32,12 @@
     "wrench": "~1.5.1"
   },
   "devDependencies": {
-    "buster-assertions": "~0.10.4",
-    "buster-node": "~0.7.0"
+    "buster-node": "~0.7.0",
+    "referee": "~1.0.1"
   },
   "scripts": {},
   "engines": {
-    "node": ">= 0.4.0"
+    "node": ">= 0.8.0"
   },
   "licenses": [
     {

@@ -1,12 +1,12 @@
-var assertions = require('buster-assertions'),
-  buster = require('buster-node'),
+var buster = require('buster-node'),
   bag = require('../lib/bagofcli'),
   childProcess = require('child_process'),
   colors = require('colors'),
   commander = require('commander'),
   fs = require('fs'),
+  referee = require('referee'),
   wrench = require('wrench'),
-  assert = assertions.assert;
+  assert = referee.assert;
 
 buster.testCase('cli - command', {
   setUp: function () {
@@ -455,7 +455,7 @@ buster.testCase('cli - spawn', {
     };
     this.mockChildProcess.expects('spawn').withExactArgs('somecommand', ['arg1', 'arg2']).returns(mockSpawn);
     bag.spawn('somecommand', ['arg1', 'arg2'], function (err, result) {
-      assert.equals(err.message, 1);
+      assert.equals(err.message, '1');
       assert.equals(result, 1);
       done();
     });
