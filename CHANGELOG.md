@@ -3,6 +3,7 @@
 
 ### 0.0.8
 * Change test lib to buster-node + referee
+* Change min node version to v0.8.0
 
 ### 0.0.6
 * Add files function
