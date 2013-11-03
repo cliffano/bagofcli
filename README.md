@@ -27,7 +27,7 @@ Usage
 
 Commands:
 
-    // create conf/commands.json file containing commands configuration.
+    // create conf/commands.json file containing commands configuration
 
     {
       "options": [
@@ -55,7 +55,7 @@ Commands:
       }
     }
 
-    // setup command handlers.
+    // setup command handlers
 
     var bag = require('bagofcli');
 
