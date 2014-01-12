@@ -2,6 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/cliffano/bagofcli.png?branch=master)](http://travis-ci.org/cliffano/bagofcli)
 [![Dependencies Status](https://david-dm.org/cliffano/bagofcli.png)](http://david-dm.org/cliffano/bagofcli)
+[![Coverage Status](https://coveralls.io/repos/cliffano/bagofcli/badge.png?branch=master)](https://coveralls.io/r/cliffano/bagofcli?branch=master)
 [![Published Version](https://badge.fury.io/js/bagofcli.png)](http://badge.fury.io/js/bagofcli)
 <br/>
 [![npm Badge](https://nodei.co/npm/bagofcli.png)](http://npmjs.org/package/bagofcli)
