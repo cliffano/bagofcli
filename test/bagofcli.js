@@ -370,29 +370,26 @@ buster.testCase('cli - lookupFile', {
   'should return file content in home directory when it exists but none exists in current directory and platform is windows': function () {
     this.mockProcess.expects('cwd').once().returns('/curr/dir');
     this.stub(process, 'env', { USERPROFILE: '/home/dir' });
-    this.stub(process, 'platform', 'win32');
     this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').throws(new Error('doesnotexist')); 
     this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').returns('homedirfilecontent'); 
-    var data = bag.lookupFile('.conf.json');
+    var data = bag.lookupFile('.conf.json', { platform: 'win32' });
     assert.equals(data, 'homedirfilecontent');
   },
   'should return file content in home directory when it exists but none exists in current directory and platform is non windows': function () {
     this.mockProcess.expects('cwd').once().returns('/curr/dir');
     this.stub(process, 'env', { HOME: '/home/dir' });
-    this.stub(process, 'platform', 'linux');
     this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').throws(new Error('doesnotexist')); 
     this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').returns('homedirfilecontent'); 
-    var data = bag.lookupFile('.conf.json');
+    var data = bag.lookupFile('.conf.json', { platform: 'linux' });
     assert.equals(data, 'homedirfilecontent');
   },
   'should throw an error when configuration file does not exist anywhere and file has relative path': function (done) {
     this.mockProcess.expects('cwd').once().returns('/curr/dir');
     this.stub(process, 'env', { HOME: '/home/dir' });
-    this.stub(process, 'platform', 'linux');
     this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').throws(new Error('doesnotexist'));
     this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').throws(new Error('doesnotexist'));
     try {
-      bag.lookupFile('.conf.json');
+      bag.lookupFile('.conf.json', { platform: 'linux' });
     } catch (err) {
       assert.equals(err.message, 'Unable to lookup file in /curr/dir/.conf.json, /home/dir/.conf.json');
       done();
@@ -405,11 +402,10 @@ buster.testCase('cli - lookupFile', {
   },
   'should throw an error when configuration file does not exist anywhere and file has absolute path': function (done) {
     this.stub(process, 'env', { HOME: '/home/dir' });
-    this.stub(process, 'platform', 'linux');
     this.mockFs.expects('readFileSync').once().withExactArgs('/absolute/dir/.conf.json').throws(new Error('doesnotexist'));
     this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').throws(new Error('doesnotexist'));
     try {
-      bag.lookupFile('/absolute/dir/.conf.json');
+      bag.lookupFile('/absolute/dir/.conf.json', { platform: 'linux' });
     } catch (err) {
       assert.equals(err.message, 'Unable to lookup file in /absolute/dir/.conf.json, /home/dir/.conf.json');
       done();
