@@ -1,5 +1,5 @@
 ### 0.0.9-pre
-*
+* Update documentation, upgrade dependencies
 
 ### 0.0.8
 * Change test lib to buster-node + referee
