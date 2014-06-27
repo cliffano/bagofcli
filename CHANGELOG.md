@@ -1,4 +1,7 @@
-### 0.0.9-pre
+### 0.0.10-pre
+*
+
+### 0.0.9
 * Update documentation, upgrade dependencies
 
 ### 0.0.8
