@@ -194,6 +194,14 @@ buster.testCase('cli - _postCommand', {
       result = bag._postCommand(args, commands);
     assert.equals(result, undefined);
   },
+  'should log error message when rule does not exist': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Invalid argument rule: someRuleThatCantPossiblyExist'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'someRuleThatCantPossiblyExist' ] }] } },
+      result = bag._postCommand(args, commands);
+    assert.equals(result, undefined);
+  },
   'should return without error when command has valid argument as configured in commands setup file': function (done) {
     var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ] }, { name: 'arg2', optional: true }] } },

@@ -1,5 +1,5 @@
 ### 0.0.10-pre
-*
+* Add invalid argument rule check
 
 ### 0.0.9
 * Update documentation, upgrade dependencies
