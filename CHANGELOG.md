@@ -1,4 +1,7 @@
-### 0.0.10-pre
+### 1.0.0-pre
+*
+
+### 0.0.10
 * Fix argument validation, downgrade validator dep to v~1.2.2
 * Add invalid argument rule check
 
