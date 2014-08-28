@@ -178,6 +178,22 @@ buster.testCase('cli - _postCommand', {
       result = bag._postCommand(args, commands);
     assert.equals(result, undefined);
   },
+  'should log error message when empty string is passed on notEmpty rule': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be notEmpty'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    var args = ['', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'notEmpty' ] }] } },
+      result = bag._postCommand(args, commands);
+    assert.equals(result, undefined);
+  },
+  'should log error message when non-email string is passed on isEmail rule': function () {
+    this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be isEmail'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isEmail' ] }] } },
+      result = bag._postCommand(args, commands);
+    assert.equals(result, undefined);
+  },
   'should return without error when command has valid argument as configured in commands setup file': function (done) {
     var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'isNumeric' ] }, { name: 'arg2', optional: true }] } },
