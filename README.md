@@ -82,10 +82,12 @@ Check out [lib/bagofcli.js](https://github.com/cliffano/bagofcli/blob/master/lib
 Upgrade
 -------
 
-From 0.0.x to 0.1.x:
+From 0.0.x to 0.1.x .
 
-bagofcli replaced validation package from [validator](http://npmjs.org/validator) to [iz](http://npmjs.org/package/iz), the following rules must be updated.
+Update commands.json argument validation rules:
 
-* notEmpty -> required
-* isNumeric -> number
-* isEmail -> email
+* `notEmpty` to `required`
+* `isNumeric` to `number`
+* `isEmail` to `email`
+
+Check out [iz](http://npmjs.org/package/iz) for available validation rules.
