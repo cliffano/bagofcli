@@ -78,3 +78,14 @@ Commands:
     bag.command(__dirname, actions);
 
 Check out [lib/bagofcli.js](https://github.com/cliffano/bagofcli/blob/master/lib/bagofcli.js) for more utility functions.
+
+Upgrade
+-------
+
+From 0.0.x to 0.1.x:
+
+bagofcli replaced validation package from [validator](http://npmjs.org/validator) to [iz](http://npmjs.org/package/iz), the following rules must be updated.
+
+* notEmpty -> required
+* isNumeric -> number
+* isEmail -> email

@@ -27,8 +27,8 @@
     "async": "~0.9.0",
     "colors": "~0.6.2",
     "commander": "~2.2.0",
+    "iz": "~0.5.1",
     "lodash": "~2.4.1",
-    "validator": "~1.2.2",
     "wrench": "~1.5.8"
   },
   "devDependencies": {

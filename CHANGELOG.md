@@ -1,5 +1,5 @@
 ### 0.1.0-pre
-*
+* Replace validation package from validator to iz
 
 ### 0.0.10
 * Fix argument validation, downgrade validator dep to v~1.2.2
