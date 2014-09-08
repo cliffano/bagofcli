@@ -1,5 +1,5 @@
-### 0.1.1-pre
-*
+### 0.2.0-pre
+* Set min node engine to v0.10.0
 
 ### 0.1.0
 * Replace validation package from validator to iz
@@ -13,7 +13,7 @@
 
 ### 0.0.8
 * Change test lib to buster-node + referee
-* Change min node version to v0.8.0
+* Set min node engine to v0.8.0
 
 ### 0.0.6
 * Add files function
