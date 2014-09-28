@@ -125,10 +125,10 @@ buster.testCase('cli - _postCommand', {
   },
   'should return without error when commands config is not set up with any args': function (done) {
     var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: {} },
+      commandsConfig = { somecommand: {} },
       err, result;
     try {
-      result = bag._postCommand(args, commands);
+      result = bag._postCommand(args, commandsConfig);
     } catch (e) {
       err = e;
     }
@@ -150,64 +150,64 @@ buster.testCase('cli - _postCommand', {
     this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2>'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
-      result = bag._postCommand(args, commands);
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
+      result = bag._postCommand(args, commandsConfig);
     assert.equals(result, undefined);
   },
   'should log usage message when there is a mix of mandatory and optional args': function () {
     this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2> [arg3]'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ]}, { name: 'arg3', optional: true }] } },
-      result = bag._postCommand(args, commands);
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ]}, { name: 'arg3', optional: true }] } },
+      result = bag._postCommand(args, commandsConfig);
     assert.equals(result, undefined);
   },
   'should log usage message when there are multiple optional args': function () {
     this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> [arg2] [arg3]'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', optional: true}, { name: 'arg3', optional: true }] } },
-      result = bag._postCommand(args, commands);
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', optional: true}, { name: 'arg3', optional: true }] } },
+      result = bag._postCommand(args, commandsConfig);
     assert.equals(result, undefined);
   },
   'should log error message when there is an invalid argument': function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be number'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }] } },
-      result = bag._postCommand(args, commands);
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }] } },
+      result = bag._postCommand(args, commandsConfig);
     assert.equals(result, undefined);
   },
   'should log error message when empty string is passed on required rule': function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be required'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = ['', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'required' ] }] } },
-      result = bag._postCommand(args, commands);
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'required' ] }] } },
+      result = bag._postCommand(args, commandsConfig);
     assert.equals(result, undefined);
   },
   'should log error message when non-email string is passed on email rule': function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be email'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'email' ] }] } },
-      result = bag._postCommand(args, commands);
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'email' ] }] } },
+      result = bag._postCommand(args, commandsConfig);
     assert.equals(result, undefined);
   },
   'should log error message when rule does not exist': function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument rule: someRuleThatCantPossiblyExist'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'someRuleThatCantPossiblyExist' ] }] } },
-      result = bag._postCommand(args, commands);
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'someRuleThatCantPossiblyExist' ] }] } },
+      result = bag._postCommand(args, commandsConfig);
     assert.equals(result, undefined);
   },
   'should return without error when command has valid argument as configured in commands setup file': function (done) {
     var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }, { name: 'arg2', optional: true }] } },
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }, { name: 'arg2', optional: true }] } },
       err, result;
     try {
-      result = bag._postCommand(args, commands);
+      result = bag._postCommand(args, commandsConfig);
     } catch (e) {
       err = e;
     }
@@ -230,8 +230,8 @@ buster.testCase('cli - _postCommand', {
     this.mockConsole.expects('error').once().withExactArgs('Unknown command: blah, use --help for more info'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = ['blah'],
-      commands = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
-      result = bag._postCommand(args, commands);
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
+      result = bag._postCommand(args, commandsConfig);
     assert.equals(result, undefined);
   }
 });
