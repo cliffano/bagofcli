@@ -235,7 +235,7 @@ buster.testCase('cli - _postCommand', {
     assert.equals(result, undefined);
   },
   'should log error message when command has invalid command option': function (done) {
-    this.mockConsole.expects('error').once().withExactArgs('Invalid options: <-s, --some-arg <someArg>> must be number'.red);
+    this.mockConsole.expects('error').once().withExactArgs('Invalid option: <-s, --some-arg <someArg>> must be number'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     var args = ['123', { _name: 'somecommand', someArg: 'abcdef', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { options: [{
@@ -267,13 +267,62 @@ buster.testCase('cli - _postCommand', {
     done(err);
   },
   'should return without error when command option does not have any validation rule': function (done) {
-    var args = ['123', { _name: 'somecommand', someArg: '12345', parent: { _name: 'someparentcommand' } }],
+    var args = ['123', { _name: 'somecommand', someArg: 'abcdef', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { options: [{
         arg: '-s, --some-arg <someArg>'
       }]}},
       err, result;
     try {
       result = bag._postCommand(args, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    assert.equals(result, undefined);
+    done(err);
+  },
+  'should log error message when command has invalid global option': function (done) {
+    this.mockConsole.expects('error').once().withExactArgs('Invalid option: <-s, --some-arg <someArg>> must be number'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: 'abcdef' } }],
+      commandsConfig = { somecommand: {}},
+      globalOptsConfig = [{
+        arg: '-s, --some-arg <someArg>',
+        rules: [ 'number' ]
+      }],
+      err, result;
+    try {
+      result = bag._postCommand(args, commandsConfig, globalOptsConfig);
+    } catch (e) {
+      err = e;
+    }
+    assert.equals(result, undefined);
+    done(err);
+  },
+  'should return without error when there is no invalid global option': function (done) {
+    var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: '12345' } }],
+      commandsConfig = { somecommand: {}},
+      globalOptsConfig = [{
+        arg: '-s, --some-arg <someArg>',
+        rules: [ 'number' ]
+      }],
+      err, result;
+    try {
+      result = bag._postCommand(args, commandsConfig, globalOptsConfig);
+    } catch (e) {
+      err = e;
+    }
+    assert.equals(result, undefined);
+    done(err);
+  },
+  'should return without error when global option does not have any validation rule': function (done) {
+    var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: 'abcdef' } }],
+      commandsConfig = { somecommand: {}},
+      globalOptsConfig = [{
+        arg: '-s, --some-arg <someArg>'
+      }],
+      err, result;
+    try {
+      result = bag._postCommand(args, commandsConfig, globalOptsConfig);
     } catch (e) {
       err = e;
     }
