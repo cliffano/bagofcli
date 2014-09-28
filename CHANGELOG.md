@@ -1,5 +1,5 @@
 ### 0.2.1-pre
-*
+* Add command option validation
 
 ### 0.2.0
 * Set min node engine to v0.10.0
