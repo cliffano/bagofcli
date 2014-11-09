@@ -1,6 +1,7 @@
 ### 0.2.1-pre
 * Add command option validation
 * Add global option validation
+* Fix exit callback error to log stringified object when error is non-Error object
 
 ### 0.2.0
 * Set min node engine to v0.10.0

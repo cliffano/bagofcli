@@ -389,6 +389,16 @@ buster.testCase('cli - exit', {
     this.mockConsole.expects('error').once().withExactArgs('someerror'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
     bag.exit(new Error('someerror'));
+  },
+  'should log the stringified object when error is a non-Error object': function () {
+    this.mockConsole.expects('error').once().withExactArgs('{"error":"someerror"}'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    bag.exit({ error: 'someerror'});
+  },
+  'should log the stringified when error is an array': function () {
+    this.mockConsole.expects('error').once().withExactArgs('["some error 1","some error 2"]'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    bag.exit(['some error 1', 'some error 2']);
   }
 });
 
@@ -407,6 +417,11 @@ buster.testCase('cli - exitCb', {
     this.mockProcess.expects('exit').once().withExactArgs(1);
     bag.exitCb()(new Error('some error'));
   },
+  'should exit with status code 1 and logs stringified object when error is non-Error object': function () {
+    this.mockConsole.expects('error').once().withExactArgs('{"error":"some error"}'.red);
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    bag.exitCb()({ error: 'some error'});
+  },
   'should exit with status code 0 and call success callback when error does not exist and success callback is specified': function (done) {
     this.mockProcess.expects('exit').once().withExactArgs(0);
     bag.exitCb(null, function (result) {
@@ -420,6 +435,13 @@ buster.testCase('cli - exitCb', {
       assert.equals(err.message, 'some error');
       done();
     })(new Error('some error'));
+  },
+  'should pass stringified error when error is non-Error object': function (done) {
+    this.mockProcess.expects('exit').once().withExactArgs(1);
+    bag.exitCb(function (err) {
+      assert.equals(err, { error: 'someerror'});
+      done();
+    })({ error: 'someerror'});
   }
 });
 
