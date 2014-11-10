@@ -1,4 +1,7 @@
-### 0.2.1-pre
+### 0.2.2-pre
+*
+
+### 0.2.1
 * Add command option validation
 * Add global option validation
 * Fix exit callback error to log stringified object when error is non-Error object
