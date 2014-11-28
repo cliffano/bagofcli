@@ -91,3 +91,8 @@ Update commands.json argument validation rules:
 * `isEmail` to `email`
 
 Check out [iz](http://npmjs.org/package/iz) for available validation rules.
+
+Colophon
+--------
+
+[Developer's Guide](http://cliffano.github.io/developers_guide.html#nodejs)
