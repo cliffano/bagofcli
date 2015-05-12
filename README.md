@@ -1,7 +1,7 @@
 <img align="right" src="https://raw.github.com/cliffano/bagofcli/master/avatar.jpg" alt="Avatar"/>
 
-[![Build Status](https://secure.travis-ci.org/cliffano/bagofcli.png?branch=master)](http://travis-ci.org/cliffano/bagofcli)
-[![Dependencies Status](https://david-dm.org/cliffano/bagofcli.png)](http://david-dm.org/cliffano/bagofcli)
+[![Build Status](https://img.shields.io/travis/cliffano/bagofcli.svg)](http://travis-ci.org/cliffano/bagofcli)
+[![Dependencies Status](https://img.shields.io/david/cliffano/bagofcli.svg)](http://david-dm.org/cliffano/bagofcli)
 [![Coverage Status](https://coveralls.io/repos/cliffano/bagofcli/badge.png?branch=master)](https://coveralls.io/r/cliffano/bagofcli?branch=master)
 [![Published Version](https://badge.fury.io/js/bagofcli.png)](http://badge.fury.io/js/bagofcli)
 <br/>
