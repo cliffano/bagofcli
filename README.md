@@ -2,8 +2,8 @@
 
 [![Build Status](https://img.shields.io/travis/cliffano/bagofcli.svg)](http://travis-ci.org/cliffano/bagofcli)
 [![Dependencies Status](https://img.shields.io/david/cliffano/bagofcli.svg)](http://david-dm.org/cliffano/bagofcli)
-[![Coverage Status](https://coveralls.io/repos/cliffano/bagofcli/badge.png?branch=master)](https://coveralls.io/r/cliffano/bagofcli?branch=master)
-[![Published Version](https://badge.fury.io/js/bagofcli.png)](http://badge.fury.io/js/bagofcli)
+[![Coverage Status](https://img.shields.io/coveralls/cliffano/bagofcli.svg)](https://coveralls.io/r/cliffano/bagofcli?branch=master)
+[![Published Version](https://img.shields.io/npm/v/bagofcli.svg)](http://www.npmjs.com/package/bagofcli)
 <br/>
 [![npm Badge](https://nodei.co/npm/bagofcli.png)](http://npmjs.org/package/bagofcli)
 
