@@ -1,5 +1,5 @@
 ### 0.2.2-pre
-*
+* Add build reports to readme
 
 ### 0.2.1
 * Add command option validation
