@@ -29,7 +29,9 @@
     "commander": "^2.8.1",
     "iz": "^0.7.1",
     "lodash": "^3.9.3",
-    "wrench": "^1.5.8"
+    "prompt": "^0.2.14",
+    "wrench": "^1.5.8",
+    "yaml-js": "^0.1.1"
   },
   "devDependencies": {
     "buster-node": "^0.7.1",

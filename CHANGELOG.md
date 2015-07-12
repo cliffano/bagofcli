@@ -1,5 +1,5 @@
 ### 0.2.3-pre
-*
+* Add lookupConfig function
 
 ### 0.2.2
 * Add build reports to readme

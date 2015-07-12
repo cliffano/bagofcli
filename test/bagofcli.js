@@ -4,6 +4,7 @@ var buster = require('buster-node'),
   colors = require('colors'),
   commander = require('commander'),
   fs = require('fs'),
+  prompt = require('prompt'),
   referee = require('referee'),
   wrench = require('wrench'),
   assert = referee.assert;
@@ -497,6 +498,137 @@ buster.testCase('cli - files', {
   }
 });
 
+buster.testCase('cli - lookupConfig', {
+  setUp: function () {
+    this.mockPrompt = this.mock(prompt);
+  },
+  'should pass value when single configuration key exists as environment variable': function (done) {
+    this.stub(process, 'env', { somekey: 'somevalue' });
+    bag.lookupConfig('somekey', {}, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result.somekey, 'somevalue');
+      done();
+    });
+  },
+  'should pass values when multiple configuration keys exists as environment variables': function (done) {
+    this.stub(process, 'env', { somekey: 'somevalue', anotherkey: 'anothervalue' });
+    bag.lookupConfig(['somekey', 'anotherkey'], {}, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result.somekey, 'somevalue');
+      assert.equals(result.anotherkey, 'anothervalue');
+      done();
+    });
+  },
+  'should pass undefined when configuration key does not exist at all': function (done) {
+    this.stub(process, 'env', { somekey: 'somevalue', anotherkey: 'anothervalue' });
+    bag.lookupConfig(['mykey'], {}, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result.mykey, undefined);
+      done();
+    });
+  },
+  'should pass values when multiple configuration keys exists in a json file': function (done) {
+    this.stub(process, 'env', {});
+    this.stub(bag, 'lookupFile', function (file) {
+      return '{ "somekey": "somevalue", "anotherkey": "anothervalue" }';
+    });
+    bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.json' }, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result.somekey, 'somevalue');
+      assert.equals(result.anotherkey, 'anothervalue');
+      done();
+    });
+  },
+  'should pass undefined when configuration key does not exist in a json file': function (done) {
+    this.stub(process, 'env', {});
+    this.stub(bag, 'lookupFile', function (file) {
+      return '{}';
+    });
+    bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.json' }, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result.somekey, undefined);
+      assert.equals(result.anotherkey, undefined);
+      done();
+    });
+  },
+  'should pass values when multiple configuration keys exists in a yaml file': function (done) {
+    this.stub(process, 'env', {});
+    this.stub(bag, 'lookupFile', function (file) {
+      return '---\nsomekey: somevalue\nanotherkey: anothervalue';
+    });
+    bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.yaml' }, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result.somekey, 'somevalue');
+      assert.equals(result.anotherkey, 'anothervalue');
+      done();
+    });
+  },
+  'should pass undefined when configuration key does not exist in a yaml file': function (done) {
+    this.stub(process, 'env', {});
+    this.stub(bag, 'lookupFile', function (file) {
+      return '';
+    });
+    bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.yaml' }, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result.somekey, undefined);
+      assert.equals(result.anotherkey, undefined);
+      done();
+    });
+  },
+  'should throw error when configuration file extension is unsupported': function (done) {
+    this.stub(process, 'env', {});
+    this.stub(bag, 'lookupFile', function (file) {
+      return '';
+    });
+    try {
+      bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.txt' }, function (err, result) {
+      });
+    } catch (e) {
+      assert.equals(e.message, 'Configuration file extension is not supported');
+      done();
+    }
+  },
+  'should prompt for values when configuration file does not exist as environment variables and in configuration file': function (done) {
+    this.stub(process, 'env', {});
+    this.stub(bag, 'lookupFile', function (file) {
+      return '';
+    });
+    this.mockPrompt.expects('get').once().withArgs([{ name: 'somepasswordkey', hidden: true }, 'anotherkey']).callsArgWith(1, null, { somepasswordkey: 'somevalue', anotherkey: 'anothervalue' });
+    bag.lookupConfig(['somepasswordkey', 'anotherkey'], { file: 'someconffile.yaml', prompt: true }, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result.somepasswordkey, 'somevalue');
+      assert.equals(result.anotherkey, 'anothervalue');
+      done();
+    });
+  },
+  'should retrieve values from various sources': function (done) {
+    this.stub(process, 'env', { somekey: 'somevalue' });
+    this.stub(bag, 'lookupFile', function (file) {
+      return 'anotherkey: anothervalue';
+    });
+    this.mockPrompt.expects('get').once().withArgs([{ name: 'somepasswordkey', hidden: true }, 'inexistingkey']).callsArgWith(1, null, { somepasswordkey: 'somepasswordvalue', inexistingkey: undefined });
+    bag.lookupConfig(['somekey', 'anotherkey', 'somepasswordkey', 'inexistingkey'], { file: 'someconffile.yaml', prompt: true }, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result.somekey, 'somevalue');
+      assert.equals(result.somepasswordkey, 'somepasswordvalue');
+      assert.equals(result.anotherkey, 'anothervalue');
+      assert.equals(result.inexistingkey, undefined);
+      done();
+    });
+  },
+  'should return undefined when keys do not exist': function (done) {
+    this.stub(process, 'env', { somekey: 'somevalue' });
+    this.stub(bag, 'lookupFile', function (file) {
+      return 'anotherkey: anothervalue';
+    });
+    bag.lookupConfig([], { file: 'someconffile.yaml', prompt: true }, function (err, result) {
+      assert.equals(err, null);
+      assert.equals(result, {});
+      done();
+    });
+  }
+});
+
 buster.testCase('cli - lookupFile', {
   setUp: function () {
     this.mockProcess = this.mock(process);
@@ -504,23 +636,23 @@ buster.testCase('cli - lookupFile', {
   },
   'should return file content in current directory when it exists': function () {
     this.mockProcess.expects('cwd').once().returns('/curr/dir');
-    this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').returns('currdirfilecontent'); 
+    this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').returns('currdirfilecontent');
     var data = bag.lookupFile('.conf.json');
     assert.equals(data, 'currdirfilecontent');
   },
   'should return file content in home directory when it exists but none exists in current directory and platform is windows': function () {
     this.mockProcess.expects('cwd').once().returns('/curr/dir');
     this.stub(process, 'env', { USERPROFILE: '/home/dir' });
-    this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').throws(new Error('doesnotexist')); 
-    this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').returns('homedirfilecontent'); 
+    this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').throws(new Error('doesnotexist'));
+    this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').returns('homedirfilecontent');
     var data = bag.lookupFile('.conf.json', { platform: 'win32' });
     assert.equals(data, 'homedirfilecontent');
   },
   'should return file content in home directory when it exists but none exists in current directory and platform is non windows': function () {
     this.mockProcess.expects('cwd').once().returns('/curr/dir');
     this.stub(process, 'env', { HOME: '/home/dir' });
-    this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').throws(new Error('doesnotexist')); 
-    this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').returns('homedirfilecontent'); 
+    this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').throws(new Error('doesnotexist'));
+    this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').returns('homedirfilecontent');
     var data = bag.lookupFile('.conf.json', { platform: 'linux' });
     assert.equals(data, 'homedirfilecontent');
   },
@@ -537,7 +669,7 @@ buster.testCase('cli - lookupFile', {
     }
   },
   'should return file content with absolute path when it exists': function () {
-    this.mockFs.expects('readFileSync').once().withExactArgs('/absolute/dir/.conf.json').returns('absolutedirfilecontent'); 
+    this.mockFs.expects('readFileSync').once().withExactArgs('/absolute/dir/.conf.json').returns('absolutedirfilecontent');
     var data = bag.lookupFile('/absolute/dir/.conf.json');
     assert.equals(data, 'absolutedirfilecontent');
   },
