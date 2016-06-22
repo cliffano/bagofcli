@@ -39,7 +39,7 @@
   },
   "scripts": {},
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 1.0.0"
   },
   "licenses": [
     {
