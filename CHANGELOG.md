@@ -1,3 +1,6 @@
+### 0.2.5
+*
+
 ### 0.2.4-pre
 * Use safe colors
 * Set min node engine to v4.0.0
