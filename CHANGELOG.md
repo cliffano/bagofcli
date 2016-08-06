@@ -1,6 +1,6 @@
 ### 0.2.4-pre
 * Use safe colors
-* Set min node engine to v1.0.0
+* Set min node engine to v4.0.0
 
 ### 0.2.3
 * Add lookupConfig function
