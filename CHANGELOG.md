@@ -1,3 +1,6 @@
+### 0.2.6
+*
+
 ### 0.2.5
 * Fix undefined error message
 
