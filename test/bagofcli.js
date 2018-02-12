@@ -1,4 +1,5 @@
 var buster = require('buster-node'),
+  async = require('async'),
   bag = require('../lib/bagofcli'),
   childProcess = require('child_process'),
   colors = require('colors'),
@@ -7,7 +8,8 @@ var buster = require('buster-node'),
   prompt = require('prompt'),
   referee = require('referee'),
   wrench = require('wrench'),
-  assert = referee.assert;
+  assert = referee.assert,
+  refute = referee.refute;
 
 buster.testCase('cli - command', {
   setUp: function () {
@@ -347,7 +349,7 @@ buster.testCase('cli - exec', {
     };
     this.stub(childProcess, 'exec', function (command, cb) {
       assert.equals(command, 'somecommand');
-      cb(new Error('someerror'), null, 'somestderr');
+      cb(new Error('someerror'));
       return mockExec;
     });
     bag.exec('somecommand', true, function cb(err, result) {
@@ -366,12 +368,113 @@ buster.testCase('cli - exec', {
     };
     this.stub(childProcess, 'exec', function (command, cb) {
       assert.equals(command, 'somecommand');
-      cb(new Error('someerror'), null, 'somestderr');
+      cb(new Error('someerror'));
       return mockExec;
     });
     bag.exec('somecommand', false, function cb(err, result) {
       assert.equals(err.message, 'someerror');
-      assert.equals(result, undefined);
+      refute.defined(result);
+      done();
+    });
+  }
+});
+
+buster.testCase('cli - execAndCollect', {
+  setUp: function () {
+    this.mockProcessStdout = this.mock(process.stdout);
+    this.mockProcessStderr = this.mock(process.stderr);
+  },
+  'should collect stdout and stderr output': function (done) {
+    this.mockProcessStdout.expects('write').never();
+    this.mockProcessStderr.expects('write').never();
+    var mockExec = {
+      stdout: {
+        on: function (event, cb) {
+          cb('stdout output 1');
+          cb('stdout output 2');
+        }
+      },
+      stderr: { on: function (event, cb) {
+        cb('stderr output 1');
+        cb('stderr output 2');
+      }}
+    };
+    this.stub(childProcess, 'exec', function (command, cb) {
+      assert.equals(command, 'somecommand');
+
+      // give bagofcli#execute time to set up stdout.on and stderr.on handlers, check assertions after
+      // next tick.
+      async.setImmediate(function() {
+        cb(null);
+      });
+      return mockExec;
+    });
+    bag.execAndCollect('somecommand', false, function cb(err, stdOut, stdErr, result) {
+      assert.isNull(err);
+      assert.equals(stdOut, 'stdout output 1stdout output 2');
+      assert.equals(stdErr, 'stderr output 1stderr output 2');
+      refute.defined(result);
+      done();
+    });
+  },
+  'should collect stdout and stderr output and camouflage error to callback when an error occurs and fallthrough is allowed': function (done) {
+    this.mockProcessStdout.expects('write').never();
+    this.mockProcessStderr.expects('write').never();
+    var mockExec = {
+      stdout: { on: function (event, cb) {
+        cb('stdout output 1');
+        cb('stdout output 2');
+      }},
+      stderr: { on: function (event, cb) {
+        cb('stderr output 1');
+        cb('stderr output 2');
+      }}
+    };
+    this.stub(childProcess, 'exec', function (command, cb) {
+      assert.equals(command, 'somecommand');
+
+      // give bagofcli#execute time to set up stdout.on and stderr.on handlers, check assertions after
+      // next tick.
+      async.setImmediate(function() {
+        cb(new Error('someerror'));
+      });
+      return mockExec;
+    });
+    bag.execAndCollect('somecommand', true, function cb(err, stdOut, stdErr, result) {
+      assert.isNull(err);
+      assert.equals(stdOut, 'stdout output 1stdout output 2');
+      assert.equals(stdErr, 'stderr output 1stderr output 2');
+      assert.equals(result.message, 'someerror');
+      done();
+    });
+  },
+  'should collect stdout and stderr output and pass error to callback when an error occurs and fallthrough is not allowed': function (done) {
+    this.mockProcessStdout.expects('write').never();
+    this.mockProcessStderr.expects('write').never();
+    var mockExec = {
+      stdout: { on: function (event, cb) {
+        cb('stdout output 1');
+        cb('stdout output 2');
+      }},
+      stderr: { on: function (event, cb) {
+        cb('stderr output 1');
+        cb('stderr output 2');
+      }}
+    };
+    this.stub(childProcess, 'exec', function (command, cb) {
+      assert.equals(command, 'somecommand');
+      // give bagofcli#execute time to set up stdout.on and stderr.on handlers, check assertions after
+      // next tick.
+      async.setImmediate(function() {
+        cb(new Error('someerror'));
+      });
+      return mockExec;
+    });
+    bag.execAndCollect('somecommand', false, function cb(err, stdOut, stdErr, result) {
+      assert.equals(err.message, 'someerror');
+      assert.equals(stdOut, 'stdout output 1stdout output 2');
+      assert.equals(stdErr, 'stderr output 1stderr output 2');
+      refute.defined(result);
       done();
     });
   }
