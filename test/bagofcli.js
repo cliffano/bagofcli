@@ -123,7 +123,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should return without error when commands config is not set up with any args': function (done) {
@@ -135,7 +135,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should return without error when command line includes opt flag (commander.args is empty for some reason)': function (done) {
@@ -146,7 +146,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should log usage message and exit when commands config has args but the command does not provide any argument': function () {
@@ -155,7 +155,7 @@ buster.testCase('cli - _postCommand', {
     var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
       result = bag._postCommand(args, commandsConfig);
-    assert.equals(result, undefined);
+    refute.defined(result);
   },
   'should log usage message when there is a mix of mandatory and optional args': function () {
     this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2> [arg3]'.red);
@@ -163,7 +163,7 @@ buster.testCase('cli - _postCommand', {
     var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ]}, { name: 'arg3', optional: true }] } },
       result = bag._postCommand(args, commandsConfig);
-    assert.equals(result, undefined);
+    refute.defined(result);
   },
   'should log usage message when there are multiple optional args': function () {
     this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> [arg2] [arg3]'.red);
@@ -171,7 +171,7 @@ buster.testCase('cli - _postCommand', {
     var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', optional: true}, { name: 'arg3', optional: true }] } },
       result = bag._postCommand(args, commandsConfig);
-    assert.equals(result, undefined);
+    refute.defined(result);
   },
   'should log error message when there is an invalid argument': function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be number'.red);
@@ -179,7 +179,7 @@ buster.testCase('cli - _postCommand', {
     var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }] } },
       result = bag._postCommand(args, commandsConfig);
-    assert.equals(result, undefined);
+    refute.defined(result);
   },
   'should log error message when empty string is passed on required rule': function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be required'.red);
@@ -187,7 +187,7 @@ buster.testCase('cli - _postCommand', {
     var args = ['', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'required' ] }] } },
       result = bag._postCommand(args, commandsConfig);
-    assert.equals(result, undefined);
+    refute.defined(result);
   },
   'should log error message when non-email string is passed on email rule': function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be email'.red);
@@ -195,7 +195,7 @@ buster.testCase('cli - _postCommand', {
     var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'email' ] }] } },
       result = bag._postCommand(args, commandsConfig);
-    assert.equals(result, undefined);
+    refute.defined(result);
   },
   'should log error message when rule does not exist': function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument rule: someRuleThatCantPossiblyExist'.red);
@@ -203,7 +203,7 @@ buster.testCase('cli - _postCommand', {
     var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'someRuleThatCantPossiblyExist' ] }] } },
       result = bag._postCommand(args, commandsConfig);
-    assert.equals(result, undefined);
+    refute.defined(result);
   },
   'should return without error when command has valid argument as configured in commands setup file': function (done) {
     var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
@@ -214,7 +214,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should call commander help when arguments is empty': function (done) {
@@ -226,7 +226,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should log error message and exit when command is unknown': function () {
@@ -235,7 +235,7 @@ buster.testCase('cli - _postCommand', {
     var args = ['blah'],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
       result = bag._postCommand(args, commandsConfig);
-    assert.equals(result, undefined);
+    refute.defined(result);
   },
   'should log error message when command has invalid command option': function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Invalid option: <-s, --some-arg <someArg>> must be number'.red);
@@ -251,7 +251,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should return without error when there is no invalid command option': function (done) {
@@ -266,7 +266,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should return without error when command option does not have any validation rule': function (done) {
@@ -280,7 +280,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should log error message when command has invalid global option': function (done) {
@@ -298,7 +298,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should return without error when there is no invalid global option': function (done) {
@@ -314,7 +314,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   },
   'should return without error when global option does not have any validation rule': function (done) {
@@ -329,7 +329,7 @@ buster.testCase('cli - _postCommand', {
     } catch (e) {
       err = e;
     }
-    assert.equals(result, undefined);
+    refute.defined(result);
     done(err);
   }
 });
@@ -626,7 +626,7 @@ buster.testCase('cli - lookupConfig', {
     this.stub(process, 'env', { somekey: 'somevalue', anotherkey: 'anothervalue' });
     bag.lookupConfig(['mykey'], {}, function (err, result) {
       assert.equals(err, null);
-      assert.equals(result.mykey, undefined);
+      refute.defined(result.mykey);
       done();
     });
   },
@@ -649,8 +649,8 @@ buster.testCase('cli - lookupConfig', {
     });
     bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.json' }, function (err, result) {
       assert.equals(err, null);
-      assert.equals(result.somekey, undefined);
-      assert.equals(result.anotherkey, undefined);
+      refute.defined(result.somekey);
+      refute.defined(result.anotherkey);
       done();
     });
   },
@@ -673,8 +673,8 @@ buster.testCase('cli - lookupConfig', {
     });
     bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.yaml' }, function (err, result) {
       assert.equals(err, null);
-      assert.equals(result.somekey, undefined);
-      assert.equals(result.anotherkey, undefined);
+      refute.defined(result.somekey);
+      refute.defined(result.anotherkey);
       done();
     });
   },
@@ -715,7 +715,7 @@ buster.testCase('cli - lookupConfig', {
       assert.equals(result.somekey, 'somevalue');
       assert.equals(result.somepasswordkey, 'somepasswordvalue');
       assert.equals(result.anotherkey, 'anothervalue');
-      assert.equals(result.inexistingkey, undefined);
+      refute.defined(result.inexistingkey);
       done();
     });
   },
@@ -843,7 +843,7 @@ buster.testCase('cli - spawn', {
     };
     this.mockChildProcess.expects('spawn').withExactArgs('somecommand', ['arg1', 'arg2']).returns(mockSpawn);
     bag.spawn('somecommand', ['arg1', 'arg2'], function (err, result) {
-      assert.equals(err, undefined);
+      refute.defined(err);
       assert.equals(result, 0);
       done();
     });
