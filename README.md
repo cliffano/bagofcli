@@ -12,6 +12,8 @@ Bag Of CLI
 
 Bag Of CLI contains CLI utility functions.
 
+This is handy when you want to have a set of common CLI commands with descriptions, options, help, and example usages, by just defining them in a JSON file. Bag of CLI essentially allows you to define those info in a configuration file instead of code.
+
 Installation
 ------------
 
@@ -69,7 +71,7 @@ Commands:
         },
         command2: {
           action: function (args) {
-            console.log(args.debug); 
+            console.log(args.debug);
           }
         }
       }
