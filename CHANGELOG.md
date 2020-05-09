@@ -1,5 +1,6 @@
 ### 1.1.1
 * Changed module to be ESM
+* Replace Buster with Mocha for unit tests
 
 ### 1.1.0
 * Add execAndCollect function

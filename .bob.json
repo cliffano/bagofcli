@@ -7,7 +7,7 @@
     "type": "plato"
   },
   "test": {
-    "type": "buster"
+    "type": "mocha"
   },
   "coverage": {
     "type": "buster-istanbul"
