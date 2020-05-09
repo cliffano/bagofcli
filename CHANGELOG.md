@@ -1,67 +1,107 @@
-### 1.1.1
-* Changed module to be ESM
-* Replace Buster with Mocha for unit tests
 
-### 1.1.0
-* Add execAndCollect function
+# Changelog
+All notable changes to this project will be documented in this file.
 
-### 1.0.0
-*
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### 0.2.5
-* Fix undefined error message
+## [Unreleased]
 
-### 0.2.4-pre
-* Use safe colors
-* Set min node engine to v4.0.0
+### Changed
+- Changed module to be ESM
+- Replace Buster with Mocha for unit tests
 
-### 0.2.3
-* Add lookupConfig function
+## [v1.1.0] - 2018-02-14
 
-### 0.2.2
-* Add build reports to readme
+### Added
+- Add execAndCollect function
 
-### 0.2.1
-* Add command option validation
-* Add global option validation
-* Fix exit callback error to log stringified object when error is non-Error object
+## [v1.0.0] - 2016-10-13
 
-### 0.2.0
-* Set min node engine to v0.10.0
+### Changed
+- 
 
-### 0.1.0
-* Replace validation package from validator to iz
+## [v0.2.5] - 2016-08-14
 
-### 0.0.10
-* Fix argument validation, downgrade validator dep to v~1.2.2
-* Add invalid argument rule check
+## [v0.2.4-pre] - unknown
 
-### 0.0.9
-* Update documentation, upgrade dependencies
+### Changed
+- Use safe colors
+- Set min node engine to v4.0.0
 
-### 0.0.8
-* Change test lib to buster-node + referee
-* Set min node engine to v0.8.0
+## [v0.2.3] - 2015-07-12
 
-### 0.0.6
-* Add files function
+### Added
+- Add lookupConfig function
 
-### 0.0.5
-* Fix no args detection, commands with opt no longer displays help
-* Add optional arg support for usage display
+## [v0.2.2] - 2015-06-21
 
-### 0.0.4
-* Fix TypeError when none of the commands has any examples
+### Added
+- Add build reports to readme
 
-### 0.0.3
-* Change exec to display stdout and stderr in chunks
-* Add command arguments validation support
-* Display help when command is unspecified
-* Display error message when command is unknown
-* Add help examples support
+## [v0.2.1] - 2014-11-09
 
-### 0.0.2
-* Colourise success and error output
+### Added
+- Add command option validation
+- Add global option validation
 
-### 0.0.1
-* Initial version, extracted from cliffano/bagofholding
+## [v0.2.0] - 2014-09-08
+
+### Changed
+- Set min node engine to v0.10.0
+
+## [v0.1.0] - 2014-08-31
+
+### Changed
+- Replace validation package from validator to iz
+
+## [v0.0.9] - 2014-06-27
+
+### Changed
+- Update documentation, upgrade dependencies
+
+## [v0.0.8] - unknown
+
+### Changed
+- Change test lib to buster-node + referee
+- Set min node engine to v0.8.0
+
+## [v0.0.6] - 2013-10-13
+
+### Added
+- Add files function
+
+## [v0.0.5] - 2013-07-15
+
+### Added
+- Add optional arg support for usage display
+
+## [v0.0.4] - 2013-07-09
+
+## [v0.0.3] - 2013-07-08
+
+### Added
+- Add command arguments validation support
+- Add help examples support
+
+### Changed
+- Change exec to display stdout and stderr in chunks
+- Display help when command is unspecified
+- Display error message when command is unknown
+
+## [v0.0.2] - 2013-06-20
+
+### Changed
+- Colourise success and error output
+
+## [v0.0.10] - 2014-08-28
+
+### Added
+- Add invalid argument rule check
+
+## [v0.0.1] - 2013-06-01
+
+### Added
+- Initial version, extracted from cliffano/bagofholding
+
+
