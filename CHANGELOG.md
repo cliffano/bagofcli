@@ -1,5 +1,5 @@
 ### 1.1.1
-*
+* Changed module to be ESM
 
 ### 1.1.0
 * Add execAndCollect function

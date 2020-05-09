@@ -1,5 +1,6 @@
 {
   "name": "bagofcli",
+  "type": "module",
   "description": "A bag-of-holding containing CLI utility functions.",
   "keywords": [
     "cli",
@@ -24,22 +25,23 @@
     "test": "./test"
   },
   "dependencies": {
-    "async": "^2.1.1",
-    "colors": "^1.1.2",
-    "commander": "^2.9.0",
-    "iz": "^0.7.1",
-    "lodash": "^4.16.4",
+    "async": "^3.2.0",
+    "colors": "^1.4.0",
+    "commander": "^5.1.0",
+    "iz": "^3.0.0",
+    "lodash": "^4.17.15",
     "prompt": "^1.0.0",
-    "wrench": "^1.5.9",
-    "yaml-js": "^0.1.4"
+    "wrench-sui": "^0.0.3",
+    "yaml-js": "^0.2.3"
   },
   "devDependencies": {
-    "buster-node": "^0.7.1",
-    "referee": "^1.2.0"
+    "mocha": "^7.1.2",
+    "sinon": "^9.0.2",
+    "@sinonjs/referee": "^5.0.1"
   },
   "scripts": {},
   "engines": {
-    "node": ">= 4.0.0"
+    "node": ">= 13.0.0"
   },
   "licenses": [
     {
