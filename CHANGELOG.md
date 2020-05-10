@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Changed module to be ESM
 - Replace Buster with Mocha for unit tests
+- Replace Travis CI with GitHub Actions
 
 ### Removed
 - Remove sub-dependency to Contextify (no more node-gyp errors)
