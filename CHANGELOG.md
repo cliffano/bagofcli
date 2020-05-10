@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed module to be ESM
 - Replace Buster with Mocha for unit tests
 
+### Removed
+- Remove sub-dependency to Contextify (no more node-gyp errors)
+
 ## [v1.1.0] - 2018-02-14
 
 ### Added
