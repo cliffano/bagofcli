@@ -1,2 +1,3 @@
 #!/bin/bash
-make ci
+npm install -g bob
+bob build
