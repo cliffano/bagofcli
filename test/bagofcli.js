@@ -99,7 +99,7 @@ describe('cli - _preCommand', function() {
   it('should not log anything when commands have empty examples array', function(done) {
     this.mockCommander.expects('on').once().withArgs('--help').callsArgWith(1);
 
-    var commands = {
+    const commands = {
       somecommand1: { examples: [] },
       somecommand2: { examples: [] }
     };
@@ -110,7 +110,7 @@ describe('cli - _preCommand', function() {
   it('should not log anything when commands do not have any examples fields', function(done) {
     this.mockCommander.expects('on').once().withArgs('--help').callsArgWith(1);
 
-    var commands = {
+    const commands = {
       somecommand1: {},
       somecommand2: {}
     };
@@ -127,7 +127,7 @@ describe('cli - _preCommand', function() {
     this.mockConsole.expects('log').once().withExactArgs('      %s', 'example3');
     this.mockCommander.expects('on').once().withArgs('--help').callsArgWith(1);
 
-    var commands = {
+    const commands = {
       somecommand1: { examples: ['example1', 'example2'] },
       somecommand1a: {},
       somecommand2: { examples: ['example3'] },
@@ -156,7 +156,7 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when args is empty', function (done) {
-    var err, result;
+    let err, result;
     try {
       result = bag._postCommand();
     } catch (e) {
@@ -167,9 +167,9 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when commands config is not set up with any args', function (done) {
-    var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: {} },
-      err, result;
+    const args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commandsConfig = { somecommand: {} };
+    let err, result;
     try {
       result = bag._postCommand(args, commandsConfig);
     } catch (e) {
@@ -181,7 +181,7 @@ describe('cli - _postCommand', function() {
 
   it('should return without error when command line includes opt flag (commander.args is empty for some reason)', function (done) {
     process.argv = ['node', 'somecommand', '--someopt'];
-    var err, result;
+    let err, result;
     try {
       result = bag._postCommand([]);
     } catch (e) {
@@ -194,7 +194,7 @@ describe('cli - _postCommand', function() {
   it('should log usage message and exit when commands config has args but the command does not provide any argument', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2>'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+    const args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
       result = bag._postCommand(args, commandsConfig);
     referee.assert.isUndefined(result);
@@ -204,7 +204,7 @@ describe('cli - _postCommand', function() {
   it('should log usage message when there is a mix of mandatory and optional args', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2> [arg3]'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+    const args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ]}, { name: 'arg3', optional: true }] } },
       result = bag._postCommand(args, commandsConfig);
     referee.assert.isUndefined(result);
@@ -214,7 +214,7 @@ describe('cli - _postCommand', function() {
   it('should log usage message when there are multiple optional args', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> [arg2] [arg3]'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+    const args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', optional: true}, { name: 'arg3', optional: true }] } },
       result = bag._postCommand(args, commandsConfig);
     referee.assert.isUndefined(result);
@@ -224,7 +224,7 @@ describe('cli - _postCommand', function() {
   it('should log error message when there is an invalid argument', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be number'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+    const args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }] } },
       result = bag._postCommand(args, commandsConfig);
     referee.assert.isUndefined(result);
@@ -234,7 +234,7 @@ describe('cli - _postCommand', function() {
   it('should log error message when empty string is passed on required rule', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be required'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = ['', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+    const args = ['', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'required' ] }] } },
       result = bag._postCommand(args, commandsConfig);
     referee.assert.isUndefined(result);
@@ -244,7 +244,7 @@ describe('cli - _postCommand', function() {
   it('should log error message when non-email string is passed on email rule', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be email'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+    const args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'email' ] }] } },
       result = bag._postCommand(args, commandsConfig);
     referee.assert.isUndefined(result);
@@ -254,7 +254,7 @@ describe('cli - _postCommand', function() {
   it('should log error message when rule does not exist', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument rule: someRuleThatCantPossiblyExist'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+    const args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'someRuleThatCantPossiblyExist' ] }] } },
       result = bag._postCommand(args, commandsConfig);
     referee.assert.isUndefined(result);
@@ -262,9 +262,9 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when command has valid argument as configured in commands setup file', function (done) {
-    var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }, { name: 'arg2', optional: true }] } },
-      err, result;
+    const args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
+      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }, { name: 'arg2', optional: true }] } };
+    let err, result;
     try {
       result = bag._postCommand(args, commandsConfig);
     } catch (e) {
@@ -277,7 +277,7 @@ describe('cli - _postCommand', function() {
   it('should call commander help when arguments is empty', function (done) {
     process.argv = ['node', 'somecommand'];
     this.mockCommander.expects('help').once().withExactArgs();
-    var err, result;
+    let err, result;
     try {
       result = bag._postCommand([]);
     } catch (e) {
@@ -290,7 +290,7 @@ describe('cli - _postCommand', function() {
   it('should log error message and exit when command is unknown', function () {
     this.mockConsole.expects('error').once().withExactArgs('Unknown command: blah, use --help for more info'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = ['blah'],
+    const args = ['blah'],
       commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
       result = bag._postCommand(args, commandsConfig);
     referee.assert.isUndefined(result);
@@ -299,12 +299,12 @@ describe('cli - _postCommand', function() {
   it('should log error message when command has invalid command option', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Invalid option: <-s, --some-arg <someArg>> must be number'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = ['123', { _name: 'somecommand', someArg: 'abcdef', parent: { _name: 'someparentcommand' } }],
+    const args = ['123', { _name: 'somecommand', someArg: 'abcdef', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { options: [{
         arg: '-s, --some-arg <someArg>',
         rules: [ 'number' ]
-      }]}},
-      err, result;
+      }]}};
+    let err, result;
     try {
       result = bag._postCommand(args, commandsConfig);
     } catch (e) {
@@ -315,12 +315,12 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when there is no invalid command option', function (done) {
-    var args = ['123', { _name: 'somecommand', someArg: '12345', parent: { _name: 'someparentcommand' } }],
+    const args = ['123', { _name: 'somecommand', someArg: '12345', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { options: [{
         arg: '-s, --some-arg <someArg>',
         rules: [ 'number' ]
-      }]}},
-      err, result;
+      }]}};
+    let err, result;
     try {
       result = bag._postCommand(args, commandsConfig);
     } catch (e) {
@@ -331,11 +331,11 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when command option does not have any validation rule', function (done) {
-    var args = ['123', { _name: 'somecommand', someArg: 'abcdef', parent: { _name: 'someparentcommand' } }],
+    const args = ['123', { _name: 'somecommand', someArg: 'abcdef', parent: { _name: 'someparentcommand' } }],
       commandsConfig = { somecommand: { options: [{
         arg: '-s, --some-arg <someArg>'
-      }]}},
-      err, result;
+      }]}};
+    let err, result;
     try {
       result = bag._postCommand(args, commandsConfig);
     } catch (e) {
@@ -348,13 +348,13 @@ describe('cli - _postCommand', function() {
   it('should log error message when command has invalid global option', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Invalid option: <-s, --some-arg <someArg>> must be number'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: 'abcdef' } }],
+    const args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: 'abcdef' } }],
       commandsConfig = { somecommand: {}},
       globalOptsConfig = [{
         arg: '-s, --some-arg <someArg>',
         rules: [ 'number' ]
-      }],
-      err, result;
+      }];
+    let err, result;
     try {
       result = bag._postCommand(args, commandsConfig, globalOptsConfig);
     } catch (e) {
@@ -365,13 +365,13 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when there is no invalid global option', function (done) {
-    var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: '12345' } }],
+    const args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: '12345' } }],
       commandsConfig = { somecommand: {}},
       globalOptsConfig = [{
         arg: '-s, --some-arg <someArg>',
         rules: [ 'number' ]
-      }],
-      err, result;
+      }];
+    let err, result;
     try {
       result = bag._postCommand(args, commandsConfig, globalOptsConfig);
     } catch (e) {
@@ -382,12 +382,12 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when global option does not have any validation rule', function (done) {
-    var args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: 'abcdef' } }],
+    const args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: 'abcdef' } }],
       commandsConfig = { somecommand: {}},
       globalOptsConfig = [{
         arg: '-s, --some-arg <someArg>'
-      }],
-      err, result;
+      }];
+    let err, result;
     try {
       result = bag._postCommand(args, commandsConfig, globalOptsConfig);
     } catch (e) {
@@ -416,7 +416,7 @@ describe('cli - exec', function() {
 
   it('should log stdout output and camouflage error to callback when an error occurs and fallthrough is allowed', function (done) {
     this.mockProcessStdout.expects('write').once().withExactArgs('somestdout'.green);
-    var mockExec = {
+    const mockExec = {
       stdout: { on: function (event, cb) {
         cb('somestdout');
       }},
@@ -436,7 +436,7 @@ describe('cli - exec', function() {
 
   it('should log stderr output and pass error to callback when an error occurs and fallthrough is not allowed', function (done) {
     this.mockProcessStderr.expects('write').once().withExactArgs('somestderr'.red);
-    var mockExec = {
+    const mockExec = {
       stdout: { on: function (event, cb) {} },
       stderr: { on: function (event, cb) {
         cb('somestderr');
@@ -474,7 +474,7 @@ describe('cli - execAndCollect', function() {
   it('should collect stdout and stderr output', function (done) {
     this.mockProcessStdout.expects('write').never();
     this.mockProcessStderr.expects('write').never();
-    var mockExec = {
+    const mockExec = {
       stdout: {
         on: function (event, cb) {
           cb('stdout output 1');
@@ -508,7 +508,7 @@ describe('cli - execAndCollect', function() {
   it('should collect stdout and stderr output and camouflage error to callback when an error occurs and fallthrough is allowed', function (done) {
     this.mockProcessStdout.expects('write').never();
     this.mockProcessStderr.expects('write').never();
-    var mockExec = {
+    const mockExec = {
       stdout: { on: function (event, cb) {
         cb('stdout output 1');
         cb('stdout output 2');
@@ -540,7 +540,7 @@ describe('cli - execAndCollect', function() {
   it('should collect stdout and stderr output and pass error to callback when an error occurs and fallthrough is not allowed', function (done) {
     this.mockProcessStdout.expects('write').never();
     this.mockProcessStderr.expects('write').never();
-    var mockExec = {
+    const mockExec = {
       stdout: { on: function (event, cb) {
         cb('stdout output 1');
         cb('stdout output 2');
@@ -691,7 +691,7 @@ describe('cli - files', function() {
   it('should return files as-is when all items are files', function (done) {
     this.mockFs.expects('statSync').withExactArgs('file1').returns({ isFile: this.trueFn });
     this.mockFs.expects('statSync').withExactArgs('file2').returns({ isFile: this.trueFn });
-    var files = bag.files(['file1', 'file2']);
+    const files = bag.files(['file1', 'file2']);
     referee.assert.equals(files, ['file1', 'file2']);
     done();
   });
@@ -701,7 +701,7 @@ describe('cli - files', function() {
     this.mockFs.expects('statSync').withExactArgs('dir1').returns({ isFile: this.falseFn, isDirectory: this.trueFn });
     this.mockFs.expects('statSync').withExactArgs('dir1/file1').returns({ isFile: this.trueFn });
     this.mockFs.expects('statSync').withExactArgs('dir1/file2').returns({ isFile: this.trueFn });
-    var files = bag.files(['dir1']);
+    const files = bag.files(['dir1']);
     referee.assert.equals(files, ['dir1/file1', 'dir1/file2']);
     done();
   });
@@ -712,7 +712,7 @@ describe('cli - files', function() {
     this.mockFs.expects('statSync').withExactArgs('dir1/file1').returns({ isFile: this.trueFn });
     this.mockFs.expects('statSync').withExactArgs('dir1/file2').returns({ isFile: this.trueFn });
     this.mockFs.expects('statSync').withExactArgs('file2').returns({ isFile: this.trueFn });
-    var files = bag.files(['dir1', 'file2'], { match: '2$' });
+    const files = bag.files(['dir1', 'file2'], { match: '2$' });
     referee.assert.equals(files, ['dir1/file2', 'file2']);
     done();
   });
@@ -722,7 +722,7 @@ describe('cli - files', function() {
     this.mockFs.expects('statSync').withExactArgs('dir1').returns({ isFile: this.falseFn, isDirectory: this.trueFn });
     this.mockFs.expects('statSync').withExactArgs('dir1/file1').returns({ isFile: this.trueFn });
     this.mockFs.expects('statSync').withExactArgs('file1').returns({ isFile: this.trueFn });
-    var files = bag.files(['dir1', 'file1'], { match: '2$' });
+    const files = bag.files(['dir1', 'file1'], { match: '2$' });
     referee.assert.equals(files, []);
     done();
   });
@@ -731,14 +731,14 @@ describe('cli - files', function() {
     this.mockWrench.expects('readdirSyncRecursive').withExactArgs('dir1').returns(['item1']);
     this.mockFs.expects('statSync').withExactArgs('dir1').returns({ isFile: this.falseFn, isDirectory: this.trueFn });
     this.mockFs.expects('statSync').withExactArgs('dir1/item1').returns({ isFile: this.falseFn, isDirectory: this.falseFn });
-    var files = bag.files(['dir1']);
+    const files = bag.files(['dir1']);
     referee.assert.equals(files, []);
     done();
   });
 
   it('should return nothing when items are non-directory and non-file', function (done) {
     this.mockFs.expects('statSync').withExactArgs('item1').returns({ isFile: this.falseFn, isDirectory: this.falseFn });
-    var files = bag.files(['item1']);
+    const files = bag.files(['item1']);
     referee.assert.equals(files, []);
     done();
   });
@@ -922,7 +922,7 @@ describe('cli - lookupFile', function() {
   it('should return file content in current directory when it exists', function (done) {
     this.mockProcess.expects('cwd').once().returns('/curr/dir');
     this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').returns('currdirfilecontent');
-    var data = bag.lookupFile('.conf.json');
+    const data = bag.lookupFile('.conf.json');
     referee.assert.equals(data, 'currdirfilecontent');
     done();
   });
@@ -932,7 +932,7 @@ describe('cli - lookupFile', function() {
     process.env.USERPROFILE = '/home/dir';
     this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').throws(new Error('doesnotexist'));
     this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').returns('homedirfilecontent');
-    var data = bag.lookupFile('.conf.json', { platform: 'win32' });
+    const data = bag.lookupFile('.conf.json', { platform: 'win32' });
     referee.assert.equals(data, 'homedirfilecontent');
     done();
   });
@@ -942,7 +942,7 @@ describe('cli - lookupFile', function() {
     process.env.HOME = '/home/dir';
     this.mockFs.expects('readFileSync').once().withExactArgs('/curr/dir/.conf.json').throws(new Error('doesnotexist'));
     this.mockFs.expects('readFileSync').once().withExactArgs('/home/dir/.conf.json').returns('homedirfilecontent');
-    var data = bag.lookupFile('.conf.json', { platform: 'linux' });
+    const data = bag.lookupFile('.conf.json', { platform: 'linux' });
     referee.assert.equals(data, 'homedirfilecontent');
     done();
   });
@@ -962,7 +962,7 @@ describe('cli - lookupFile', function() {
 
   it('should return file content with absolute path when it exists', function (done) {
     this.mockFs.expects('readFileSync').once().withExactArgs('/absolute/dir/.conf.json').returns('absolutedirfilecontent');
-    var data = bag.lookupFile('/absolute/dir/.conf.json');
+    const data = bag.lookupFile('/absolute/dir/.conf.json');
     referee.assert.equals(data, 'absolutedirfilecontent');
     done();
   });
@@ -1000,7 +1000,7 @@ describe('cli - spawn', function() {
   it('should write data via stdout and stderr when data event is emitted', function (done) {
     this.mockProcessStdout.expects('write').once().withExactArgs('somestdoutdata'.green);
     this.mockProcessStderr.expects('write').once().withExactArgs('somestderrdata'.red);
-    var mockSpawn = {
+    const mockSpawn = {
       stdout: {
         on: function (event, cb) {
           referee.assert.equals(event, 'data');
@@ -1021,7 +1021,7 @@ describe('cli - spawn', function() {
   });
 
   it('should pass error and exit code to callback when exit code is not 0', function (done) {
-    var mockSpawn = {
+    const mockSpawn = {
       stdout: { on: function (event, cb) {}},
       stderr: { on: function (event, cb) {}},
       on: function (event, cb) {
@@ -1038,7 +1038,7 @@ describe('cli - spawn', function() {
   });
 
   it('should pass no error and exit code to callback when exit code is 0', function (done) {
-    var mockSpawn = {
+    const mockSpawn = {
       stdout: { on: function (event, cb) {}},
       stderr: { on: function (event, cb) {}},
       on: function (event, cb) {
