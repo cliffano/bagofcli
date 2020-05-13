@@ -422,7 +422,7 @@ describe('cli - exec', function() {
       }},
       stderr: { on: function (event, cb) {} }
     };
-    sinon.stub(childProcess, 'exec').callsFake(function (command, cb) {
+    sinon.stub(childProcess, 'exec').callsFake((command, cb) => {
       referee.assert.equals(command, 'somecommand');
       cb(new Error('someerror'));
       return mockExec;
@@ -442,7 +442,7 @@ describe('cli - exec', function() {
         cb('somestderr');
       }}
     };
-    sinon.stub(childProcess, 'exec').callsFake(function (command, cb) {
+    sinon.stub(childProcess, 'exec').callsFake((command, cb) => {
       referee.assert.equals(command, 'somecommand');
       cb(new Error('someerror'));
       return mockExec;
@@ -486,7 +486,7 @@ describe('cli - execAndCollect', function() {
         cb('stderr output 2');
       }}
     };
-    sinon.stub(childProcess, 'exec').callsFake(function (command, cb) {
+    sinon.stub(childProcess, 'exec').callsFake((command, cb) => {
       referee.assert.equals(command, 'somecommand');
 
       // give bagofcli#execute time to set up stdout.on and stderr.on handlers, check assertions after
@@ -518,7 +518,7 @@ describe('cli - execAndCollect', function() {
         cb('stderr output 2');
       }}
     };
-    sinon.stub(childProcess, 'exec').callsFake(function (command, cb) {
+    sinon.stub(childProcess, 'exec').callsFake((command, cb) => {
       referee.assert.equals(command, 'somecommand');
 
       // give bagofcli#execute time to set up stdout.on and stderr.on handlers, check assertions after
@@ -550,11 +550,11 @@ describe('cli - execAndCollect', function() {
         cb('stderr output 2');
       }}
     };
-    sinon.stub(childProcess, 'exec').callsFake(function (command, cb) {
+    sinon.stub(childProcess, 'exec').callsFake((command, cb) => {
       referee.assert.equals(command, 'somecommand');
       // give bagofcli#execute time to set up stdout.on and stderr.on handlers, check assertions after
       // next tick.
-      async.setImmediate(function() {
+      async.setImmediate(() => {
         cb(new Error('someerror'));
       });
       return mockExec;
@@ -648,7 +648,7 @@ describe('cli - exitCb', function() {
 
   it('should exit with status code 0 and call success callback when error does not exist and success callback is specified', function (done) {
     this.mockProcess.expects('exit').once().withExactArgs(0);
-    bag.exitCb(null, function (result) {
+    bag.exitCb(null, (result) => {
       referee.assert.equals(result, 'some success');
       done();
     })(null, 'some success');
@@ -656,7 +656,7 @@ describe('cli - exitCb', function() {
 
   it('should exit with status code 1 and call error callback when error exists and error callback is specified', function (done) {
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    bag.exitCb(function (err) {
+    bag.exitCb((err) => {
       referee.assert.equals(err.message, 'some error');
       done();
     })(new Error('some error'));
@@ -664,7 +664,7 @@ describe('cli - exitCb', function() {
 
   it('should pass stringified error when error is non-Error object', function (done) {
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    bag.exitCb(function (err) {
+    bag.exitCb((err) => {
       referee.assert.equals(err, { error: 'someerror'});
       done();
     })({ error: 'someerror'});
@@ -793,7 +793,7 @@ describe('cli - lookupConfig', function() {
   it('should pass values when multiple configuration keys exists in a json file', function (done) {
     process.env.somekey = 'somevalue';
     process.env.anotherkey = 'anothervalue';
-    sinon.stub(bag, 'lookupFile').callsFake(function (file) {
+    sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return '{ "somekey": "somevalue", "anotherkey": "anothervalue" }';
     });
     bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.json' }, function (err, result) {
@@ -807,7 +807,7 @@ describe('cli - lookupConfig', function() {
   it('should pass undefined when configuration key does not exist in a json file', function (done) {
     delete process.env.somekey;
     delete process.env.anotherkey;
-    sinon.stub(bag, 'lookupFile').callsFake(function (file) {
+    sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return '{}';
     });
     bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.json' }, function (err, result) {
@@ -821,7 +821,7 @@ describe('cli - lookupConfig', function() {
   it('should pass values when multiple configuration keys exists in a yaml file', function (done) {
     delete process.env.somekey;
     delete process.env.anotherkey;
-    sinon.stub(bag, 'lookupFile').callsFake(function (file) {
+    sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return '---\nsomekey: somevalue\nanotherkey: anothervalue';
     });
     bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.yaml' }, function (err, result) {
@@ -835,7 +835,7 @@ describe('cli - lookupConfig', function() {
   it('should pass undefined when configuration key does not exist in a yaml file', function (done) {
     delete process.env.somekey;
     delete process.env.anotherkey;
-    sinon.stub(bag, 'lookupFile').callsFake(function (file) {
+    sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return '';
     });
     bag.lookupConfig(['somekey', 'anotherkey'], { file: 'someconffile.yaml' }, function (err, result) {
@@ -849,7 +849,7 @@ describe('cli - lookupConfig', function() {
   it('should throw error when configuration file extension is unsupported', function (done) {
     delete process.env.somekey;
     delete process.env.anotherkey;
-    sinon.stub(bag, 'lookupFile').callsFake(function (file) {
+    sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return '';
     });
     try {
@@ -864,7 +864,7 @@ describe('cli - lookupConfig', function() {
   it('should prompt for values when configuration file does not exist as environment variables and in configuration file', function (done) {
     delete process.env.somekey;
     delete process.env.anotherkey;
-    sinon.stub(bag, 'lookupFile').callsFake(function (file) {
+    sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return '';
     });
     this.mockPrompt.expects('get').once().withArgs([{ name: 'somepasswordkey', hidden: true }, 'anotherkey']).callsArgWith(1, null, { somepasswordkey: 'somevalue', anotherkey: 'anothervalue' });
@@ -878,7 +878,7 @@ describe('cli - lookupConfig', function() {
 
   it('should retrieve values from various sources', function (done) {
     process.env.somekey = 'somevalue';
-    sinon.stub(bag, 'lookupFile').callsFake(function (file) {
+    sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return 'anotherkey: anothervalue';
     });
     this.mockPrompt.expects('get').once().withArgs([{ name: 'somepasswordkey', hidden: true }, 'inexistingkey']).callsArgWith(1, null, { somepasswordkey: 'somepasswordvalue', inexistingkey: undefined });
@@ -894,7 +894,7 @@ describe('cli - lookupConfig', function() {
 
   it('should return undefined when keys do not exist', function (done) {
     process.env.somekey = 'somevalue';
-    sinon.stub(bag, 'lookupFile').callsFake(function (file) {
+    sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return 'anotherkey: anothervalue';
     });
     bag.lookupConfig([], { file: 'someconffile.yaml', prompt: true }, function (err, result) {
