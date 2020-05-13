@@ -23,11 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] - 2016-10-13
 
 ### Changed
-- 
+- Upgrade deps to latest
 
 ## [v0.2.5] - 2016-08-14
-
-## [v0.2.4-pre] - unknown
 
 ### Changed
 - Use safe colors
@@ -63,10 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update documentation, upgrade dependencies
-
-## [v0.0.8] - unknown
-
-### Changed
 - Change test lib to buster-node + referee
 - Set min node engine to v0.8.0
 
