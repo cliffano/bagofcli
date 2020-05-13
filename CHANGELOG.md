@@ -1,12 +1,11 @@
-
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
+## 2.0.0 - 2020-05-13
 ### Changed
 - Changed module to be ESM
 - Replace Buster with Mocha for unit tests
@@ -15,69 +14,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Remove sub-dependency to Contextify (no more node-gyp errors)
 
-## [v1.1.0] - 2018-02-14
-
+## 1.1.0 - 2018-02-14
 ### Added
 - Add execAndCollect function
 
-## [v1.0.0] - 2016-10-13
-
+## 1.0.0 - 2016-10-13
 ### Changed
 - Upgrade deps to latest
 
-## [v0.2.5] - 2016-08-14
-
+## 0.2.5 - 2016-08-14
 ### Changed
 - Use safe colors
 - Set min node engine to v4.0.0
 
-## [v0.2.3] - 2015-07-12
-
+## 0.2.3 - 2015-07-12
 ### Added
 - Add lookupConfig function
 
-## [v0.2.2] - 2015-06-21
-
+## 0.2.2 - 2015-06-21
 ### Added
 - Add build reports to readme
 
-## [v0.2.1] - 2014-11-09
-
+## 0.2.1 - 2014-11-09
 ### Added
 - Add command option validation
 - Add global option validation
 
-## [v0.2.0] - 2014-09-08
-
+## 0.2.0 - 2014-09-08
 ### Changed
 - Set min node engine to v0.10.0
 
-## [v0.1.0] - 2014-08-31
-
+## 0.1.0 - 2014-08-31
 ### Changed
 - Replace validation package from validator to iz
 
-## [v0.0.9] - 2014-06-27
+## 0.0.10 - 2014-08-28
+### Added
+- Add invalid argument rule check
 
+## 0.0.9 - 2014-06-27
 ### Changed
 - Update documentation, upgrade dependencies
 - Change test lib to buster-node + referee
 - Set min node engine to v0.8.0
 
-## [v0.0.6] - 2013-10-13
-
+## 0.0.6 - 2013-10-13
 ### Added
 - Add files function
 
-## [v0.0.5] - 2013-07-15
-
+## 0.0.5 - 2013-07-15
 ### Added
 - Add optional arg support for usage display
 
-## [v0.0.4] - 2013-07-09
+## 0.0.4 - 2013-07-09
 
-## [v0.0.3] - 2013-07-08
-
+## 0.0.3 - 2013-07-08
 ### Added
 - Add command arguments validation support
 - Add help examples support
@@ -87,19 +78,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display help when command is unspecified
 - Display error message when command is unknown
 
-## [v0.0.2] - 2013-06-20
-
+## 0.0.2 - 2013-06-20
 ### Changed
 - Colourise success and error output
 
-## [v0.0.10] - 2014-08-28
-
-### Added
-- Add invalid argument rule check
-
-## [v0.0.1] - 2013-06-01
-
+## 0.0.1 - 2013-06-01
 ### Added
 - Initial version, extracted from cliffano/bagofholding
-
-
