@@ -1,5 +1,5 @@
 {
-  "build": "clean lint complexity test doc",
+  "build": "clean dep lint complexity test doc",
   "lint": {
     "type": "jshint"
   },
