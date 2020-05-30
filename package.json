@@ -12,7 +12,7 @@
   "contributors": [
     "All contributors (https://github.com/cliffano/bagofcli/graphs/contributors)"
   ],
-  "main": "./lib/bagofcli",
+  "main": "./lib/bagofcli.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/cliffano/bagofcli.git"
