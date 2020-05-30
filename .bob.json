@@ -1,7 +1,7 @@
 {
   "build": "clean dep lint complexity test doc",
   "lint": {
-    "type": "jshint"
+    "type": "eslint"
   },
   "complexity": {
     "type": "plato"
@@ -13,7 +13,7 @@
     "type": "nyc"
   },
   "doc": {
-    "type": "dox-foundation"
+    "type": "jsdoc"
   },
   "site": {
     "type": "buildbranch"
