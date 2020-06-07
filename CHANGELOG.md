@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Fixed
 - Fixed missing extension on package.json main property
+- Fixed commander arguments handling in version 5.1.0
 
 ## 2.0.1 - 2020-05-22
 ### Fixed

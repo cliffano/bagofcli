@@ -150,7 +150,7 @@ describe('cli - _postCommand', function() {
   it('should return without error when args is empty', function (done) {
     let err, result;
     try {
-      result = bag._postCommand();
+      result = bag._postCommand(this.mockCommander);
     } catch (e) {
       err = e;
     }
@@ -159,11 +159,13 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when commands config is not set up with any args', function (done) {
-    const args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: {} };
+    this.mockCommander._name = 'somecommand'
+    this.mockCommander.parent = { _name: 'someparentcommand' };
+    delete this.mockCommander.args;
+    const commandsConfig = { somecommand: {} };
     let err, result;
     try {
-      result = bag._postCommand(args, commandsConfig);
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     } catch (e) {
       err = e;
     }
@@ -173,6 +175,7 @@ describe('cli - _postCommand', function() {
 
   it('should return without error when command line includes opt flag (commander.args is empty for some reason)', function (done) {
     process.argv = ['node', 'somecommand', '--someopt'];
+    this.mockCommander.args = [];
     let err, result;
     try {
       result = bag._postCommand([]);
@@ -184,87 +187,82 @@ describe('cli - _postCommand', function() {
   });
 
   it('should log usage message and exit when commands config has args but the command does not provide any argument', function () {
-    this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2>'.red);
+    this.mockConsole.expects('error').once().withExactArgs('Usage: someprogram somecommand <arg1> <arg2>'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
-      result = bag._postCommand(args, commandsConfig);
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.args = ['somecommand'];
+    const commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     referee.assert.isUndefined(result);
   });
 
-  it('should log usage message when there is a mix of mandatory and optional args', function () {
-    this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> <arg2> [arg3]'.red);
+  it('should log usage message when there is a mix of mandatory and optional args in command config but command does not provide any argument', function () {
+    this.mockConsole.expects('error').once().withExactArgs('Usage: someprogram somecommand <arg1> <arg2> [arg3]'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ]}, { name: 'arg3', optional: true }] } },
-      result = bag._postCommand(args, commandsConfig);
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.args = ['somecommand'];
+    const commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ]}, { name: 'arg3', optional: true }] } },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     referee.assert.isUndefined(result);
   });
 
-  it('should log usage message when there are multiple optional args', function () {
-    this.mockConsole.expects('error').once().withExactArgs('Usage: someparentcommand somecommand <arg1> [arg2] [arg3]'.red);
+  it('should log usage message when there are multiple optional args in command config but command does not provide any argument', function () {
+    this.mockConsole.expects('error').once().withExactArgs('Usage: someprogram somecommand <arg1> [arg2] [arg3]'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = [{ _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', optional: true}, { name: 'arg3', optional: true }] } },
-      result = bag._postCommand(args, commandsConfig);
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.args = ['somecommand'];
+    const commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', optional: true}, { name: 'arg3', optional: true }] } },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     referee.assert.isUndefined(result);
   });
 
   it('should log error message when there is an invalid argument', function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be number'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }] } },
-      result = bag._postCommand(args, commandsConfig);
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.args = ['somecommand', 'foobar'];
+    const commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }] } },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     referee.assert.isUndefined(result);
   });
 
   it('should log error message when empty string is passed on required rule', function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be required'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = ['', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'required' ] }] } },
-      result = bag._postCommand(args, commandsConfig);
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.args = ['somecommand', ''];
+    const commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'required' ] }] } },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     referee.assert.isUndefined(result);
   });
 
   it('should log error message when non-email string is passed on email rule', function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument: <arg1> must be email'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'email' ] }] } },
-      result = bag._postCommand(args, commandsConfig);
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.args = ['somecommand', 'foobar'];
+    const commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'email' ] }] } },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     referee.assert.isUndefined(result);
   });
 
   it('should log error message when rule does not exist', function () {
     this.mockConsole.expects('error').once().withExactArgs('Invalid argument rule: someRuleThatCantPossiblyExist'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = ['foobar', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'someRuleThatCantPossiblyExist' ] }] } },
-      result = bag._postCommand(args, commandsConfig);
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.args = ['somecommand', 'foobar'];
+    const commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'someRuleThatCantPossiblyExist' ] }] } },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     referee.assert.isUndefined(result);
   });
 
   it('should return without error when command has valid argument as configured in commands setup file', function (done) {
-    const args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }, { name: 'arg2', optional: true }] } };
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.args = ['somecommand', '123'];
+    const commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ] }, { name: 'arg2', optional: true }] } };
     let err, result;
     try {
-      result = bag._postCommand(args, commandsConfig);
-    } catch (e) {
-      err = e;
-    }
-    referee.assert.isUndefined(result);
-    done(err);
-  });
-
-  it('should call commander help when arguments is empty', function (done) {
-    process.argv = ['node', 'somecommand'];
-    this.mockCommander.expects('help').once().withExactArgs();
-    let err, result;
-    try {
-      result = bag._postCommand([]);
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     } catch (e) {
       err = e;
     }
@@ -273,25 +271,28 @@ describe('cli - _postCommand', function() {
   });
 
   it('should log error message and exit when command is unknown', function () {
-    this.mockConsole.expects('error').once().withExactArgs('Unknown command: blah, use --help for more info'.red);
+    this.mockConsole.expects('error').once().withExactArgs('Unknown command: someunknowncommand, use --help for more info'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = ['blah'],
-      commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'number' ]}, { name: 'arg2', rules: [ 'number' ] }] } },
-      result = bag._postCommand(args, commandsConfig);
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.args = ['someunknowncommand'];
+    const commandsConfig = { somecommand: { args: [{ name: 'arg1', rules: [ 'string' ]}] } },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     referee.assert.isUndefined(result);
   });
 
   it('should log error message when command has invalid command option', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Invalid option: <-s, --some-arg <someArg>> must be number'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = ['123', { _name: 'somecommand', someArg: 'abcdef', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { options: [{
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.someArg = 'abcdef';
+    this.mockCommander.args = ['somecommand'];
+    const commandsConfig = { somecommand: { options: [{
         arg: '-s, --some-arg <someArg>',
         rules: [ 'number' ]
       }]}};
     let err, result;
     try {
-      result = bag._postCommand(args, commandsConfig);
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     } catch (e) {
       err = e;
     }
@@ -300,14 +301,16 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when there is no invalid command option', function (done) {
-    const args = ['123', { _name: 'somecommand', someArg: '12345', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { options: [{
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.someArg = '12345';
+    this.mockCommander.args = ['somecommand'];
+    const commandsConfig = { somecommand: { options: [{
         arg: '-s, --some-arg <someArg>',
         rules: [ 'number' ]
       }]}};
     let err, result;
     try {
-      result = bag._postCommand(args, commandsConfig);
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     } catch (e) {
       err = e;
     }
@@ -316,13 +319,15 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when command option does not have any validation rule', function (done) {
-    const args = ['123', { _name: 'somecommand', someArg: 'abcdef', parent: { _name: 'someparentcommand' } }],
-      commandsConfig = { somecommand: { options: [{
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.someArg = 'abcdef';
+    this.mockCommander.args = ['somecommand'];
+    const commandsConfig = { somecommand: { options: [{
         arg: '-s, --some-arg <someArg>'
       }]}};
     let err, result;
     try {
-      result = bag._postCommand(args, commandsConfig);
+      result = bag._postCommand(this.mockCommander, commandsConfig);
     } catch (e) {
       err = e;
     }
@@ -333,15 +338,17 @@ describe('cli - _postCommand', function() {
   it('should log error message when command has invalid global option', function (done) {
     this.mockConsole.expects('error').once().withExactArgs('Invalid option: <-s, --some-arg <someArg>> must be number'.red);
     this.mockProcess.expects('exit').once().withExactArgs(1);
-    const args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: 'abcdef' } }],
-      commandsConfig = { somecommand: {}},
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.parent = { someArg: 'abcdef' };
+    this.mockCommander.args = ['somecommand'];
+    const commandsConfig = { somecommand: {}},
       globalOptsConfig = [{
         arg: '-s, --some-arg <someArg>',
         rules: [ 'number' ]
       }];
     let err, result;
     try {
-      result = bag._postCommand(args, commandsConfig, globalOptsConfig);
+      result = bag._postCommand(this.mockCommander, commandsConfig, globalOptsConfig);
     } catch (e) {
       err = e;
     }
@@ -350,15 +357,17 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when there is no invalid global option', function (done) {
-    const args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: '12345' } }],
-      commandsConfig = { somecommand: {}},
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.parent = { someArg: 12345 };
+    this.mockCommander.args = ['somecommand'];
+    const commandsConfig = { somecommand: {}},
       globalOptsConfig = [{
         arg: '-s, --some-arg <someArg>',
         rules: [ 'number' ]
       }];
     let err, result;
     try {
-      result = bag._postCommand(args, commandsConfig, globalOptsConfig);
+      result = bag._postCommand(this.mockCommander, commandsConfig, globalOptsConfig);
     } catch (e) {
       err = e;
     }
@@ -367,14 +376,16 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when global option does not have any validation rule', function (done) {
-    const args = ['123', { _name: 'somecommand', parent: { _name: 'someparentcommand', someArg: 'abcdef' } }],
-      commandsConfig = { somecommand: {}},
+    this.mockCommander._name = 'someprogram';
+    this.mockCommander.parent = { someArg: 'abcdef' };
+    this.mockCommander.args = ['somecommand'];
+    const commandsConfig = { somecommand: {}},
       globalOptsConfig = [{
         arg: '-s, --some-arg <someArg>'
       }];
     let err, result;
     try {
-      result = bag._postCommand(args, commandsConfig, globalOptsConfig);
+      result = bag._postCommand(this.mockCommander, commandsConfig, globalOptsConfig);
     } catch (e) {
       err = e;
     }
