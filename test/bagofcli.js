@@ -1,3 +1,4 @@
+/* eslint no-unused-vars: 0 */
 import async from 'async';
 import bag from '../lib/bagofcli.js';
 import childProcess from 'child_process';
