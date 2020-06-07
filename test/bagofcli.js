@@ -1,3 +1,4 @@
+"use strict"
 /* eslint no-unused-vars: 0 */
 import async from 'async';
 import bag from '../lib/bagofcli.js';
