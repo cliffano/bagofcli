@@ -1,5 +1,5 @@
 {
-  "build": "clean dep lint complexity test doc",
+  "build": "clean dep lint complexity test coverage doc",
   "lint": {
     "type": "eslint"
   },
@@ -10,7 +10,7 @@
     "type": "mocha"
   },
   "coverage": {
-    "type": "nyc"
+    "type": "c8"
   },
   "doc": {
     "type": "jsdoc"
