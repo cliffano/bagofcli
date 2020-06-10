@@ -1,9 +1,9 @@
 .bob
 .bob.json
 .DS_Store
+.eslintrc.yml
 .git
 .gitignore
-.jshintrc
 .npmignore
 .travis.yml
 avatar.jpg
