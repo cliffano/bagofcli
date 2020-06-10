@@ -103,6 +103,6 @@ Colophon
 Build reports:
 
 * [Code complexity report](http://cliffano.github.io/bagofcli/complexity/plato/index.html)
-* [Unit tests report](http://cliffano.github.io/bagofcli/test/buster.out)
-* [Test coverage report](http://cliffano.github.io/bagofcli/coverage/buster-istanbul/lcov-report/lib/index.html)
-* [API Documentation](http://cliffano.github.io/bagofcli/doc/dox-foundation/index.html)
+* [Unit tests report](http://cliffano.github.io/bagofcli/test/mocha.out)
+* [Test coverage report](http://cliffano.github.io/bagofcli/coverage/c8/index.html)
+* [API Documentation](http://cliffano.github.io/bagofcli/doc/jsdoc/index.html)
