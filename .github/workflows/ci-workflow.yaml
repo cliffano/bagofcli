@@ -14,4 +14,4 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm install -g bob
-      - run: bob build site
+      - run: bob build
