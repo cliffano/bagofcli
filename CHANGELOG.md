@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Changed
 - Replace buster-istanbul with c8 for test coverage
+- Replace prompt with inquirer for input prompt
 
 ## 2.0.2 - 2020-06-07
 ### Fixed

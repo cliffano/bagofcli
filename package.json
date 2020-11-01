@@ -28,9 +28,9 @@
     "async": "^3.2.0",
     "colors": "^1.4.0",
     "commander": "^6.2.0",
+    "inquirer": "^7.3.3",
     "iz": "^3.0.0",
     "lodash": "^4.17.20",
-    "prompt": "^1.0.0",
     "wrench-sui": "^0.0.3",
     "yaml-js": "^0.2.3"
   },

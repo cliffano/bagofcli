@@ -5,7 +5,7 @@ import bag from '../lib/bagofcli.js';
 import childProcess from 'child_process';
 import commander from 'commander';
 import fs from 'fs';
-import prompt from 'prompt';
+import inquirer from 'inquirer';
 import referee from '@sinonjs/referee';
 import sinon from 'sinon';
 import wrench from 'wrench-sui';
@@ -755,13 +755,13 @@ describe('cli - files', function() {
 describe('cli - lookupConfig', function() {
 
   beforeEach(function (done) {
-    this.mockPrompt = sinon.mock(prompt);
+    this.mockInquirer = sinon.mock(inquirer);
     done();
   });
 
   afterEach(function (done) {
-    this.mockPrompt.verify();
-    this.mockPrompt.restore();
+    this.mockInquirer.verify();
+    this.mockInquirer.restore();
     if (bag.lookupFile.restore) {
       bag.lookupFile.restore();
     }
@@ -875,7 +875,26 @@ describe('cli - lookupConfig', function() {
     sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return '';
     });
-    this.mockPrompt.expects('get').once().withArgs([{ name: 'somepasswordkey', hidden: true }, 'anotherkey']).callsArgWith(1, null, { somepasswordkey: 'somevalue', anotherkey: 'anothervalue' });
+    const expectedPromptQuestions = [
+      {
+        name: 'somepasswordkey',
+        message: 'somepasswordkey',
+        default: false,
+        type: 'input'
+      },
+      {
+        name: 'anotherkey',
+        message: 'anotherkey',
+        default: false,
+        type: 'password'
+      }
+    ];
+    const mockThen = {
+      then: function (cb) {
+        cb({ somepasswordkey: 'somevalue', anotherkey: 'anothervalue' });
+      }
+    }
+    this.mockInquirer.expects('prompt').once().withArgs(expectedPromptQuestions).returns(mockThen);
     bag.lookupConfig(['somepasswordkey', 'anotherkey'], { file: 'someconffile.yaml', prompt: true }, function (err, result) {
       referee.assert.equals(err, null);
       referee.assert.equals(result.somepasswordkey, 'somevalue');
@@ -889,7 +908,26 @@ describe('cli - lookupConfig', function() {
     sinon.stub(bag, 'lookupFile').callsFake((file) => {
       return 'anotherkey: anothervalue';
     });
-    this.mockPrompt.expects('get').once().withArgs([{ name: 'somepasswordkey', hidden: true }, 'inexistingkey']).callsArgWith(1, null, { somepasswordkey: 'somepasswordvalue', inexistingkey: undefined });
+    const expectedPromptQuestions = [
+      {
+        name: 'somepasswordkey',
+        message: 'somepasswordkey',
+        default: false,
+        type: 'input'
+      },
+      {
+        name: 'inexistingkey',
+        message: 'inexistingkey',
+        default: false,
+        type: 'password'
+      }
+    ];
+    const mockThen = {
+      then: function (cb) {
+        cb({ somepasswordkey: 'somepasswordvalue', inexistingkey: undefined });
+      }
+    }
+    this.mockInquirer.expects('prompt').once().withArgs(expectedPromptQuestions).returns(mockThen);
     bag.lookupConfig(['somekey', 'anotherkey', 'somepasswordkey', 'inexistingkey'], { file: 'someconffile.yaml', prompt: true }, function (err, result) {
       referee.assert.equals(err, null);
       referee.assert.equals(result.somekey, 'somevalue');
