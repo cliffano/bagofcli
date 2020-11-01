@@ -1,7 +1,6 @@
-(node:70928) ExperimentalWarning: Conditional exports is an experimental feature. This feature could change at any time
-(node:70933) ExperimentalWarning: The ESM module loader is experimental.
-[36mtest[39m | /Users/cliffano/dev/workspace-studio/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
-(node:70941) ExperimentalWarning: The ESM module loader is experimental.
+(node:2988) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+test | /opt/hostedtoolcache/node/14.14.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  cli - command[0m
@@ -87,9 +86,9 @@
   [32m  ✓[0m[90m should pass no error and exit code to callback when exit code is 0[0m
 
 
-[92m [0m[32m 65 passing[0m[90m (104ms)[0m
+[92m [0m[32m 65 passing[0m[90m (100ms)[0m
 
-[32mSUCCESS[39m | exit code 0
+SUCCESS | exit code 0
 -------------|---------|----------|---------|---------|-------------------
 File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------|---------|----------|---------|---------|-------------------

@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">71.34</p>
+      <p class="stat">71.19</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">546</p>
+      <p class="stat">552</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">72.43</p>
+      <p class="stat">71.90</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">4.18</p>
+      <p class="stat">4.22</p>
     </div>
   </div>
 </div>
@@ -98,7 +98,7 @@ import commander from &#039;commander&#039;;
 import fs from &#039;fs&#039;;
 import iz from &#039;iz&#039;;
 import p from &#039;path&#039;;
-import prompt from &#039;prompt&#039;;
+import inquirer from &#039;inquirer&#039;;
 import util from &#039;util&#039;;
 import validators from &#039;iz/lib/validators.js&#039;;
 import wrench from &#039;wrench-sui&#039;;  
@@ -527,19 +527,25 @@ function lookupConfig(keys, opts, cb) {
     if (opts.prompt) {
       // prompt users for any keys that don&#039;t yet have any value from
       // environment variables and configuration file
-      let promptKeys = [];
+      let promptQuestions = [];
       keys.forEach((key) =&gt; {
         if (results[key] === undefined) {
+          const promptQuestion = {
+            name: key,
+            message: key,
+            default: false,
+          };
           if (key.toLowerCase().indexOf(&#039;password&#039;) &gt;= 0) {
-            promptKeys.push({ name: key, hidden: true });
+            promptQuestion.type = &#039;input&#039;;
           } else {
-            promptKeys.push(key);
+            promptQuestion.type = &#039;password&#039;;
           }
+          promptQuestions.push(promptQuestion);
         }
       });
-      if (promptKeys.length &gt; 0) {
-        prompt.get(promptKeys, function (err, promptResults) {
-          results = _.extend(results, promptResults);
+      if (promptQuestions.length &gt; 0) {
+        inquirer.prompt(promptQuestions).then((promptAnswers) =&gt; {
+          results = _.extend(results, promptAnswers);
           cb(err, results);
         });
       } else {
