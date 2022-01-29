@@ -1,90 +1,90 @@
-test | /opt/hostedtoolcache/node/14.17.4/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/16.13.2/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  cli - command[0m
-  [32m  ✓[0m[90m should use optional command file when specified[0m
-  [32m  ✓[0m[90m should fall back to default command file location when optional command file is not specified[0m
-  [32m  ✓[0m[90m should set global options when specified[0m
+  [32m  [32m✔[39m[0m[90m should use optional command file when specified[0m
+  [32m  [32m✔[39m[0m[90m should fall back to default command file location when optional command file is not specified[0m
+  [32m  [32m✔[39m[0m[90m should set global options when specified[0m
 
 [0m  cli - _preCommand[0m
-  [32m  ✓[0m[90m should not log anything when commands have empty examples array[0m
-  [32m  ✓[0m[90m should not log anything when commands do not have any examples fields[0m
-  [32m  ✓[0m[90m should log examples when configured in commands[0m
+  [32m  [32m✔[39m[0m[90m should not log anything when commands have empty examples array[0m
+  [32m  [32m✔[39m[0m[90m should not log anything when commands do not have any examples fields[0m
+  [32m  [32m✔[39m[0m[90m should log examples when configured in commands[0m
 
 [0m  cli - _postCommand[0m
-  [32m  ✓[0m[90m should return without error when args is empty[0m
-  [32m  ✓[0m[90m should return without error when commands config is not set up with any args[0m
-  [32m  ✓[0m[90m should return without error when command line includes opt flag (commander.args is empty for some reason)[0m
-  [32m  ✓[0m[90m should log usage message and exit when commands config has args but the command does not provide any argument[0m
-  [32m  ✓[0m[90m should log usage message when there is a mix of mandatory and optional args in command config but command does not provide any argument[0m
-  [32m  ✓[0m[90m should log usage message when there are multiple optional args in command config but command does not provide any argument[0m
-  [32m  ✓[0m[90m should log error message when there is an invalid argument[0m
-  [32m  ✓[0m[90m should log error message when empty string is passed on required rule[0m
-  [32m  ✓[0m[90m should log error message when non-email string is passed on email rule[0m
-  [32m  ✓[0m[90m should log error message when rule does not exist[0m
-  [32m  ✓[0m[90m should return without error when command has valid argument as configured in commands setup file[0m
-  [32m  ✓[0m[90m should log error message and exit when command is unknown[0m
-  [32m  ✓[0m[90m should log error message when command has invalid command option[0m
-  [32m  ✓[0m[90m should return without error when there is no invalid command option[0m
-  [32m  ✓[0m[90m should return without error when command option does not have any validation rule[0m
-  [32m  ✓[0m[90m should log error message when command has invalid global option[0m
-  [32m  ✓[0m[90m should return without error when there is no invalid global option[0m
-  [32m  ✓[0m[90m should return without error when global option does not have any validation rule[0m
+  [32m  [32m✔[39m[0m[90m should return without error when args is empty[0m
+  [32m  [32m✔[39m[0m[90m should return without error when commands config is not set up with any args[0m
+  [32m  [32m✔[39m[0m[90m should return without error when command line includes opt flag (commander.args is empty for some reason)[0m
+  [32m  [32m✔[39m[0m[90m should log usage message and exit when commands config has args but the command does not provide any argument[0m
+  [32m  [32m✔[39m[0m[90m should log usage message when there is a mix of mandatory and optional args in command config but command does not provide any argument[0m
+  [32m  [32m✔[39m[0m[90m should log usage message when there are multiple optional args in command config but command does not provide any argument[0m
+  [32m  [32m✔[39m[0m[90m should log error message when there is an invalid argument[0m
+  [32m  [32m✔[39m[0m[90m should log error message when empty string is passed on required rule[0m
+  [32m  [32m✔[39m[0m[90m should log error message when non-email string is passed on email rule[0m
+  [32m  [32m✔[39m[0m[90m should log error message when rule does not exist[0m
+  [32m  [32m✔[39m[0m[90m should return without error when command has valid argument as configured in commands setup file[0m
+  [32m  [32m✔[39m[0m[90m should log error message and exit when command is unknown[0m
+  [32m  [32m✔[39m[0m[90m should log error message when command has invalid command option[0m
+  [32m  [32m✔[39m[0m[90m should return without error when there is no invalid command option[0m
+  [32m  [32m✔[39m[0m[90m should return without error when command option does not have any validation rule[0m
+  [32m  [32m✔[39m[0m[90m should log error message when command has invalid global option[0m
+  [32m  [32m✔[39m[0m[90m should return without error when there is no invalid global option[0m
+  [32m  [32m✔[39m[0m[90m should return without error when global option does not have any validation rule[0m
 
 [0m  cli - exec[0m
-  [32m  ✓[0m[90m should log stderr output and pass error to callback when an error occurs and fallthrough is not allowed[0m
+  [32m  [32m✔[39m[0m[90m should log stderr output and pass error to callback when an error occurs and fallthrough is not allowed[0m
 
 [0m  cli - execAndCollect[0m
 
 [0m  cli - exit[0m
-  [32m  ✓[0m[90m should exit with status code 0 when error does not exist[0m
-  [32m  ✓[0m[90m should exit with status code 1 and logs the error message when error exists[0m
-  [32m  ✓[0m[90m should log the stringified object when error is a non-Error object[0m
-  [32m  ✓[0m[90m should log the stringified when error is an array[0m
+  [32m  [32m✔[39m[0m[90m should exit with status code 0 when error does not exist[0m
+  [32m  [32m✔[39m[0m[90m should exit with status code 1 and logs the error message when error exists[0m
+  [32m  [32m✔[39m[0m[90m should log the stringified object when error is a non-Error object[0m
+  [32m  [32m✔[39m[0m[90m should log the stringified when error is an array[0m
 
 [0m  cli - exitCb[0m
-  [32m  ✓[0m[90m should exit with status code 0 and logs the result when error does not exist and no success callback is specified[0m
-  [32m  ✓[0m[90m should exit with status code 1 and logs the error message when error exists and no error callback is specified[0m
-  [32m  ✓[0m[90m should exit with status code 1 and logs stringified object when error is non-Error object[0m
-  [32m  ✓[0m[90m should exit with status code 0 and call success callback when error does not exist and success callback is specified[0m
-  [32m  ✓[0m[90m should exit with status code 1 and call error callback when error exists and error callback is specified[0m
-  [32m  ✓[0m[90m should pass stringified error when error is non-Error object[0m
+  [32m  [32m✔[39m[0m[90m should exit with status code 0 and logs the result when error does not exist and no success callback is specified[0m
+  [32m  [32m✔[39m[0m[90m should exit with status code 1 and logs the error message when error exists and no error callback is specified[0m
+  [32m  [32m✔[39m[0m[90m should exit with status code 1 and logs stringified object when error is non-Error object[0m
+  [32m  [32m✔[39m[0m[90m should exit with status code 0 and call success callback when error does not exist and success callback is specified[0m
+  [32m  [32m✔[39m[0m[90m should exit with status code 1 and call error callback when error exists and error callback is specified[0m
+  [32m  [32m✔[39m[0m[90m should pass stringified error when error is non-Error object[0m
 
 [0m  cli - files[0m
-  [32m  ✓[0m[90m should return files as-is when all items are files[0m
-  [32m  ✓[0m[90m should return files under a directory[0m
-  [32m  ✓[0m[90m should only return matching files when match opt is specified[0m
-  [32m  ✓[0m[90m should return nothing when no match is found[0m
-  [32m  ✓[0m[90m should return nothing when directory contains non-directory and non-file[0m
-  [32m  ✓[0m[90m should return nothing when items are non-directory and non-file[0m
+  [32m  [32m✔[39m[0m[90m should return files as-is when all items are files[0m
+  [32m  [32m✔[39m[0m[90m should return files under a directory[0m
+  [32m  [32m✔[39m[0m[90m should only return matching files when match opt is specified[0m
+  [32m  [32m✔[39m[0m[90m should return nothing when no match is found[0m
+  [32m  [32m✔[39m[0m[90m should return nothing when directory contains non-directory and non-file[0m
+  [32m  [32m✔[39m[0m[90m should return nothing when items are non-directory and non-file[0m
 
 [0m  cli - lookupConfig[0m
-  [32m  ✓[0m[90m should pass value when single configuration key exists as environment variable[0m
-  [32m  ✓[0m[90m should pass values when multiple configuration keys exists as environment variables[0m
-  [32m  ✓[0m[90m should pass undefined when configuration key does not exist at all[0m
-  [32m  ✓[0m[90m should pass values when multiple configuration keys exists in a json file[0m
-  [32m  ✓[0m[90m should pass undefined when configuration key does not exist in a json file[0m
-  [32m  ✓[0m[90m should pass values when multiple configuration keys exists in a yaml file[0m
-  [32m  ✓[0m[90m should pass undefined when configuration key does not exist in a yaml file[0m
-  [32m  ✓[0m[90m should throw error when configuration file extension is unsupported[0m
-  [32m  ✓[0m[90m should prompt for values when configuration file does not exist as environment variables and in configuration file[0m
-  [32m  ✓[0m[90m should retrieve values from various sources[0m
-  [32m  ✓[0m[90m should return undefined when keys do not exist[0m
+  [32m  [32m✔[39m[0m[90m should pass value when single configuration key exists as environment variable[0m
+  [32m  [32m✔[39m[0m[90m should pass values when multiple configuration keys exists as environment variables[0m
+  [32m  [32m✔[39m[0m[90m should pass undefined when configuration key does not exist at all[0m
+  [32m  [32m✔[39m[0m[90m should pass values when multiple configuration keys exists in a json file[0m
+  [32m  [32m✔[39m[0m[90m should pass undefined when configuration key does not exist in a json file[0m
+  [32m  [32m✔[39m[0m[90m should pass values when multiple configuration keys exists in a yaml file[0m
+  [32m  [32m✔[39m[0m[90m should pass undefined when configuration key does not exist in a yaml file[0m
+  [32m  [32m✔[39m[0m[90m should throw error when configuration file extension is unsupported[0m
+  [32m  [32m✔[39m[0m[90m should prompt for values when configuration file does not exist as environment variables and in configuration file[0m
+  [32m  [32m✔[39m[0m[90m should retrieve values from various sources[0m
+  [32m  [32m✔[39m[0m[90m should return undefined when keys do not exist[0m
 
 [0m  cli - lookupFile[0m
-  [32m  ✓[0m[90m should return file content in current directory when it exists[0m
-  [32m  ✓[0m[90m should return file content in home directory when it exists but none exists in current directory and platform is windows[0m
-  [32m  ✓[0m[90m should return file content in home directory when it exists but none exists in current directory and platform is non windows[0m
-  [32m  ✓[0m[90m should throw an error when configuration file does not exist anywhere and file has relative path[0m
-  [32m  ✓[0m[90m should return file content with absolute path when it exists[0m
-  [32m  ✓[0m[90m should throw an error when configuration file does not exist anywhere and file has absolute path[0m
+  [32m  [32m✔[39m[0m[90m should return file content in current directory when it exists[0m
+  [32m  [32m✔[39m[0m[90m should return file content in home directory when it exists but none exists in current directory and platform is windows[0m
+  [32m  [32m✔[39m[0m[90m should return file content in home directory when it exists but none exists in current directory and platform is non windows[0m
+  [32m  [32m✔[39m[0m[90m should throw an error when configuration file does not exist anywhere and file has relative path[0m
+  [32m  [32m✔[39m[0m[90m should return file content with absolute path when it exists[0m
+  [32m  [32m✔[39m[0m[90m should throw an error when configuration file does not exist anywhere and file has absolute path[0m
 
 [0m  cli - spawn[0m
-  [32m  ✓[0m[90m should pass error and exit code to callback when exit code is not 0[0m
-  [32m  ✓[0m[90m should pass no error and exit code to callback when exit code is 0[0m
+  [32m  [32m✔[39m[0m[90m should pass error and exit code to callback when exit code is not 0[0m
+  [32m  [32m✔[39m[0m[90m should pass no error and exit code to callback when exit code is 0[0m
 
 
-[92m [0m[32m 65 passing[0m[90m (99ms)[0m
+[92m [0m[32m 65 passing[0m[90m (104ms)[0m
 
 SUCCESS | exit code 0
 -------------|---------|----------|---------|---------|-------------------
