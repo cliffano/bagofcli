@@ -5,7 +5,7 @@ npm WARN old lockfile
 npm WARN old lockfile This is a one-time fix-up, please be patient...
 npm WARN old lockfile 
 
-added 192 packages, and audited 193 packages in 6s
+added 192 packages, and audited 193 packages in 4s
 
 61 packages are looking for funding
   run `npm fund` for details
