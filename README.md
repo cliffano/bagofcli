@@ -1,12 +1,11 @@
 <img align="right" src="https://raw.github.com/cliffano/bagofcli/master/avatar.jpg" alt="Avatar"/>
 
 [![Build Status](https://github.com/cliffano/bagofcli/workflows/CI/badge.svg)](https://github.com/cliffano/bagofcli/actions?query=workflow%3ACI)
-[![Vulnerabilities Status](https://snyk.io/test/github/cliffano/bagofcli/badge.svg)](https://snyk.io/test/github/cliffano/bagofcli)
+[![Vulnerability Scanning Status](https://snyk.io/test/github/cliffano/bagofcli/badge.svg)](https://snyk.io/test/github/cliffano/bagofcli)
 [![Dependencies Status](https://img.shields.io/david/cliffano/bagofcli.svg)](http://david-dm.org/cliffano/bagofcli)
 [![Coverage Status](https://img.shields.io/coveralls/cliffano/bagofcli.svg)](https://coveralls.io/r/cliffano/bagofcli?branch=master)
 [![Published Version](https://img.shields.io/npm/v/bagofcli.svg)](http://www.npmjs.com/package/bagofcli)
 <br/>
-[![npm Badge](https://nodei.co/npm/bagofcli.png)](http://npmjs.org/package/bagofcli)
 
 Bag Of CLI
 ----------
