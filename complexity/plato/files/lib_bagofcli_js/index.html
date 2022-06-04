@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">71.19</p>
+      <p class="stat">71.92</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">552</p>
+      <p class="stat">593</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">71.90</p>
+      <p class="stat">71.97</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">4.22</p>
+      <p class="stat">4.43</p>
     </div>
   </div>
 </div>
@@ -92,6 +92,7 @@
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;
 import _ from &#039;lodash&#039;;
 import async from &#039;async&#039;;
+import chalk from &#039;chalk&#039;;
 import child from &#039;child_process&#039;;
 import colors from &#039;colors&#039;;
 import commander from &#039;commander&#039;;
@@ -106,8 +107,8 @@ import yaml from &#039;yaml-js&#039;;
 
 /**
  * Parse command line arguments and execute actions based on the specified commands.
- * Uses commander.js to provide -V / --version to display version number,
- * and -h / --help to display help info.
+ * Uses commander.js to provide -V / --version to be displayed version number,
+ * and -h / --help to be displayed help info.
  *
  * @param {String} base: base directory where the client module is located,
  *   used as a base directory to read command file and package.json file,
@@ -624,6 +625,42 @@ function spawn(command, args, cb) {
   });
 }
 
+/**
+ * Displays log step heading message on the console.
+ *
+ * @param {String} message: the heading message string to be displayed
+ */
+ function logStepHeading(message) {
+  console.log(chalk.bold.cyan(message));
+}
+
+/**
+ * Displays log step item success message on the console.
+ *
+ * @param {String} message: the success message string to be displayed
+ */
+function logStepItemSuccess(message) {
+  console.log(&#039;  * %s&#039;, chalk.green(message));
+}
+
+/**
+ * Displays log step item warning message on the console.
+ *
+ * @param {String} message: the warning message string to be displayed
+ */
+function logStepItemWarning(message) {
+  console.log(&#039;  * %s&#039;, chalk.yellow(message));
+}
+
+/**
+ * Displays log step error item error message on the console.
+ *
+ * @param {String} message: the error message string to be displayed
+ */
+ function logStepItemError(message) {
+  console.error(&#039;  * %s&#039;, chalk.red(message));
+}
+
 const exports = {
   command: command,
   _preCommand: _preCommand,
@@ -635,7 +672,11 @@ const exports = {
   files: files,
   lookupConfig: lookupConfig,
   lookupFile: lookupFile,
-  spawn: spawn
+  spawn: spawn,
+  logStepHeading: logStepHeading,
+  logStepItemSuccess: logStepItemSuccess,
+  logStepItemWarning: logStepItemWarning,
+  logStepItemError: logStepItemError
 };
 
 export {

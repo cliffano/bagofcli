@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#command">command</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exec">exec</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#execAndCollect">execAndCollect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exit">exit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exitCb">exitCb</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#files">files</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#lookupConfig">lookupConfig</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#lookupFile">lookupFile</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#spawn">spawn</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#command">command</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exec">exec</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#execAndCollect">execAndCollect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exit">exit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exitCb">exitCb</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#files">files</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#logStepHeading">logStepHeading</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#logStepItemError">logStepItemError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#logStepItemSuccess">logStepItemSuccess</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#logStepItemWarning">logStepItemWarning</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#lookupConfig">lookupConfig</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#lookupFile">lookupFile</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#spawn">spawn</a></span></li>
 </nav>
 
 <div id="main">
@@ -42,6 +42,7 @@
             <pre class="prettyprint source linenums"><code>"use strict"
 import _ from 'lodash';
 import async from 'async';
+import chalk from 'chalk';
 import child from 'child_process';
 import colors from 'colors';
 import commander from 'commander';
@@ -56,8 +57,8 @@ import yaml from 'yaml-js';
 
 /**
  * Parse command line arguments and execute actions based on the specified commands.
- * Uses commander.js to provide -V / --version to display version number,
- * and -h / --help to display help info.
+ * Uses commander.js to provide -V / --version to be displayed version number,
+ * and -h / --help to be displayed help info.
  *
  * @param {String} base: base directory where the client module is located,
  *   used as a base directory to read command file and package.json file,
@@ -574,6 +575,42 @@ function spawn(command, args, cb) {
   });
 }
 
+/**
+ * Displays log step heading message on the console.
+ *
+ * @param {String} message: the heading message string to be displayed
+ */
+ function logStepHeading(message) {
+  console.log(chalk.bold.cyan(message));
+}
+
+/**
+ * Displays log step item success message on the console.
+ *
+ * @param {String} message: the success message string to be displayed
+ */
+function logStepItemSuccess(message) {
+  console.log('  * %s', chalk.green(message));
+}
+
+/**
+ * Displays log step item warning message on the console.
+ *
+ * @param {String} message: the warning message string to be displayed
+ */
+function logStepItemWarning(message) {
+  console.log('  * %s', chalk.yellow(message));
+}
+
+/**
+ * Displays log step error item error message on the console.
+ *
+ * @param {String} message: the error message string to be displayed
+ */
+ function logStepItemError(message) {
+  console.error('  * %s', chalk.red(message));
+}
+
 const exports = {
   command: command,
   _preCommand: _preCommand,
@@ -585,7 +622,11 @@ const exports = {
   files: files,
   lookupConfig: lookupConfig,
   lookupFile: lookupFile,
-  spawn: spawn
+  spawn: spawn,
+  logStepHeading: logStepHeading,
+  logStepItemSuccess: logStepItemSuccess,
+  logStepItemWarning: logStepItemWarning,
+  logStepItemError: logStepItemError
 };
 
 export {
@@ -602,7 +643,7 @@ export {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Sat Jan 29 2022 05:41:14 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Sat Jun 04 2022 00:31:17 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
