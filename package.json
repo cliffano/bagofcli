@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "async": "^3.2.3",
+    "chalk": "^5.0.1",
     "colors": "^1.4.0",
     "commander": "^6.2.0",
     "inquirer": "^8.2.0",

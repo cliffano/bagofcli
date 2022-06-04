@@ -1107,3 +1107,79 @@ describe('cli - spawn', function() {
   });
 
 });
+
+describe('cli - logStepHeading', function() {
+
+  beforeEach(function () {
+    this.mockConsole = sinon.mock(console);
+  });
+
+  afterEach(function () {
+    this.mockConsole.verify();
+    this.mockConsole.restore();
+  });
+
+  it('should write coloured message via console log', function (done) {
+    this.mockConsole.expects('log').once().withExactArgs('\u001b[1m\u001b[36msome heading message\u001b[39m\u001b[22m');
+    bag.logStepHeading('some heading message');
+    done();
+  });
+
+});
+
+describe('cli - logStepItemSuccess', function() {
+
+  beforeEach(function () {
+    this.mockConsole = sinon.mock(console);
+  });
+
+  afterEach(function () {
+    this.mockConsole.verify();
+    this.mockConsole.restore();
+  });
+
+  it('should write coloured message via console log', function (done) {
+    this.mockConsole.expects('log').once().withExactArgs('  * %s', '\u001b[32msome success message\u001b[39m');
+    bag.logStepItemSuccess('some success message');
+    done();
+  });
+
+});
+
+describe('cli - logStepItemWarning', function() {
+
+  beforeEach(function () {
+    this.mockConsole = sinon.mock(console);
+  });
+
+  afterEach(function () {
+    this.mockConsole.verify();
+    this.mockConsole.restore();
+  });
+
+  it('should write coloured message via console log', function (done) {
+    this.mockConsole.expects('log').once().withExactArgs('  * %s', '\u001b[33msome warning message\u001b[39m');
+    bag.logStepItemWarning('some warning message');
+    done();
+  });
+
+});
+
+describe('cli - logStepItemError', function() {
+
+  beforeEach(function () {
+    this.mockConsole = sinon.mock(console);
+  });
+
+  afterEach(function () {
+    this.mockConsole.verify();
+    this.mockConsole.restore();
+  });
+
+  it('should write coloured message via console error', function (done) {
+    this.mockConsole.expects('error').once().withExactArgs('  * %s', '\u001b[31msome error message\u001b[39m');
+    bag.logStepItemError('some error message');
+    done();
+  });
+
+});
