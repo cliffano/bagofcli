@@ -3,11 +3,13 @@
 .DS_Store
 .eslintrc.yml
 .git
+.github
 .gitignore
 .npmignore
-.travis.yml
+.rtk.json
 avatar.jpg
 node_modules
-npm-debug.log
+*.log
+screenshots
 test
 test-integration
