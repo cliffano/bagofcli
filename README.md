@@ -97,11 +97,11 @@ Check out [iz](http://npmjs.org/package/iz) for available validation rules.
 Colophon
 --------
 
-[Developer's Guide](http://cliffano.github.io/developers_guide.html#nodejs)
+[Developer's Guide](https://cliffano.github.io/developers_guide.html#nodejs)
 
 Build reports:
 
-* [Code complexity report](http://cliffano.github.io/bagofcli/complexity/plato/index.html)
-* [Unit tests report](http://cliffano.github.io/bagofcli/test/mocha.txt)
-* [Test coverage report](http://cliffano.github.io/bagofcli/coverage/c8/index.html)
-* [API Documentation](http://cliffano.github.io/bagofcli/doc/jsdoc/index.html)
+* [Code complexity report](https://cliffano.github.io/bagofcli/complexity/plato/index.html)
+* [Unit tests report](https://cliffano.github.io/bagofcli/test/mocha.txt)
+* [Test coverage report](https://cliffano.github.io/bagofcli/coverage/c8/index.html)
+* [API Documentation](https://cliffano.github.io/bagofcli/doc/jsdoc/index.html)
