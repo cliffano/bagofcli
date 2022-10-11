@@ -95,5 +95,5 @@
   [32m  [32m✔[39m[0m[90m should write coloured message via console error[0m
 
 
-[92m [0m[32m 69 passing[0m[90m (150ms)[0m
+[92m [0m[32m 69 passing[0m[90m (111ms)[0m
 
