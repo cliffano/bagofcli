@@ -1120,8 +1120,20 @@ describe('cli - logStepHeading', function() {
   });
 
   it('should write coloured message via console log', function (done) {
-    this.mockConsole.expects('log').once().withExactArgs('\u001b[1m\u001b[36msome heading message\u001b[39m\u001b[22m');
+    this.mockConsole.expects('log').once().withExactArgs(
+      '%s%s',
+      '', 
+      '\u001b[1m\u001b[36msome heading message\u001b[39m\u001b[22m');
     bag.logStepHeading('some heading message');
+    done();
+  });
+
+  it('should write coloured message with labels via console log', function (done) {
+    this.mockConsole.expects('log').once().withExactArgs(
+      '%s%s',
+      '\u001b[45mdry run | temp\u001b[49m',
+      '\u001b[1m\u001b[36msome heading message\u001b[39m\u001b[22m');
+    bag.logStepHeading('some heading message', { labels: ['dry run', 'temp'] });
     done();
   });
 
@@ -1139,8 +1151,20 @@ describe('cli - logStepItemSuccess', function() {
   });
 
   it('should write coloured message via console log', function (done) {
-    this.mockConsole.expects('log').once().withExactArgs('  * %s', '\u001b[32msome success message\u001b[39m');
+    this.mockConsole.expects('log').once().withExactArgs(
+      '  * %s%s',
+      '',
+      '\u001b[32msome success message\u001b[39m');
     bag.logStepItemSuccess('some success message');
+    done();
+  });
+
+  it('should write coloured message with labels via console log', function (done) {
+    this.mockConsole.expects('log').once().withExactArgs(
+      '  * %s%s',
+      '\u001b[45mdry run | temp\u001b[49m',
+      '\u001b[32msome success message\u001b[39m');
+    bag.logStepItemSuccess('some success message', { labels: ['dry run', 'temp'] });
     done();
   });
 
@@ -1158,8 +1182,20 @@ describe('cli - logStepItemWarning', function() {
   });
 
   it('should write coloured message via console log', function (done) {
-    this.mockConsole.expects('log').once().withExactArgs('  * %s', '\u001b[33msome warning message\u001b[39m');
+    this.mockConsole.expects('log').once().withExactArgs(
+      '  * %s%s',
+      '',
+      '\u001b[33msome warning message\u001b[39m');
     bag.logStepItemWarning('some warning message');
+    done();
+  });
+
+    it('should write coloured message with labels via console log', function (done) {
+    this.mockConsole.expects('log').once().withExactArgs(
+      '  * %s%s',
+      '\u001b[45mdry run | temp\u001b[49m',
+      '\u001b[33msome warning message\u001b[39m');
+    bag.logStepItemWarning('some warning message', { labels: ['dry run', 'temp'] });
     done();
   });
 
@@ -1177,8 +1213,20 @@ describe('cli - logStepItemError', function() {
   });
 
   it('should write coloured message via console error', function (done) {
-    this.mockConsole.expects('error').once().withExactArgs('  * %s', '\u001b[31msome error message\u001b[39m');
+    this.mockConsole.expects('error').once().withExactArgs(
+      '  * %s%s',
+      '',
+      '\u001b[31msome error message\u001b[39m');
     bag.logStepItemError('some error message');
+    done();
+  });
+
+  it('should write coloured message with labels via console error', function (done) {
+    this.mockConsole.expects('error').once().withExactArgs(
+      '  * %s%s',
+      '\u001b[45mdry run | temp\u001b[49m',
+      '\u001b[31msome error message\u001b[39m');
+    bag.logStepItemError('some error message', { labels: ['dry run', 'temp'] });
     done();
   });
 

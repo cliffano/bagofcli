@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Add labels option support for logStepHeading, logStepItem(Success|Warning|Error)
+
 ## 2.3.0 - 2022-06-04
 ### Added
 - Add logStepHeading, logStepItem(Success|Warning|Error)
