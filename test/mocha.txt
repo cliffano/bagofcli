@@ -84,16 +84,20 @@
 
 [0m  cli - logStepHeading[0m
   [32m  [32m✔[39m[0m[90m should write coloured message via console log[0m
+  [32m  [32m✔[39m[0m[90m should write coloured message with labels via console log[0m
 
 [0m  cli - logStepItemSuccess[0m
   [32m  [32m✔[39m[0m[90m should write coloured message via console log[0m
+  [32m  [32m✔[39m[0m[90m should write coloured message with labels via console log[0m
 
 [0m  cli - logStepItemWarning[0m
   [32m  [32m✔[39m[0m[90m should write coloured message via console log[0m
+  [32m  [32m✔[39m[0m[90m should write coloured message with labels via console log[0m
 
 [0m  cli - logStepItemError[0m
   [32m  [32m✔[39m[0m[90m should write coloured message via console error[0m
+  [32m  [32m✔[39m[0m[90m should write coloured message with labels via console error[0m
 
 
-[92m [0m[32m 69 passing[0m[90m (99ms)[0m
+[92m [0m[32m 73 passing[0m[90m (130ms)[0m
 

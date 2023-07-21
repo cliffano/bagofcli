@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">71.92</p>
+      <p class="stat">71.25</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">593</p>
+      <p class="stat">621</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">71.97</p>
+      <p class="stat">76.29</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">4.43</p>
+      <p class="stat">4.86</p>
     </div>
   </div>
 </div>
@@ -629,36 +629,64 @@ function spawn(command, args, cb) {
  * Displays log step heading message on the console.
  *
  * @param {String} message: the heading message string to be displayed
+ * @param {Object} opts: optional
+ *   - labels: an array of labels to be displayed prior to the message
  */
- function logStepHeading(message) {
-  console.log(chalk.bold.cyan(message));
+ function logStepHeading(message, opts) {
+  opts = opts || {};
+  const labelsText = opts.labels &amp;&amp; Array.isArray(opts.labels)
+    ? chalk.bgMagenta(opts.labels.join(&#039; | &#039;))
+    : &#039;&#039;;
+  const messageText = chalk.bold.cyan(message);
+  console.log(&#039;%s%s&#039;, labelsText, messageText);
 }
 
 /**
  * Displays log step item success message on the console.
  *
  * @param {String} message: the success message string to be displayed
+ * @param {Object} opts: optional
+ *   - labels: an array of labels to be displayed prior to the message
  */
-function logStepItemSuccess(message) {
-  console.log(&#039;  * %s&#039;, chalk.green(message));
+function logStepItemSuccess(message, opts) {
+  opts = opts || {};
+  const labelsText = opts.labels &amp;&amp; Array.isArray(opts.labels)
+    ? chalk.bgMagenta(opts.labels.join(&#039; | &#039;))
+    : &#039;&#039;;
+  const messageText = chalk.green(message);
+  console.log(&#039;  * %s%s&#039;, labelsText, messageText);
 }
 
 /**
  * Displays log step item warning message on the console.
  *
  * @param {String} message: the warning message string to be displayed
+ * @param {Object} opts: optional
+ *   - labels: an array of labels to be displayed prior to the message
  */
-function logStepItemWarning(message) {
-  console.log(&#039;  * %s&#039;, chalk.yellow(message));
+function logStepItemWarning(message, opts) {
+  opts = opts || {};
+  const labelsText = opts.labels &amp;&amp; Array.isArray(opts.labels)
+    ? chalk.bgMagenta(opts.labels.join(&#039; | &#039;))
+    : &#039;&#039;;
+  const messageText = chalk.yellow(message);
+  console.log(&#039;  * %s%s&#039;, labelsText, messageText);
 }
 
 /**
  * Displays log step error item error message on the console.
  *
  * @param {String} message: the error message string to be displayed
+ * @param {Object} opts: optional
+ *   - labels: an array of labels to be displayed prior to the message
  */
- function logStepItemError(message) {
-  console.error(&#039;  * %s&#039;, chalk.red(message));
+ function logStepItemError(message, opts) {
+  opts = opts || {};
+  const labelsText = opts.labels &amp;&amp; Array.isArray(opts.labels)
+    ? chalk.bgMagenta(opts.labels.join(&#039; | &#039;))
+    : &#039;&#039;;
+  const messageText = chalk.red(message);
+  console.error(&#039;  * %s%s&#039;, labelsText, messageText);
 }
 
 const exports = {
