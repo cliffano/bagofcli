@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 /* eslint no-unused-vars: 0 */
 import async from 'async';
 import bag from '../lib/bagofcli.js';
@@ -161,7 +161,7 @@ describe('cli - _postCommand', function() {
   });
 
   it('should return without error when commands config is not set up with any args', function (done) {
-    this.mockCommander._name = 'somecommand'
+    this.mockCommander._name = 'somecommand';
     this.mockCommander.parent = { _name: 'someparentcommand' };
     delete this.mockCommander.args;
     const commandsConfig = { somecommand: {} };
@@ -893,7 +893,7 @@ describe('cli - lookupConfig', function() {
       then: function (cb) {
         cb({ somepasswordkey: 'somevalue', anotherkey: 'anothervalue' });
       }
-    }
+    };
     this.mockInquirer.expects('prompt').once().withArgs(expectedPromptQuestions).returns(mockThen);
     bag.lookupConfig(['somepasswordkey', 'anotherkey'], { file: 'someconffile.yaml', prompt: true }, function (err, result) {
       referee.assert.equals(err, null);
@@ -926,7 +926,7 @@ describe('cli - lookupConfig', function() {
       then: function (cb) {
         cb({ somepasswordkey: 'somepasswordvalue', inexistingkey: undefined });
       }
-    }
+    };
     this.mockInquirer.expects('prompt').once().withArgs(expectedPromptQuestions).returns(mockThen);
     bag.lookupConfig(['somekey', 'anotherkey', 'somepasswordkey', 'inexistingkey'], { file: 'someconffile.yaml', prompt: true }, function (err, result) {
       referee.assert.equals(err, null);
