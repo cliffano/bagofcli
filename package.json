@@ -6,7 +6,7 @@
     "cli",
     "command line"
   ],
-  "version": "2.5.0",
+  "version": "2.5.1-pre.0",
   "homepage": "http://github.com/cliffano/bagofcli",
   "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
   "contributors": [
