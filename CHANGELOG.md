@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Set min node engine to >= 20.0.0
+
 ## 2.4.1 - 2023-07-22
 ### Fixed
 - Fix lack of spacing between log labels and message
