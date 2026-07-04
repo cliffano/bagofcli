@@ -2,7 +2,7 @@
 package_name: bagofcli
 author: Cliffano Subagio
 generator:
-  component: node-cli
+  component: node-lib
   inputs:
     project_id: bagofcli
     project_name: Bag Of CLI
