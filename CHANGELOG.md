@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add Suntory as build Makefile
+- Add integration tests
 
 ## 2.5.0 - 2025-11-17
 ### Changed
