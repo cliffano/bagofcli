@@ -6,14 +6,14 @@
 [![Build Status](https://github.com/cliffano/bagofcli/workflows/CI/badge.svg)](https://github.com/cliffano/bagofcli/actions?query=workflow%3ACI)
 [![Dependencies Status](https://img.shields.io/librariesio/release/npm/bagofcli)](https://libraries.io/npm/bagofcli)
 [![Code Scanning Status](https://github.com/cliffano/bagofcli/workflows/CodeQL/badge.svg)](https://github.com/cliffano/bagofcli/actions?query=workflow%3ACodeQL)
-[![Coverage Status](https://img.shields.io/coveralls/cliffano/bagofcli.svg)](https://coveralls.io/r/cliffano/bagofcli?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/cliffano/bagofcli/badge.svg?branch=main)](https://coveralls.io/r/cliffano/bagofcli?branch=main)
 [![Security Status](https://snyk.io/test/github/cliffano/bagofcli/badge.svg)](https://snyk.io/test/github/cliffano/bagofcli)
 [![Published Version](https://img.shields.io/npm/v/bagofcli.svg)](https://www.npmjs.com/package/bagofcli)
 <!-- END:BADGES -->
 
 # Bag Of CLI
 
-Bag Of CLI contains CLI utility functions.
+Bag Of CLI contains utility CLI functions.
 
 This is handy when you want to have a set of common CLI commands with descriptions, options, help, and example usages, by just defining them in a JSON file. Bag of CLI essentially allows you to define those info in a configuration file instead of code.
 
@@ -103,7 +103,7 @@ Check out [iz](http://npmjs.org/package/iz) for available validation rules.
 ## Colophon
 
 <!-- BEGIN:DEVELOPERS_GUIDE -->
-[Developer's Guide](https://cliffano.github.io/developers_guide.html#nodejs)
+[Developer's Guide](https://cliffano.github.io/developers-guide-nodejs.html)
 <!-- END:DEVELOPERS_GUIDE -->
 
 <!-- BEGIN:BUILD_REPORTS -->

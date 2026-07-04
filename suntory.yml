@@ -1,0 +1,14 @@
+---
+package_name: bagofcli
+author: Cliffano Subagio
+generator:
+  component: node-cli
+  inputs:
+    project_id: bagofcli
+    project_name: Bag Of CLI
+    project_desc: Utility CLI functions
+    author_name: Cliffano Subagio
+    author_email: cliffano@gmail.com
+    author_url: https://github.com/cliffano
+    github_id: cliffano
+    github_repo: bagofcli
