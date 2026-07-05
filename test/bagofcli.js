@@ -3,7 +3,7 @@
 import async from "async";
 import bag from "../lib/bagofcli.js";
 import childProcess from "child_process";
-import commander from "commander";
+import { program as commander } from "commander";
 import fs from "fs";
 import inquirer from "inquirer";
 import referee from "@sinonjs/referee";
