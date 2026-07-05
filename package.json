@@ -28,7 +28,7 @@
     "async": "^3.2.6",
     "chalk": "^5.6.2",
     "colors": "^1.4.0",
-    "commander": "^6.2.0",
+    "commander": "^15.0.0",
     "inquirer": "^14.0.2",
     "iz": "^3.0.0",
     "lodash": "^4.18.1",

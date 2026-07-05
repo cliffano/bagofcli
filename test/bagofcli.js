@@ -3,7 +3,7 @@
 import async from "async";
 import bag from "../lib/bagofcli.js";
 import childProcess from "child_process";
-import commander from "commander";
+import { program as commander } from "commander";
 import fs from "fs";
 import inquirer from "inquirer";
 import referee from "@sinonjs/referee";
@@ -463,6 +463,66 @@ describe("cli - _postCommand", function () {
     done(err);
   });
 
+  it("should log error message when command option value is retrieved from opts", function (done) {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs(
+        "Invalid option: <-s, --some-arg <someArg>> must be number".red,
+      );
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.opts = sinon.stub().returns({ someArg: "abcdef" });
+    this.mockCommander.args = ["somecommand"];
+    const commandsConfig = {
+      somecommand: {
+        options: [
+          {
+            arg: "-s, --some-arg <someArg>",
+            rules: ["number"],
+          },
+        ],
+      },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.equals(this.mockCommander.opts.callCount, 1);
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when command option arg does not contain value placeholder", function (done) {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid option: <-s, --some-arg> must be number".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand"];
+    const commandsConfig = {
+      somecommand: {
+        options: [
+          {
+            arg: "-s, --some-arg",
+            rules: ["number"],
+          },
+        ],
+      },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
   it("should log error message when command has invalid global option", function (done) {
     this.mockConsole
       .expects("error")
@@ -498,6 +558,38 @@ describe("cli - _postCommand", function () {
   it("should return without error when there is no invalid global option", function (done) {
     this.mockCommander._name = "someprogram";
     this.mockCommander.parent = { someArg: 12345 };
+    this.mockCommander.args = ["somecommand"];
+    const commandsConfig = { somecommand: {} },
+      globalOptsConfig = [
+        {
+          arg: "-s, --some-arg <someArg>",
+          rules: ["number"],
+        },
+      ];
+    let err, result;
+    try {
+      result = bag._postCommand(
+        this.mockCommander,
+        commandsConfig,
+        globalOptsConfig,
+      );
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when global option source is undefined", function (done) {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs(
+        "Invalid option: <-s, --some-arg <someArg>> must be number".red,
+      );
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.parent = undefined;
     this.mockCommander.args = ["somecommand"];
     const commandsConfig = { somecommand: {} },
       globalOptsConfig = [
@@ -1584,5 +1676,46 @@ describe("cli - logStepItemError", function () {
       );
     bag.logStepItemError("some error message", { labels: ["dry run", "temp"] });
     done();
+  });
+});
+
+describe("cli - command action wrapper", function () {
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  it("should pass Command instance to action handler when command is executed", function () {
+    const actionSpy = sinon.spy();
+    const mockFs = sinon.mock(fs);
+    mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("/some/package.json")
+      .returns(JSON.stringify({ version: "1.2.3" }));
+    mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("/some/conf/commands.json")
+      .returns(
+        JSON.stringify({
+          commands: {
+            greet: { desc: "Greet command" },
+          },
+        }),
+      );
+    sinon.stub(process, "argv").value(["node", "cli.js", "greet"]);
+    bag.command("/some/dir", {
+      commands: {
+        greet: { action: actionSpy },
+      },
+    });
+    referee.assert.equals(actionSpy.callCount, 1);
+    const calledWith = actionSpy.firstCall.args[0];
+    // Commander always passes the Command instance as the last arg to action handlers;
+    // name() returning the command name confirms it is a Command instance, not a plain options object.
+    referee.assert.equals(typeof calledWith.name, "function");
+    referee.assert.equals(calledWith.name(), "greet");
+    mockFs.verify();
+    mockFs.restore();
   });
 });
