@@ -1678,3 +1678,42 @@ describe("cli - logStepItemError", function () {
     done();
   });
 });
+
+describe("cli - command action wrapper", function () {
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  it("should invoke action with Command instance when command has action and is executed", function () {
+    const actionSpy = sinon.spy();
+    const mockFs = sinon.mock(fs);
+    mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("/some/package.json")
+      .returns(JSON.stringify({ version: "1.2.3" }));
+    mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("/some/conf/commands.json")
+      .returns(
+        JSON.stringify({
+          commands: {
+            greet: { desc: "Greet command" },
+          },
+        }),
+      );
+    sinon.stub(process, "argv").value(["node", "cli.js", "greet"]);
+    bag.command("/some/dir", {
+      commands: {
+        greet: { action: actionSpy },
+      },
+    });
+    referee.assert.equals(actionSpy.callCount, 1);
+    const calledWith = actionSpy.firstCall.args[0];
+    referee.assert.equals(typeof calledWith.name, "function");
+    referee.assert.equals(calledWith.name(), "greet");
+    mockFs.verify();
+    mockFs.restore();
+  });
+});
