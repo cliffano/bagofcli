@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Suntory as build Makefile
 - Add integration tests
 
+### Changed
+- Major refactor for Commander v15 compatibility: allow excess positional arguments and pass Command instance to action handlers
+
 ### Fixed
 - Upgrade dependencies to latest
-- Fix commander v15 compatibility: allow excess positional arguments and pass Command instance to action handlers
 
 ## 2.5.0 - 2025-11-17
 ### Changed
