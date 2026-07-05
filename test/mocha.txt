@@ -101,6 +101,9 @@
   [32m  [32m✔[39m[0m[90m should write coloured message via console error[0m
   [32m  [32m✔[39m[0m[90m should write coloured message with labels via console error[0m
 
+[0m  cli - command action wrapper[0m
+  [32m  [32m✔[39m[0m[90m should pass Command instance to action handler when command is executed[0m
 
-[92m [0m[32m 76 passing[0m[90m (93ms)[0m
+
+[92m [0m[32m 77 passing[0m[90m (91ms)[0m
 
