@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Major refactor for Commander v15 compatibility: allow excess positional arguments and pass Command instance to action handlers
+- Set min node engine to >= 22.0.0
 
 ### Fixed
 - Upgrade dependencies to latest
