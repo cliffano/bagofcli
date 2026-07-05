@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">629</p>
+      <p class="stat">691</p>
     </div>
   </div>
   <div class="row historical">
@@ -90,41 +90,52 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import _ from &#039;lodash&#039;;
-import async from &#039;async&#039;;
-import chalk from &#039;chalk&#039;;
-import child from &#039;child_process&#039;;
-import colors from &#039;colors&#039;;
-import commander from &#039;commander&#039;;
-import fs from &#039;fs&#039;;
-import iz from &#039;iz&#039;;
-import p from &#039;path&#039;;
-import inquirer from &#039;inquirer&#039;;
-import util from &#039;util&#039;;
-import validators from &#039;iz/lib/validators.js&#039;;
-import wrench from &#039;wrench-sui&#039;;  
-import yaml from &#039;yaml-js&#039;;
+import _ from &quot;lodash&quot;;
+import async from &quot;async&quot;;
+import chalk from &quot;chalk&quot;;
+import child from &quot;child_process&quot;;
+import colors from &quot;colors&quot;;
+import commander from &quot;commander&quot;;
+import fs from &quot;fs&quot;;
+import iz from &quot;iz&quot;;
+import p from &quot;path&quot;;
+import inquirer from &quot;inquirer&quot;;
+import util from &quot;util&quot;;
+import validators from &quot;iz/lib/validators.js&quot;;
+import wrench from &quot;wrench-sui&quot;;
+import yaml from &quot;yaml-js&quot;;
+
+/**
+ * bagofcli module.
+ *
+ * @module bagofcli
+ */
 
 /**
  * Parse command line arguments and execute actions based on the specified commands.
  * Uses commander.js to provide -V / --version to be displayed version number,
  * and -h / --help to be displayed help info.
  *
- * @param {String} base: base directory where the client module is located,
- *   used as a base directory to read command file and package.json file,
- *   ideally the value would be the client&#039;s __dirname
- * @param {Object} actions: action function for each command in format: { command: { action: function () {} }},
- *   the command name in actions object is then mapped to the command name specified in commandFile
- * @param {Object} opts: optional
- *   - commandFile: relative path to command file from base directory, defaults to &#039;conf/commands.json&#039;
+ * @param {string} base Base directory where the client module is located.
+ * Used as the root directory to read the command file and package.json file.
+ * Ideally this is the client&#039;s `__dirname`.
+ * @param {Object} actions Action functions for commands in the form
+ * `{ command: { action: function () {} } }`.
+ * The command name in `actions` is mapped to the command name specified in `commandFile`.
+ * @param {Object} [opts] Optional settings.
+ * @param {string} [opts.commandFile=&#039;conf/commands.json&#039;] Relative path to the command file from `base`.
+ * @returns {void}
  */
 function command(base, actions, opts) {
-
   actions = actions || {};
   opts = opts || {};
 
-  const commands = JSON.parse(fs.readFileSync(p.join(base, opts.commandFile || &#039;../conf/commands.json&#039;))),
-    pkg = JSON.parse(fs.readFileSync(p.join(base, &#039;../package.json&#039;)));
+  const commands = JSON.parse(
+      fs.readFileSync(
+        p.join(base, opts.commandFile || &quot;../conf/commands.json&quot;),
+      ),
+    ),
+    pkg = JSON.parse(fs.readFileSync(p.join(base, &quot;../package.json&quot;)));
 
   if (actions.commands &amp;&amp; commands.commands) {
     _.each(actions.commands, function (command, name) {
@@ -143,9 +154,7 @@ function command(base, actions, opts) {
   }
 
   _.each(commands.commands, function (command, name) {
-    const program = commander
-      .command(name)
-      .description(command.desc);
+    const program = commander.command(name).description(command.desc);
 
     _.each(command.options, function (option) {
       program.option(option.arg, option.desc, option.action);
@@ -166,13 +175,18 @@ function command(base, actions, opts) {
 
 // Pre-command tasks:
 // - if --help flag is specified, append examples after standard help output
+/**
+ * Register a help handler that prints command examples after the default help output.
+ *
+ * @param {Object} commands Command configuration map.
+ * @returns {void}
+ * @private
+ */
 function _preCommand(commands) {
-  commander.on(&#039;--help&#039;, function () {
-
-    let hasExample = _.map(_.values(commands), &#039;examples&#039;)
-      .filter((elem) =&gt; {
-        return elem !== undefined;
-      });
+  commander.on(&quot;--help&quot;, function () {
+    let hasExample = _.map(_.values(commands), &quot;examples&quot;).filter((elem) =&gt; {
+      return elem !== undefined;
+    });
     if (hasExample.length &gt; 0) {
       hasExample = hasExample.reduce((a, b) =&gt; {
         return a.concat(b);
@@ -181,14 +195,13 @@ function _preCommand(commands) {
     hasExample = hasExample.length &gt; 0;
 
     if (hasExample) {
-
-      console.log(&#039;  Examples:\n&#039;);
+      console.log(&quot;  Examples:\n&quot;);
 
       Object.keys(commands).forEach((command) =&gt; {
         if (!_.isEmpty(commands[command].examples)) {
-          console.log(&#039;    %s:&#039;, command);
+          console.log(&quot;    %s:&quot;, command);
           commands[command].examples.forEach((example) =&gt; {
-            console.log(&#039;      %s&#039;, example);
+            console.log(&quot;      %s&quot;, example);
           });
         }
       });
@@ -196,17 +209,24 @@ function _preCommand(commands) {
   });
 }
 
-
 // Post-command tasks:
 // - if there&#039;s no command, display help then exit
 // - if command is unknown, display error message then exit
 // - if there&#039;s command, validate arguments and options then exit
+/**
+ * Validate command arguments and options after commander parsing.
+ *
+ * @param {Object} commanderArg Commander instance after parsing.
+ * @param {Object} commandsConfig Command configuration map.
+ * @param {Array&lt;Object&gt;} [globalOptsConfig] Global option configuration list.
+ * @returns {void}
+ * @private
+ */
 function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
-
   const commanderArgs = commanderArg.args;
 
   // add custom validator required which checks if value is not empty
-  validators.required = function(value) {
+  validators.required = function (value) {
     return !validators.empty(value);
   };
 
@@ -216,10 +236,14 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
       if (Object.keys(validators).indexOf(rule) !== -1) {
         const isValid = validators[rule](value);
         if (isValid === null || isValid === false) {
-          exit(new Error(util.format(&#039;Invalid %s: &lt;%s&gt; must be %s&#039;, desc, name, rule)));
+          exit(
+            new Error(
+              util.format(&quot;Invalid %s: &lt;%s&gt; must be %s&quot;, desc, name, rule),
+            ),
+          );
         }
       } else {
-        exit(new Error(util.format(&#039;Invalid %s rule: %s&#039;, desc, rule)));
+        exit(new Error(util.format(&quot;Invalid %s rule: %s&quot;, desc, rule)));
       }
     };
   }
@@ -227,41 +251,69 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
   if (!commanderArgs) {
     return;
 
-  // } else if (commanderArgs.length === 1) {
-  //   // having a single arg
-  //   // which means that the command is executed without args, hence display help menu
-  //   // NOTE: this check is needed because for some reason commander.args
-  //   // also returns empty array when one of the args is an opt (-- prefixed)
-  //   if (process.argv.length === 2) {
-  //     commander.help();
-  //   }
-
+    // } else if (commanderArgs.length === 1) {
+    //   // having a single arg
+    //   // which means that the command is executed without args, hence display help menu
+    //   // NOTE: this check is needed because for some reason commander.args
+    //   // also returns empty array when one of the args is an opt (-- prefixed)
+    //   if (process.argv.length === 2) {
+    //     commander.help();
+    //   }
   } else {
     const commandName = commanderArgs[0],
       commandArgs = commanderArgs.slice(1, commanderArgs.length),
-      commandConfigArgs = (commandsConfig[commandName]) ? commandsConfig[commandName].args : undefined,
-      commandConfigArgsMandatory = _.filter(commandConfigArgs, function(arg) { return !arg.optional; }),
-      commandConfigOpts = (commandsConfig[commandName]) ? commandsConfig[commandName].options : undefined;
+      commandConfigArgs = commandsConfig[commandName]
+        ? commandsConfig[commandName].args
+        : undefined,
+      commandConfigArgsMandatory = _.filter(commandConfigArgs, function (arg) {
+        return !arg.optional;
+      }),
+      commandConfigOpts = commandsConfig[commandName]
+        ? commandsConfig[commandName].options
+        : undefined;
 
     // Unknown command error if the command name doesn&#039;t exist in the commands configuration
     if (Object.keys(commandsConfig).indexOf(commandName) === -1) {
-      exit(new Error(util.format(&#039;Unknown command: %s, use --help for more info&#039;, commandName)));
-
+      exit(
+        new Error(
+          util.format(
+            &quot;Unknown command: %s, use --help for more info&quot;,
+            commandName,
+          ),
+        ),
+      );
     } else if (commandConfigArgs &amp;&amp; commandConfigArgs.length &gt; 0) {
       const programName = commanderArg._name;
 
       // display usage info when mandatory arguments don&#039;t exist
       // due to arguments being positional, then comparing the lengths is good enough
       if (commandConfigArgsMandatory.length !== commandArgs.length) {
-        exit(new Error(util.format(&#039;Usage: %s %s %s&#039;, programName, commandName, commandConfigArgs.map((arg) =&gt; {
-          return util.format((arg.optional) ? &#039;[%s]&#039; : &#039;&lt;%s&gt;&#039;, arg.name);
-        }).join(&#039; &#039;))));
+        exit(
+          new Error(
+            util.format(
+              &quot;Usage: %s %s %s&quot;,
+              programName,
+              commandName,
+              commandConfigArgs
+                .map((arg) =&gt; {
+                  return util.format(arg.optional ? &quot;[%s]&quot; : &quot;&lt;%s&gt;&quot;, arg.name);
+                })
+                .join(&quot; &quot;),
+            ),
+          ),
+        );
       } else {
         // validate arguments as configured in commands setup
         for (let i = 0, ln = commandConfigArgs.length; i &lt; ln; i += 1) {
           if (!commandConfigArgs[i].optional) {
             // first arg from Commander is the command, the rest are that command&#039;s arguments
-            commandConfigArgs[i].rules.forEach(_validate(commanderArgs[i + 1], commandConfigArgs[i].name, &#039;argument&#039;));
+            commandConfigArgs[i].rules.forEach(
+              _validate(
+                commanderArgs[i + 1],
+                commandConfigArgs[i].name,
+                &quot;argument&quot;,
+              ),
+            );
           }
         }
       }
@@ -272,8 +324,8 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
       commandConfigOpts.forEach((commandOpt) =&gt; {
         if (commandOpt.rules) {
           const name = commandOpt.arg,
-            value = commanderArg[name.match(/&lt;.*&gt;/)[0].replace(/[&lt;&gt;]/g, &#039;&#039;)];
-          commandOpt.rules.forEach(_validate(value, name, &#039;option&#039;));
+            value = commanderArg[name.match(/&lt;.*&gt;/)[0].replace(/[&lt;&gt;]/g, &quot;&quot;)];
+          commandOpt.rules.forEach(_validate(value, name, &quot;option&quot;));
         }
       });
     }
@@ -283,8 +335,9 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
       globalOptsConfig.forEach((globalOptConfig) =&gt; {
         if (globalOptConfig.rules) {
           const name = globalOptConfig.arg,
-            value = commanderArg.parent[name.match(/&lt;.*&gt;/)[0].replace(/[&lt;&gt;]/g, &#039;&#039;)];
-          globalOptConfig.rules.forEach(_validate(value, name, &#039;option&#039;));
+            value =
+              commanderArg.parent[name.match(/&lt;.*&gt;/)[0].replace(/[&lt;&gt;]/g, &quot;&quot;)];
+          globalOptConfig.rules.forEach(_validate(value, name, &quot;option&quot;));
         }
       });
     }
@@ -300,15 +353,21 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
  * Fallthrough is handy in situation where there are multiple execs running in sequence/parallel,
  * and they all have to be executed regardless of success/error on either one of them.
  *
- * @param {String} command: command to execute
- * @param {Boolean} fallthrough: allow error to be camouflaged as a non-error
- * @param {Function} cb: standard cb(err, result) callback
+ * @param {string} command Command to execute.
+ * @param {boolean} fallthrough Allow error to be camouflaged as a non-error.
+ * @param {Function} cb Standard `cb(err, result)` callback.
+ * @returns {void}
  */
 function exec(command, fallthrough, cb) {
-  execute(command, fallthrough, false, function(err, stdOutOuput, stdErrOuput, result) {
-    // drop stdOutOuput and stdErrOuput parameters to keep exec backwards compatible.
-    cb(err, result);
-  });
+  execute(
+    command,
+    fallthrough,
+    false,
+    function (err, stdOutOuput, stdErrOuput, result) {
+      // drop stdOutOuput and stdErrOuput parameters to keep exec backwards compatible.
+      cb(err, result);
+    },
+  );
 }
 
 /**
@@ -320,9 +379,10 @@ function exec(command, fallthrough, cb) {
  * Fallthrough is handy in situation where there are multiple execs running in sequence/parallel,
  * and they all have to be executed regardless of success/error on either one of them.
  *
- * @param {String} command: command to execute
- * @param {Boolean} fallthrough: allow error to be camouflaged as a non-error
- * @param {Function} cb: (err, stdOutOuput, stdErrOuput, result) callback
+ * @param {string} command Command to execute.
+ * @param {boolean} fallthrough Allow error to be camouflaged as a non-error.
+ * @param {Function} cb `(err, stdOutOutput, stdErrOutput, result)` callback.
+ * @returns {void}
  */
 function execAndCollect(command, fallthrough, cb) {
   execute(command, fallthrough, true, cb);
@@ -339,16 +399,16 @@ function execAndCollect(command, fallthrough, cb) {
  * Fallthrough is handy in situation where there are multiple execs running in sequence/parallel,
  * and they all have to be executed regardless of success/error on either one of them.
  *
- * @param {String} command: command to execute
- * @param {Boolean} fallthrough: allow error to be camouflaged as a non-error
- * @param {Boolean} collectOutput: pass the output of the child process to the callback instead
- *        of writing it to error to be camouflaged as a non-error
- * @param {Function} cb: (err, stdOutOuput, stdErrOuput, result) callback
+ * @param {string} command Command to execute.
+ * @param {boolean} fallthrough Allow error to be camouflaged as a non-error.
+ * @param {boolean} collectOutput Pass child output to the callback instead of writing it.
+ * @param {Function} cb `(err, stdOutOutput, stdErrOutput, result)` callback.
+ * @returns {void}
  * @private
  */
 function execute(command, fallthrough, collectOutput, cb) {
-  let collectedStdOut = &#039;&#039;;
-  let collectedStdErr = &#039;&#039;;
+  let collectedStdOut = &quot;&quot;;
+  let collectedStdErr = &quot;&quot;;
 
   const _exec = child.exec(command, function (err) {
     let result;
@@ -360,7 +420,7 @@ function execute(command, fallthrough, collectOutput, cb) {
     cb(err, collectedStdOut, collectedStdErr, result);
   });
 
-  _exec.stdout.on(&#039;data&#039;, function (data) {
+  _exec.stdout.on(&quot;data&quot;, function (data) {
     if (collectOutput) {
       collectedStdOut += data.toString().trim();
     } else {
@@ -368,7 +428,7 @@ function execute(command, fallthrough, collectOutput, cb) {
     }
   });
 
-  _exec.stderr.on(&#039;data&#039;, function (data) {
+  _exec.stderr.on(&quot;data&quot;, function (data) {
     if (collectOutput) {
       collectedStdErr += data.toString().trim();
     } else {
@@ -385,7 +445,8 @@ function execute(command, fallthrough, collectOutput, cb) {
  * Exit is also called with a second method in the signature called &#039;result&#039;, but it&#039;s not declared
  * here due to not being used when there is no error and this function simply exits with code 0
  *
- * @param {Error} err: error object existence indicates the occurence of an error
+ * @param {Error} err Error object existence indicates the occurrence of an error.
+ * @returns {void}
  */
 function exit(err) {
   if (err) {
@@ -401,11 +462,11 @@ function exit(err) {
  * with error and success callbacks to handle error and result accordingly.
  * Exit status code 1 indicates an error, exit status code 0 indicates a success.
  *
- * @param {Function} errorCb: error callback accepts error argument, defaults to logging to console error
- * @param {Function} successCb: success callback accepts result argument, defaults to logging to console log
+ * @param {Function} [errorCb] Error callback, defaults to logging to console error.
+ * @param {Function} [successCb] Success callback, defaults to logging to console log.
+ * @returns {Function} Exit callback.
  */
 function exitCb(errorCb, successCb) {
-
   if (!errorCb) {
     errorCb = function (err) {
       console.error(colors.red(err.message || JSON.stringify(err)));
@@ -433,17 +494,20 @@ function exitCb(errorCb, successCb) {
  * Get an array of files contained in specified items.
  * When a directory is specified, all files contained within that directory and its sub-directories will be included.
  *
- * @param {Array} items: an array of files and/or directories
- * @param {Object} opts: optional
- *   - match: regular expression to match against the file name
- * @return {Array} all files
+ * @param {Array&lt;string&gt;} items Array of files and/or directories.
+ * @param {Object} [opts] Optional settings.
+ * @param {string} [opts.match] Regular expression to match against the file name.
+ * @returns {Array&lt;string&gt;} All files.
  */
 function files(items, opts) {
   opts = opts || {};
   const data = [];
 
   function addMatch(item) {
-    if (opts.match === undefined || (opts.match &amp;&amp; item.match(new RegExp(opts.match)))) {
+    if (
+      opts.match === undefined ||
+      (opts.match &amp;&amp; item.match(new RegExp(opts.match)))
+    ) {
       data.push(item);
     }
   }
@@ -453,7 +517,6 @@ function files(items, opts) {
 
     if (stat.isFile()) {
       addMatch(item);
-
     } else if (stat.isDirectory()) {
       const _items = wrench.readdirSyncRecursive(item);
       _items.forEach((_item) =&gt; {
@@ -474,15 +537,14 @@ function files(items, opts) {
  *   file type depends on extension file
  * - if optional enablePrompt is set to true, then prompt the user for config value
  *
- * @param {Array} keys: an array of configuration keys to be looked up
- * @param {Object} opts: optional
- * - file: file name to look up to for the configuration value,
- *         if not supplied then no file lookup will be done
- * - enablePrompt: if true then prompt the user for configuration value
- * @param {Function} cb: standard cb(err, result) callback
+ * @param {Array&lt;string&gt;|string} keys Configuration keys to look up.
+ * @param {Object} opts Optional settings.
+ * @param {string} [opts.file] File name to look up configuration values from.
+ * @param {boolean} [opts.prompt=false] Prompt the user for missing configuration values.
+ * @param {Function} cb Standard `cb(err, result)` callback.
+ * @returns {void}
  */
 function lookupConfig(keys, opts, cb) {
-
   if (!Array.isArray(keys)) {
     keys = [keys];
   }
@@ -497,7 +559,7 @@ function lookupConfig(keys, opts, cb) {
     } else if (opts.file.match(/\.ya?ml$/)) {
       file.yaml = yaml.load(content);
     } else {
-      throw new Error(&#039;Configuration file extension is not supported&#039;);
+      throw new Error(&quot;Configuration file extension is not supported&quot;);
     }
   }
 
@@ -524,7 +586,6 @@ function lookupConfig(keys, opts, cb) {
   });
 
   async.parallel(tasks, function (err, results) {
-
     if (opts.prompt) {
       // prompt users for any keys that don&#039;t yet have any value from
       // environment variables and configuration file
@@ -536,10 +597,10 @@ function lookupConfig(keys, opts, cb) {
             message: key,
             default: false,
           };
-          if (key.toLowerCase().indexOf(&#039;password&#039;) &gt;= 0) {
-            promptQuestion.type = &#039;input&#039;;
+          if (key.toLowerCase().indexOf(&quot;password&quot;) &gt;= 0) {
+            promptQuestion.type = &quot;input&quot;;
           } else {
-            promptQuestion.type = &#039;password&#039;;
+            promptQuestion.type = &quot;password&quot;;
           }
           promptQuestions.push(promptQuestion);
         }
@@ -566,19 +627,18 @@ function lookupConfig(keys, opts, cb) {
  * - if none exists, throw an error
  * This allows simple file lookup which allows various locations.
  *
- * @param {String} file: the file name to read
- * @param {Object} opts: optional
- * - platform: needed for unit tests to override platform since node v0.11.x
- *             https://github.com/trevnorris/node/commit/c80f8fa8f108d8db598b260ddf26bafd2ec8a1f8
- * @return {String} content of the file
+ * @param {string} file File name to read.
+ * @param {Object} [opts] Optional settings.
+ * @param {string} [opts.platform] Platform override for tests.
+ * @returns {string} File content.
  */
 function lookupFile(file, opts) {
   opts = opts || {};
   let data;
   const platform = opts.platform || process.platform,
     baseDir = file.match(/^\//) ? p.dirname(file) : process.cwd(),
-    homeDir = process.env[(platform === &#039;win32&#039;) ? &#039;USERPROFILE&#039; : &#039;HOME&#039;],
-    files = _.map([ baseDir, homeDir ], function (dir) {
+    homeDir = process.env[platform === &quot;win32&quot; ? &quot;USERPROFILE&quot; : &quot;HOME&quot;],
+    files = _.map([baseDir, homeDir], function (dir) {
       return p.join(dir, file.match(/^\//) ? p.basename(file) : file);
     });
 
@@ -594,7 +654,7 @@ function lookupFile(file, opts) {
   if (data) {
     return data;
   } else {
-    throw new Error(&#039;Unable to lookup file in &#039; + files.join(&#039;, &#039;));
+    throw new Error(&quot;Unable to lookup file in &quot; + files.join(&quot;, &quot;));
   }
 }
 
@@ -604,96 +664,100 @@ function lookupFile(file, opts) {
  *      will be executed as: make -f somemakefile target1 target2 target3
  * NOTE: process.stdout.write and process.stderr.write are used because console.log adds a newline
  *
- * @param {String} command: command to execute
- * @param {Array} args: command arguments
- * @param {Function} cb: standard cb(err, result) callback
+ * @param {string} command Command to execute.
+ * @param {Array&lt;string&gt;} args Command arguments.
+ * @param {Function} cb Standard `cb(err, result)` callback.
+ * @returns {void}
  */
 function spawn(command, args, cb) {
-
   const _spawn = child.spawn(command, args);
 
-  _spawn.stdout.on(&#039;data&#039;, function (data) {
+  _spawn.stdout.on(&quot;data&quot;, function (data) {
     process.stdout.write(colors.green(data.toString()));
   });
 
-  _spawn.stderr.on(&#039;data&#039;, function (data) {
+  _spawn.stderr.on(&quot;data&quot;, function (data) {
     process.stderr.write(colors.red(data.toString()));
   });
 
-  _spawn.on(&#039;exit&#039;, function (code) {
-    cb((code !== 0) ? new Error(code) : undefined, code);
+  _spawn.on(&quot;exit&quot;, function (code) {
+    cb(code !== 0 ? new Error(code) : undefined, code);
   });
 }
 
 /**
  * Displays log step heading message on the console.
  *
- * @param {String} message: the heading message string to be displayed
- * @param {Object} opts: optional
- *   - labels: an array of labels to be displayed prior to the message
+ * @param {string} message Heading message to be displayed.
+ * @param {Object} [opts] Optional settings.
+ * @param {Array&lt;string&gt;} [opts.labels] Labels to be displayed before the message.
+ * @returns {void}
  */
- function logStepHeading(message, opts) {
+function logStepHeading(message, opts) {
   opts = opts || {};
   const messageText = chalk.bold.cyan(message);
   if (opts.labels &amp;&amp; Array.isArray(opts.labels)) {
-    const labelsText = chalk.bgMagenta(opts.labels.join(&#039; | &#039;));
-    console.log(&#039;%s %s&#039;, labelsText, messageText);
+    const labelsText = chalk.bgMagenta(opts.labels.join(&quot; | &quot;));
+    console.log(&quot;%s %s&quot;, labelsText, messageText);
   } else {
-    console.log(&#039;%s&#039;, messageText);
+    console.log(&quot;%s&quot;, messageText);
   }
 }
 
 /**
  * Displays log step item success message on the console.
  *
- * @param {String} message: the success message string to be displayed
- * @param {Object} opts: optional
- *   - labels: an array of labels to be displayed prior to the message
+ * @param {string} message Success message to be displayed.
+ * @param {Object} [opts] Optional settings.
+ * @param {Array&lt;string&gt;} [opts.labels] Labels to be displayed before the message.
+ * @returns {void}
  */
 function logStepItemSuccess(message, opts) {
   opts = opts || {};
   const messageText = chalk.green(message);
   if (opts.labels &amp;&amp; Array.isArray(opts.labels)) {
-    const labelsText = chalk.bgMagenta(opts.labels.join(&#039; | &#039;));
-    console.log(&#039;  * %s %s&#039;, labelsText, messageText);
+    const labelsText = chalk.bgMagenta(opts.labels.join(&quot; | &quot;));
+    console.log(&quot;  * %s %s&quot;, labelsText, messageText);
   } else {
-    console.log(&#039;  * %s&#039;, messageText);
+    console.log(&quot;  * %s&quot;, messageText);
   }
 }
 
 /**
  * Displays log step item warning message on the console.
  *
- * @param {String} message: the warning message string to be displayed
- * @param {Object} opts: optional
- *   - labels: an array of labels to be displayed prior to the message
+ * @param {string} message Warning message to be displayed.
+ * @param {Object} [opts] Optional settings.
+ * @param {Array&lt;string&gt;} [opts.labels] Labels to be displayed before the message.
+ * @returns {void}
  */
 function logStepItemWarning(message, opts) {
   opts = opts || {};
   const messageText = chalk.yellow(message);
   if (opts.labels &amp;&amp; Array.isArray(opts.labels)) {
-    const labelsText = chalk.bgMagenta(opts.labels.join(&#039; | &#039;));
-    console.log(&#039;  * %s %s&#039;, labelsText, messageText);
+    const labelsText = chalk.bgMagenta(opts.labels.join(&quot; | &quot;));
+    console.log(&quot;  * %s %s&quot;, labelsText, messageText);
   } else {
-    console.log(&#039;  * %s&#039;, messageText);
+    console.log(&quot;  * %s&quot;, messageText);
   }
 }
 
 /**
  * Displays log step error item error message on the console.
  *
- * @param {String} message: the error message string to be displayed
- * @param {Object} opts: optional
- *   - labels: an array of labels to be displayed prior to the message
+ * @param {string} message Error message to be displayed.
+ * @param {Object} [opts] Optional settings.
+ * @param {Array&lt;string&gt;} [opts.labels] Labels to be displayed before the message.
+ * @returns {void}
  */
- function logStepItemError(message, opts) {
+function logStepItemError(message, opts) {
   opts = opts || {};
   const messageText = chalk.red(message);
   if (opts.labels &amp;&amp; Array.isArray(opts.labels)) {
-    const labelsText = chalk.bgMagenta(opts.labels.join(&#039; | &#039;));
-    console.error(&#039;  * %s %s&#039;, labelsText, messageText);
+    const labelsText = chalk.bgMagenta(opts.labels.join(&quot; | &quot;));
+    console.error(&quot;  * %s %s&quot;, labelsText, messageText);
   } else {
-    console.error(&#039;  * %s&#039;, messageText);
+    console.error(&quot;  * %s&quot;, messageText);
   }
 }
 
@@ -712,12 +776,10 @@ const exports = {
   logStepHeading: logStepHeading,
   logStepItemSuccess: logStepItemSuccess,
   logStepItemWarning: logStepItemWarning,
-  logStepItemError: logStepItemError
+  logStepItemError: logStepItemError,
 };
 
-export {
-  exports as default
-};</textarea>
+export { exports as default };</textarea>
   </div>
 </div>
 
