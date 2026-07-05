@@ -1,7 +1,7 @@
-(node:3109) [DEP0151] DeprecationWarning: Package /opt/hostedtoolcache/node/26.4.0/x64/lib/node_modules/bob/node_modules/jazz/ has a "main" field set to "./lib/jazz", excluding the full filename and extension to the resolved file at "lib/jazz.js", imported from /opt/hostedtoolcache/node/26.4.0/x64/lib/node_modules/bob/lib/bob.js.
+(node:3109) [DEP0151] DeprecationWarning: Package /opt/hostedtoolcache/node/22.23.1/x64/lib/node_modules/bob/node_modules/jazz/ has a "main" field set to "./lib/jazz", excluding the full filename and extension to the resolved file at "lib/jazz.js", imported from /opt/hostedtoolcache/node/22.23.1/x64/lib/node_modules/bob/lib/bob.js.
  Automatic extension resolution of the "main" field is deprecated for ES modules.
 (Use `node --trace-deprecation ...` to show where the warning was created)
-test | /opt/hostedtoolcache/node/26.4.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/22.23.1/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  cli - command[0m
@@ -30,8 +30,11 @@ test | /opt/hostedtoolcache/node/26.4.0/x64/lib/node_modules/bob/node_modules/.b
   [32m  [32m✔[39m[0m[90m should log error message when command has invalid command option[0m
   [32m  [32m✔[39m[0m[90m should return without error when there is no invalid command option[0m
   [32m  [32m✔[39m[0m[90m should return without error when command option does not have any validation rule[0m
+  [32m  [32m✔[39m[0m[90m should log error message when command option value is retrieved from opts[0m
+  [32m  [32m✔[39m[0m[90m should log error message when command option arg does not contain value placeholder[0m
   [32m  [32m✔[39m[0m[90m should log error message when command has invalid global option[0m
   [32m  [32m✔[39m[0m[90m should return without error when there is no invalid global option[0m
+  [32m  [32m✔[39m[0m[90m should log error message when global option source is undefined[0m
   [32m  [32m✔[39m[0m[90m should return without error when global option does not have any validation rule[0m
 
 [0m  cli - exec[0m
@@ -103,12 +106,12 @@ test | /opt/hostedtoolcache/node/26.4.0/x64/lib/node_modules/bob/node_modules/.b
   [32m  [32m✔[39m[0m[90m should write coloured message with labels via console error[0m
 
 
-[92m [0m[32m 73 passing[0m[90m (93ms)[0m
+[92m [0m[32m 76 passing[0m[90m (88ms)[0m
 
 SUCCESS | exit code 0
 -------------|---------|----------|---------|---------|-------------------
 File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------|---------|----------|---------|---------|-------------------
-All files    |     100 |      100 |     100 |     100 |                   
- bagofcli.js |     100 |      100 |     100 |     100 |                   
+All files    |   99.45 |    98.78 |     100 |   99.45 |                   
+ bagofcli.js |   99.45 |    98.78 |     100 |   99.45 | 79-82             
 -------------|---------|----------|---------|---------|-------------------

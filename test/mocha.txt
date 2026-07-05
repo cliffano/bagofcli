@@ -26,8 +26,11 @@
   [32m  [32m✔[39m[0m[90m should log error message when command has invalid command option[0m
   [32m  [32m✔[39m[0m[90m should return without error when there is no invalid command option[0m
   [32m  [32m✔[39m[0m[90m should return without error when command option does not have any validation rule[0m
+  [32m  [32m✔[39m[0m[90m should log error message when command option value is retrieved from opts[0m
+  [32m  [32m✔[39m[0m[90m should log error message when command option arg does not contain value placeholder[0m
   [32m  [32m✔[39m[0m[90m should log error message when command has invalid global option[0m
   [32m  [32m✔[39m[0m[90m should return without error when there is no invalid global option[0m
+  [32m  [32m✔[39m[0m[90m should log error message when global option source is undefined[0m
   [32m  [32m✔[39m[0m[90m should return without error when global option does not have any validation rule[0m
 
 [0m  cli - exec[0m
@@ -99,5 +102,5 @@
   [32m  [32m✔[39m[0m[90m should write coloured message with labels via console error[0m
 
 
-[92m [0m[32m 73 passing[0m[90m (93ms)[0m
+[92m [0m[32m 76 passing[0m[90m (88ms)[0m
 

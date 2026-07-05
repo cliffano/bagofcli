@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">70.72</p>
+      <p class="stat">70.34</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">691</p>
+      <p class="stat">730</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">76.54</p>
+      <p class="stat">84.61</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">4.93</p>
+      <p class="stat">5.21</p>
     </div>
   </div>
 </div>
@@ -95,7 +95,7 @@ import async from &quot;async&quot;;
 import chalk from &quot;chalk&quot;;
 import child from &quot;child_process&quot;;
 import colors from &quot;colors&quot;;
-import commander from &quot;commander&quot;;
+import { program as commander } from &quot;commander&quot;;
 import fs from &quot;fs&quot;;
 import iz from &quot;iz&quot;;
 import p from &quot;path&quot;;
@@ -129,6 +129,9 @@ import yaml from &quot;yaml-js&quot;;
 function command(base, actions, opts) {
   actions = actions || {};
   opts = opts || {};
+  // commander keeps registered subcommands across invocations on program singleton,
+  // so clear command list before registering command definitions for this invocation.
+  commander.commands = [];
 
   const commands = JSON.parse(
       fs.readFileSync(
@@ -154,13 +157,20 @@ function command(base, actions, opts) {
   }
 
   _.each(commands.commands, function (command, name) {
-    const program = commander.command(name).description(command.desc);
+    const program = commander
+      .command(name)
+      .description(command.desc)
+      .allowExcessArguments(true);
 
     _.each(command.options, function (option) {
       program.option(option.arg, option.desc, option.action);
     });
 
-    program.action(command.action);
+    if (command.action) {
+      program.action(function (...args) {
+        command.action(args[args.length - 1]);
+      });
+    }
   });
 
   _preCommand(commands.commands);
@@ -248,7 +258,34 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
     };
   }
 
-  if (!commanderArgs) {
+  /**
+   * Resolve an option value from a Commander command instance.
+   *
+   * Newer Commander versions expose parsed values via opts(), while older behavior
+   * may expose values directly as command properties. This helper checks opts()
+   * first, then falls back to direct property access for compatibility.
+   *
+   * @param {Object} commandArg Commander command instance.
+   * @param {string} arg Option argument definition.
+   * @returns {string|undefined} Parsed option value.
+   * @private
+   */
+  function _getOptionValue(commandArg, arg) {
+    const argMatch = arg.match(/&lt;.*?&gt;|\[.*?\]/);
+    if (!argMatch) {
+      return undefined;
+    }
+    const name = argMatch[0].replace(/[&lt;&gt;\[\]]/g, &quot;&quot;);
+    if (commandArg &amp;&amp; typeof commandArg.opts === &quot;function&quot;) {
+      const commandArgOpts = commandArg.opts();
+      if (commandArgOpts &amp;&amp; commandArgOpts[name] !== undefined) {
+        return commandArgOpts[name];
+      }
+    }
+    return commandArg ? commandArg[name] : undefined;
+  }
+
+  if (!commanderArgs || commanderArgs.length === 0) {
     return;
 
     // } else if (commanderArgs.length === 1) {
@@ -283,7 +320,10 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
         ),
       );
     } else if (commandConfigArgs &amp;&amp; commandConfigArgs.length &gt; 0) {
-      const programName = commanderArg._name;
+      const programName =
+        typeof commanderArg.name === &quot;function&quot;
+          ? commanderArg.name()
+          : commanderArg._name;
 
       // display usage info when mandatory arguments don&#039;t exist
       // due to arguments being positional, then comparing the lengths is good enough
@@ -324,7 +364,7 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
       commandConfigOpts.forEach((commandOpt) =&gt; {
         if (commandOpt.rules) {
           const name = commandOpt.arg,
-            value = commanderArg[name.match(/&lt;.*&gt;/)[0].replace(/[&lt;&gt;]/g, &quot;&quot;)];
+            value = _getOptionValue(commanderArg, name);
           commandOpt.rules.forEach(_validate(value, name, &quot;option&quot;));
         }
       });
@@ -335,8 +375,7 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
       globalOptsConfig.forEach((globalOptConfig) =&gt; {
         if (globalOptConfig.rules) {
           const name = globalOptConfig.arg,
-            value =
-              commanderArg.parent[name.match(/&lt;.*&gt;/)[0].replace(/[&lt;&gt;]/g, &quot;&quot;)];
+            value = _getOptionValue(commanderArg.parent, name);
           globalOptConfig.rules.forEach(_validate(value, name, &quot;option&quot;));
         }
       });
