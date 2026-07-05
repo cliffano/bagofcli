@@ -1684,7 +1684,7 @@ describe("cli - command action wrapper", function () {
     sinon.restore();
   });
 
-  it("should invoke action with Command instance when command has action and is executed", function () {
+  it("should pass Command instance to action handler when command is executed", function () {
     const actionSpy = sinon.spy();
     const mockFs = sinon.mock(fs);
     mockFs
@@ -1711,6 +1711,8 @@ describe("cli - command action wrapper", function () {
     });
     referee.assert.equals(actionSpy.callCount, 1);
     const calledWith = actionSpy.firstCall.args[0];
+    // Commander always passes the Command instance as the last arg to action handlers;
+    // name() returning the command name confirms it is a Command instance, not a plain options object.
     referee.assert.equals(typeof calledWith.name, "function");
     referee.assert.equals(calledWith.name(), "greet");
     mockFs.verify();
