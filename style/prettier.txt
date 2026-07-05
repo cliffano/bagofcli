@@ -1,2 +1,2 @@
-[90mlib/bagofcli.js[39m 126ms (unchanged)
-[90mtest/bagofcli.js[39m 119ms (unchanged)
+[90mlib/bagofcli.js[39m 121ms (unchanged)
+[90mtest/bagofcli.js[39m 113ms (unchanged)
