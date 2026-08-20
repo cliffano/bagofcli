@@ -1688,7 +1688,7 @@ describe("cli - command action wrapper", function () {
   // for the lifetime of the process once command() runs it for real (unmocked), so only
   // one test in this describe block can call bag.command() without mocking
   // commander.version() - hence a single combined test rather than two separate ones.
-  it("should pass parsed options object, not the Command instance, to action handler when command is executed (regression test for issue #20)", function () {
+  it("should pass options as direct properties while still exposing positional args and name() to the action handler (regression test for issue #20)", function () {
     const actionSpy = sinon.spy();
     const mockFs = sinon.mock(fs);
     mockFs
@@ -1710,7 +1710,9 @@ describe("cli - command action wrapper", function () {
           },
         }),
       );
-    sinon.stub(process, "argv").value(["node", "cli.js", "greet", "--flag"]);
+    sinon
+      .stub(process, "argv")
+      .value(["node", "cli.js", "greet", "Ada", "--flag"]);
     bag.command("/some/dir", {
       commands: {
         greet: { action: actionSpy },
@@ -1718,11 +1720,12 @@ describe("cli - command action wrapper", function () {
     });
     referee.assert.equals(actionSpy.callCount, 1);
     const calledWith = actionSpy.firstCall.args[0];
-    // Before the fix, command.action(args[args.length - 1]) handed the action the
-    // Command instance rather than the parsed options, so --flag ended up silently
-    // ignored. name() being undefined confirms it's a plain options object, not a
-    // Command instance, and it must now surface --flag directly.
-    referee.assert.isUndefined(calledWith.name);
+    // Flag must now surface as a direct property,
+    // while positional args and the command name - only reachable via the Command
+    // instance, since bagofcli never registers positional args with commander -
+    // must still be available too.
     referee.assert.isTrue(calledWith.flag);
+    referee.assert.equals(calledWith.args, ["Ada"]);
+    referee.assert.equals(calledWith.name(), "greet");
   });
 });

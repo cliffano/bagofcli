@@ -39,7 +39,7 @@ function runScenario(tempDir, argv, actionSource) {
 
 describe('bagofcli - integration', function () {
 
-  it('should execute a configured command and pass positional arguments to the action', function () {
+  it('should execute a configured command and pass positional arguments and name() to the action', function () {
     const tempDir = createTempProject({
       commands: {
         greet: {
@@ -71,6 +71,89 @@ describe('bagofcli - integration', function () {
 
       assert.equals(result.status, 0);
       assert.equals(result.stdout, '{"args":["Ada"],"name":"greet"}\n');
+      assert.equals(result.stderr, '');
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('should execute a configured command and pass a flag directly on the action argument (regression test for issue #20)', function () {
+    const tempDir = createTempProject({
+      commands: {
+        greet: {
+          desc: 'Greet a person',
+          options: [
+            {
+              arg: '-f, --flag',
+              desc: 'A flag option'
+            }
+          ]
+        }
+      }
+    });
+
+    try {
+      const result = runScenario(
+        tempDir,
+        ['node', 'cli.js', 'greet', '--flag'],
+        `{
+          commands: {
+            greet: {
+              action: function (opts) {
+                console.log(JSON.stringify({ flag: opts.flag }));
+              }
+            }
+          }
+        }`
+      );
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"flag":true}\n');
+      assert.equals(result.stderr, '');
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('should execute a configured command and pass both a flag and positional arguments/name() to the action', function () {
+    // NOTE: intentionally not declaring `args` in commands.json here. _postCommand's
+    // mandatory-arg-count check counts positional args from the top-level commander
+    // instance, which doesn't know about this subcommand-scoped --flag option, so it
+    // miscounts and rejects the command with a false usage error. That's a separate,
+    // pre-existing bug unrelated to issue #20; omitting `args` here avoids it while
+    // still exercising both the flag and opts.args/opts.name(), which come straight
+    // from the Commander subcommand instance regardless of `args` config.
+    const tempDir = createTempProject({
+      commands: {
+        greet: {
+          desc: 'Greet a person',
+          options: [
+            {
+              arg: '-f, --flag',
+              desc: 'A flag option'
+            }
+          ]
+        }
+      }
+    });
+
+    try {
+      const result = runScenario(
+        tempDir,
+        ['node', 'cli.js', 'greet', 'Ada', '--flag'],
+        `{
+          commands: {
+            greet: {
+              action: function (opts) {
+                console.log(JSON.stringify({ args: opts.args, name: opts.name(), flag: opts.flag }));
+              }
+            }
+          }
+        }`
+      );
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"args":["Ada"],"name":"greet","flag":true}\n');
       assert.equals(result.stderr, '');
     } finally {
       rmSync(tempDir, { recursive: true, force: true });
