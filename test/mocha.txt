@@ -102,8 +102,8 @@
   [32m  [32m✔[39m[0m[90m should write coloured message with labels via console error[0m
 
 [0m  cli - command action wrapper[0m
-  [32m  [32m✔[39m[0m[90m should pass Command instance to action handler when command is executed[0m
+  [32m  [32m✔[39m[0m[90m should pass options as direct properties while still exposing positional args and name() to the action handler (regression test for issue #20)[0m
 
 
-[92m [0m[32m 77 passing[0m[90m (104ms)[0m
+[92m [0m[32m 77 passing[0m[90m (96ms)[0m
 
