@@ -1684,7 +1684,11 @@ describe("cli - command action wrapper", function () {
     sinon.restore();
   });
 
-  it("should pass Command instance to action handler when command is executed", function () {
+  // NOTE: commander's `program` singleton keeps its "-V, --version" option registered
+  // for the lifetime of the process once command() runs it for real (unmocked), so only
+  // one test in this describe block can call bag.command() without mocking
+  // commander.version() - hence a single combined test rather than two separate ones.
+  it("should pass parsed options object, not the Command instance, to action handler when command is executed (regression test for issue #20)", function () {
     const actionSpy = sinon.spy();
     const mockFs = sinon.mock(fs);
     mockFs
@@ -1699,11 +1703,14 @@ describe("cli - command action wrapper", function () {
       .returns(
         JSON.stringify({
           commands: {
-            greet: { desc: "Greet command" },
+            greet: {
+              desc: "Greet command",
+              options: [{ arg: "-f, --flag", desc: "Flag description" }],
+            },
           },
         }),
       );
-    sinon.stub(process, "argv").value(["node", "cli.js", "greet"]);
+    sinon.stub(process, "argv").value(["node", "cli.js", "greet", "--flag"]);
     bag.command("/some/dir", {
       commands: {
         greet: { action: actionSpy },
@@ -1711,11 +1718,11 @@ describe("cli - command action wrapper", function () {
     });
     referee.assert.equals(actionSpy.callCount, 1);
     const calledWith = actionSpy.firstCall.args[0];
-    // Commander always passes the Command instance as the last arg to action handlers;
-    // name() returning the command name confirms it is a Command instance, not a plain options object.
-    referee.assert.equals(typeof calledWith.name, "function");
-    referee.assert.equals(calledWith.name(), "greet");
-    mockFs.verify();
-    mockFs.restore();
+    // Before the fix, command.action(args[args.length - 1]) handed the action the
+    // Command instance rather than the parsed options, so --flag ended up silently
+    // ignored. name() being undefined confirms it's a plain options object, not a
+    // Command instance, and it must now surface --flag directly.
+    referee.assert.isUndefined(calledWith.name);
+    referee.assert.isTrue(calledWith.flag);
   });
 });

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- Fix flag being silently ignored #20
+
 ## 3.0.0 - 2026-07-05
 ### Added
 - Add Suntory as build Makefile
