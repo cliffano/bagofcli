@@ -1,11 +1,11 @@
 
 [0m[0m
 [0m  bagofcli - integration[0m
-  [32m  [32m✔[39m[0m[90m should execute a configured command and pass positional arguments and name() to the action[0m[31m (104ms)[0m
-  [32m  [32m✔[39m[0m[90m should execute a configured command and pass a flag directly on the action argument (regression test for issue #20)[0m[31m (104ms)[0m
-  [32m  [32m✔[39m[0m[90m should execute a configured command and pass both a flag and positional arguments/name() to the action[0m[31m (104ms)[0m
-  [32m  [32m✔[39m[0m[90m should exit with an error when an unknown command is passed[0m[31m (100ms)[0m
+  [32m  [32m✔[39m[0m[90m should execute a configured command and pass positional arguments and name() to the action[0m[31m (127ms)[0m
+  [32m  [32m✔[39m[0m[90m should execute a configured command and pass a flag directly on the action argument (regression test for issue #20)[0m[31m (126ms)[0m
+  [32m  [32m✔[39m[0m[90m should execute a configured command and pass both a flag and positional arguments/name() to the action[0m[31m (124ms)[0m
+  [32m  [32m✔[39m[0m[90m should exit with an error when an unknown command is passed[0m[31m (123ms)[0m
 
 
-[92m [0m[32m 4 passing[0m[90m (419ms)[0m
+[92m [0m[32m 4 passing[0m[90m (504ms)[0m
 
