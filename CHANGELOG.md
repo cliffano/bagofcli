@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Add examples
+
 ### Changed
 - Upgrade Suntory to 1.7.0
 - Replace Copilot Instructions with AGENTS.md
