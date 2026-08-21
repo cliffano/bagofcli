@@ -160,6 +160,50 @@ describe('bagofcli - integration', function () {
     }
   });
 
+  it('should not falsely reject a command with declared args and its own command-scoped option', function () {
+    const tempDir = createTempProject({
+      commands: {
+        greet: {
+          desc: 'Greet a person',
+          args: [
+            {
+              name: 'name',
+              rules: []
+            }
+          ],
+          options: [
+            {
+              arg: '-f, --flag',
+              desc: 'A flag option'
+            }
+          ]
+        }
+      }
+    });
+
+    try {
+      const result = runScenario(
+        tempDir,
+        ['node', 'cli.js', 'greet', 'Ada', '--flag'],
+        `{
+          commands: {
+            greet: {
+              action: function (opts) {
+                console.log(JSON.stringify({ args: opts.args, name: opts.name(), flag: opts.flag }));
+              }
+            }
+          }
+        }`
+      );
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"args":["Ada"],"name":"greet","flag":true}\n');
+      assert.equals(result.stderr, '');
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('should exit with an error when an unknown command is passed', function () {
     const tempDir = createTempProject({
       commands: {

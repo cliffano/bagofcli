@@ -368,6 +368,39 @@ describe("cli - _postCommand", function () {
     done(err);
   });
 
+  it("should validate against the matching subcommand's own args instead of the top-level commander args when a command has both declared args and its own options (regression test for command-scoped option leaking into the top-level arg count)", function (done) {
+    this.mockCommander._name = "someprogram";
+    // Simulates an option registered only on the subcommand: the top-level
+    // commander.args leaks the raw unconsumed option tokens (as Commander's own
+    // top-level parse doesn't know about that option), while the actual invoked
+    // subcommand's own .args correctly holds just the real positional args.
+    this.mockCommander.args = [
+      "somecommand",
+      "123",
+      "--some-command-opt",
+      "someval",
+    ];
+    this.mockCommander.commands = [
+      {
+        name: () => "somecommand",
+        args: ["123"],
+      },
+    ];
+    const commandsConfig = {
+      somecommand: {
+        args: [{ name: "arg1", rules: ["number"] }],
+      },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
   it("should log error message and exit when command is unknown", function () {
     this.mockConsole
       .expects("error")

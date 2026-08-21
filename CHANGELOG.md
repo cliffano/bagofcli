@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix flag being silently ignored #20
+- Fix inability for command to combine positional args and its own options #21
 
 ## 3.0.0 - 2026-07-05
 ### Added
