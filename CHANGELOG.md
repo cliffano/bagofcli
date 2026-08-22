@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade Suntory to 1.7.0
 - Replace Copilot Instructions with AGENTS.md
 - Replace unmaintained iz dependency with validator for argument/option validation
+- Replace unmaintained wrench-sui dependency with native fs.readdirSync recursive option
 
 ### Fixed
 - Fix flag being silently ignored #20

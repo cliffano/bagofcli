@@ -8,7 +8,6 @@ import fs from "fs";
 import inquirer from "inquirer";
 import referee from "@sinonjs/referee";
 import sinon from "sinon";
-import wrench from "wrench-sui";
 
 describe("cli - command", function () {
   beforeEach(function () {
@@ -1398,7 +1397,6 @@ describe("cli - exitCb", function () {
 describe("cli - files", function () {
   beforeEach(function (done) {
     this.mockFs = sinon.mock(fs);
-    this.mockWrench = sinon.mock(wrench);
     this.trueFn = function () {
       return true;
     };
@@ -1411,8 +1409,6 @@ describe("cli - files", function () {
   afterEach(function (done) {
     this.mockFs.verify();
     this.mockFs.restore();
-    this.mockWrench.verify();
-    this.mockWrench.restore();
     done();
   });
 
@@ -1431,9 +1427,9 @@ describe("cli - files", function () {
   });
 
   it("should return files under a directory", function (done) {
-    this.mockWrench
-      .expects("readdirSyncRecursive")
-      .withExactArgs("dir1")
+    this.mockFs
+      .expects("readdirSync")
+      .withExactArgs("dir1", { recursive: true })
       .returns(["file1", "file2"]);
     this.mockFs
       .expects("statSync")
@@ -1453,9 +1449,9 @@ describe("cli - files", function () {
   });
 
   it("should only return matching files when match opt is specified", function (done) {
-    this.mockWrench
-      .expects("readdirSyncRecursive")
-      .withExactArgs("dir1")
+    this.mockFs
+      .expects("readdirSync")
+      .withExactArgs("dir1", { recursive: true })
       .returns(["file1", "file2"]);
     this.mockFs
       .expects("statSync")
@@ -1479,9 +1475,9 @@ describe("cli - files", function () {
   });
 
   it("should return nothing when no match is found", function (done) {
-    this.mockWrench
-      .expects("readdirSyncRecursive")
-      .withExactArgs("dir1")
+    this.mockFs
+      .expects("readdirSync")
+      .withExactArgs("dir1", { recursive: true })
       .returns(["file1"]);
     this.mockFs
       .expects("statSync")
@@ -1501,9 +1497,9 @@ describe("cli - files", function () {
   });
 
   it("should return nothing when directory contains non-directory and non-file", function (done) {
-    this.mockWrench
-      .expects("readdirSyncRecursive")
-      .withExactArgs("dir1")
+    this.mockFs
+      .expects("readdirSync")
+      .withExactArgs("dir1", { recursive: true })
       .returns(["item1"]);
     this.mockFs
       .expects("statSync")
