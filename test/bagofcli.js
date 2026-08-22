@@ -2,6 +2,7 @@
 /* eslint no-unused-vars: 0 */
 import async from "async";
 import bag from "../lib/bagofcli.js";
+import chalk from "chalk";
 import childProcess from "child_process";
 import { program as commander } from "commander";
 import fs from "fs";
@@ -224,7 +225,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Usage: someprogram somecommand <arg1> <arg2>".red);
+      .withExactArgs(chalk.red("Usage: someprogram somecommand <arg1> <arg2>"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand"];
@@ -244,7 +245,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Usage: someprogram somecommand <arg1> <arg2> [arg3]".red);
+      .withExactArgs(chalk.red("Usage: someprogram somecommand <arg1> <arg2> [arg3]"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand"];
@@ -265,7 +266,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Usage: someprogram somecommand <arg1> [arg2] [arg3]".red);
+      .withExactArgs(chalk.red("Usage: someprogram somecommand <arg1> [arg2] [arg3]"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand"];
@@ -286,7 +287,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be number".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be number"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "foobar"];
@@ -301,7 +302,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be required".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be required"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", ""];
@@ -316,7 +317,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be email".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be email"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "foobar"];
@@ -368,7 +369,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be int".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be int"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "12.5"];
@@ -399,7 +400,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be decimal".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be decimal"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "42"];
@@ -430,7 +431,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be boolean".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be boolean"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "notabool"];
@@ -461,7 +462,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be alphaNumeric".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be alphaNumeric"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "abc-123"];
@@ -478,7 +479,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be anArray".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be anArray"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "1,2,3"];
@@ -509,7 +510,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be date".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be date"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "notadate"];
@@ -540,7 +541,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be ip".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be ip"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "not.an.ip"];
@@ -571,7 +572,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be cc".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be cc"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "1234567890123456"];
@@ -602,7 +603,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be phone".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be phone"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "123"];
@@ -633,7 +634,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be postal".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be postal"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "abcde"];
@@ -664,7 +665,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be ssn".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be ssn"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "12345"];
@@ -695,7 +696,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be blank".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be blank"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "notblank"];
@@ -726,7 +727,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid argument: <arg1> must be empty".red);
+      .withExactArgs(chalk.red("Invalid argument: <arg1> must be empty"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "notempty"];
@@ -742,7 +743,7 @@ describe("cli - _postCommand", function () {
       .expects("error")
       .once()
       .withExactArgs(
-        "Invalid argument rule: someRuleThatCantPossiblyExist".red,
+        chalk.red("Invalid argument rule: someRuleThatCantPossiblyExist"),
       );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
@@ -815,7 +816,7 @@ describe("cli - _postCommand", function () {
       .expects("error")
       .once()
       .withExactArgs(
-        "Unknown command: someunknowncommand, use --help for more info".red,
+        chalk.red("Unknown command: someunknowncommand, use --help for more info"),
       );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
@@ -832,7 +833,7 @@ describe("cli - _postCommand", function () {
       .expects("error")
       .once()
       .withExactArgs(
-        "Invalid option: <-s, --some-arg <someArg>> must be number".red,
+        chalk.red("Invalid option: <-s, --some-arg <someArg>> must be number"),
       );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
@@ -910,7 +911,7 @@ describe("cli - _postCommand", function () {
       .expects("error")
       .once()
       .withExactArgs(
-        "Invalid option: <-s, --some-arg <someArg>> must be number".red,
+        chalk.red("Invalid option: <-s, --some-arg <someArg>> must be number"),
       );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
@@ -941,7 +942,7 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs("Invalid option: <-s, --some-arg> must be number".red);
+      .withExactArgs(chalk.red("Invalid option: <-s, --some-arg> must be number"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand"];
@@ -970,7 +971,7 @@ describe("cli - _postCommand", function () {
       .expects("error")
       .once()
       .withExactArgs(
-        "Invalid option: <-s, --some-arg <someArg>> must be number".red,
+        chalk.red("Invalid option: <-s, --some-arg <someArg>> must be number"),
       );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
@@ -1027,7 +1028,7 @@ describe("cli - _postCommand", function () {
       .expects("error")
       .once()
       .withExactArgs(
-        "Invalid option: <-s, --some-arg <someArg>> must be number".red,
+        chalk.red("Invalid option: <-s, --some-arg <someArg>> must be number"),
       );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
@@ -1098,7 +1099,7 @@ describe("cli - exec", function () {
     this.mockProcessStdout
       .expects("write")
       .once()
-      .withExactArgs("somestdout".green);
+      .withExactArgs(chalk.green("somestdout"));
     this.mockProcessStdout.expects("write").once().withArgs(sinon.match.string); // allow mocha test title display
     const mockExec = {
       stdout: {
@@ -1124,7 +1125,7 @@ describe("cli - exec", function () {
     this.mockProcessStderr
       .expects("write")
       .once()
-      .withExactArgs("somestderr".red);
+      .withExactArgs(chalk.red("somestderr"));
     const mockExec = {
       stdout: { on: function (event, cb) {} },
       stderr: {
@@ -1303,7 +1304,7 @@ describe("cli - exit", function () {
   });
 
   it("should exit with status code 1 and logs the error message when error exists", function (done) {
-    this.mockConsole.expects("error").once().withExactArgs("someerror".red);
+    this.mockConsole.expects("error").once().withExactArgs(chalk.red("someerror"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     bag.exit(new Error("someerror"));
     done();
@@ -1313,7 +1314,7 @@ describe("cli - exit", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs('{"error":"someerror"}'.red);
+      .withExactArgs(chalk.red('{"error":"someerror"}'));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     bag.exit({ error: "someerror" });
     done();
@@ -1323,7 +1324,7 @@ describe("cli - exit", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs('["some error 1","some error 2"]'.red);
+      .withExactArgs(chalk.red('["some error 1","some error 2"]'));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     bag.exit(["some error 1", "some error 2"]);
     done();
@@ -1346,14 +1347,14 @@ describe("cli - exitCb", function () {
   });
 
   it("should exit with status code 0 and logs the result when error does not exist and no success callback is specified", function (done) {
-    this.mockConsole.expects("log").once().withExactArgs("some success".green);
+    this.mockConsole.expects("log").once().withExactArgs(chalk.green("some success"));
     this.mockProcess.expects("exit").once().withExactArgs(0);
     bag.exitCb()(null, "some success");
     done();
   });
 
   it("should exit with status code 1 and logs the error message when error exists and no error callback is specified", function (done) {
-    this.mockConsole.expects("error").once().withExactArgs("some error".red);
+    this.mockConsole.expects("error").once().withExactArgs(chalk.red("some error"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     bag.exitCb()(new Error("some error"));
     done();
@@ -1363,7 +1364,7 @@ describe("cli - exitCb", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs('{"error":"some error"}'.red);
+      .withExactArgs(chalk.red('{"error":"some error"}'));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     bag.exitCb()({ error: "some error" });
     done();
@@ -1909,12 +1910,12 @@ describe("cli - spawn", function () {
     this.mockProcessStdout
       .expects("write")
       .once()
-      .withExactArgs("somestdoutdata".green);
+      .withExactArgs(chalk.green("somestdoutdata"));
     this.mockProcessStdout.expects("write").once().withArgs(sinon.match.string); // allow mocha test title display
     this.mockProcessStderr
       .expects("write")
       .once()
-      .withExactArgs("somestderrdata".red);
+      .withExactArgs(chalk.red("somestderrdata"));
     const mockSpawn = {
       stdout: {
         on: function (event, cb) {
