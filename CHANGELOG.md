@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgrade Suntory to 1.7.0
 - Replace Copilot Instructions with AGENTS.md
+- Replace unmaintained iz dependency with validator for argument/option validation
 
 ### Fixed
 - Fix flag being silently ignored #20

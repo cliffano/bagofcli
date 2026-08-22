@@ -328,6 +328,416 @@ describe("cli - _postCommand", function () {
     referee.assert.isUndefined(result);
   });
 
+  // The following rules were available via iz but had no test coverage of their
+  // own; now that validation is backed by validator instead of iz, each rule
+  // gets a valid and an invalid case (where both are actually reachable through
+  // a positional CLI argument, which is always a string).
+
+  it("should return without error when a string is passed on string rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "anything"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["string"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should return without error when a whole number is passed on int rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "42"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["int"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when a decimal is passed on int rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be int".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "12.5"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["int"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when a decimal is passed on decimal rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "12.5"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["decimal"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when a whole number is passed on decimal rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be decimal".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "42"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["decimal"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when a boolean-like string is passed on boolean rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "true"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["boolean"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when a non-boolean string is passed on boolean rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be boolean".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "notabool"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["boolean"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when an alphanumeric string is passed on alphaNumeric rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "abc123"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["alphaNumeric"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when a non-alphanumeric string is passed on alphaNumeric rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be alphaNumeric".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "abc-123"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["alphaNumeric"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should log error message when anArray rule is applied to a positional argument", function () {
+    // Positional CLI arguments are always strings, so anArray - which requires
+    // an actual Array - can never pass for one; documenting that behaviour here.
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be anArray".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "1,2,3"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["anArray"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when an ISO date string is passed on date rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "2020-01-05"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["date"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when a non-date string is passed on date rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be date".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "notadate"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["date"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when an IP address is passed on ip rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "192.168.1.1"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["ip"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when a non-IP string is passed on ip rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be ip".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "not.an.ip"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["ip"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when a valid credit card number is passed on cc rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "4111111111111111"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["cc"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when an invalid credit card number is passed on cc rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be cc".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "1234567890123456"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["cc"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when a US mobile number is passed on phone rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "4155552671"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["phone"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when an invalid phone number is passed on phone rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be phone".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "123"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["phone"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when a US postal code is passed on postal rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "90210"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["postal"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when an invalid postal code is passed on postal rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be postal".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "abcde"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["postal"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when a 9-digit number is passed on ssn rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "123456789"];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["ssn"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when a non-9-digit number is passed on ssn rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be ssn".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "12345"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["ssn"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when an empty string is passed on blank rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", ""];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["blank"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when a non-empty string is passed on blank rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be blank".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "notblank"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["blank"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should return without error when an empty string is passed on empty rule", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", ""];
+    const commandsConfig = {
+      somecommand: { args: [{ name: "arg1", rules: ["empty"] }] },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should log error message when a non-empty string is passed on empty rule", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs("Invalid argument: <arg1> must be empty".red);
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "notempty"];
+    const commandsConfig = {
+        somecommand: { args: [{ name: "arg1", rules: ["empty"] }] },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
   it("should log error message when rule does not exist", function () {
     this.mockConsole
       .expects("error")
