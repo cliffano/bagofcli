@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">70.43</p>
+      <p class="stat">70.46</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">741</p>
+      <p class="stat">749</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">82.67</p>
+      <p class="stat">83.33</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">5.26</p>
+      <p class="stat">5.38</p>
     </div>
   </div>
 </div>
@@ -309,7 +309,20 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
     //   }
   } else {
     const commandName = commanderArgs[0],
-      commandArgs = commanderArgs.slice(1, commanderArgs.length),
+      // Prefer the actual invoked subcommand&#039;s own .args over slicing the
+      // top-level commanderArgs: the top-level parse doesn&#039;t know about options
+      // registered only on the subcommand, so unconsumed option tokens (and their
+      // values) leak into commanderArgs and inflate the count, causing a false
+      // &quot;Usage: ...&quot; error even though the subcommand parsed everything correctly.
+      subCommand =
+        Array.isArray(commanderArg.commands) &amp;&amp;
+        commanderArg.commands.find(function (cmd) {
+          const name = typeof cmd.name === &quot;function&quot; ? cmd.name() : cmd._name;
+          return name === commandName;
+        }),
+      commandArgs = subCommand
+        ? subCommand.args
+        : commanderArgs.slice(1, commanderArgs.length),
       commandConfigArgs = commandsConfig[commandName]
         ? commandsConfig[commandName].args
         : undefined,
@@ -357,13 +370,8 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
         // validate arguments as configured in commands setup
         for (let i = 0, ln = commandConfigArgs.length; i &lt; ln; i += 1) {
           if (!commandConfigArgs[i].optional) {
-            // first arg from Commander is the command, the rest are that command&#039;s arguments
             commandConfigArgs[i].rules.forEach(
-              _validate(
-                commanderArgs[i + 1],
-                commandConfigArgs[i].name,
-                &quot;argument&quot;,
-              ),
+              _validate(commandArgs[i], commandConfigArgs[i].name, &quot;argument&quot;),
             );
           }
         }

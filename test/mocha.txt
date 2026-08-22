@@ -22,6 +22,7 @@
   [32m  [32m✔[39m[0m[90m should log error message when non-email string is passed on email rule[0m
   [32m  [32m✔[39m[0m[90m should log error message when rule does not exist[0m
   [32m  [32m✔[39m[0m[90m should return without error when command has valid argument as configured in commands setup file[0m
+  [32m  [32m✔[39m[0m[90m should validate against the matching subcommand's own args instead of the top-level commander args when a command has both declared args and its own options (regression test for command-scoped option leaking into the top-level arg count)[0m
   [32m  [32m✔[39m[0m[90m should log error message and exit when command is unknown[0m
   [32m  [32m✔[39m[0m[90m should log error message when command has invalid command option[0m
   [32m  [32m✔[39m[0m[90m should return without error when there is no invalid command option[0m
@@ -105,5 +106,5 @@
   [32m  [32m✔[39m[0m[90m should pass options as direct properties while still exposing positional args and name() to the action handler (regression test for issue #20)[0m
 
 
-[92m [0m[32m 77 passing[0m[90m (99ms)[0m
+[92m [0m[32m 78 passing[0m[90m (100ms)[0m
 
