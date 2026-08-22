@@ -1,2 +1,2 @@
-lib/bagofcli.js 156ms
-test/bagofcli.js 183ms
+lib/bagofcli.js 132ms
+test/bagofcli.js 157ms
