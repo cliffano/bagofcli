@@ -15,7 +15,9 @@
 
 Bag Of CLI contains utility CLI functions.
 
-This is handy when you want to have a set of common CLI commands with descriptions, options, help, and example usages, by just defining them in a JSON file. Bag of CLI essentially allows you to define those info in a configuration file instead of code.
+Define a commands JSON file containing CLI commands with descriptions, arguments, options, example usages. Bag of CLI essentially hooks up each command to a function, and passing the options and arguments to the function.
+
+By default, the command also gets `--help` and `--version` flags.
 
 ## Installation
 
