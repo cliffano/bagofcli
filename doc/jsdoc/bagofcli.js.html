@@ -44,15 +44,12 @@ import _ from "lodash";
 import async from "async";
 import chalk from "chalk";
 import child from "child_process";
-import colors from "colors";
 import { program as commander } from "commander";
 import fs from "fs";
-import iz from "iz";
 import p from "path";
 import inquirer from "inquirer";
 import util from "util";
-import validators from "iz/lib/validators.js";
-import wrench from "wrench-sui";
+import v from "validator";
 import yaml from "yaml-js";
 
 /**
@@ -180,6 +177,57 @@ function _preCommand(commands) {
   });
 }
 
+/**
+ * Coerce a value to a string for validator (https://npmjs.com/package/validator),
+ * which only operates on strings. Command line argument/option values are always
+ * strings already, this just guards against undefined/null (e.g. a missing
+ * optional argument).
+ *
+ * @param {*} value Value to coerce.
+ * @returns {string} String form of value, or an empty string for undefined/null.
+ * @private
+ */
+function _toStr(value) {
+  return value === undefined || value === null ? "" : String(value);
+}
+
+/**
+ * Argument/option validators, keyed by the rule name as referenced in a
+ * commands.json `rules` array. Backed by validator rather than iz, which is
+ * unmaintained - rule names are unchanged, so existing commands.json files
+ * keep working as-is.
+ *
+ * Only rules callable with just the value being validated are supported here,
+ * since commands.json's `rules` array has never had a way to pass extra
+ * parameters (e.g. a length or pattern) through to a rule.
+ *
+ * @private
+ */
+const validators = {
+  required: (value) => !v.isEmpty(_toStr(value)),
+  empty: (value) => v.isEmpty(_toStr(value)),
+  blank: (value) => typeof value === "string" &amp;&amp; v.isEmpty(value),
+  string: (value) => typeof value === "string",
+  number: (value) => v.isNumeric(_toStr(value)),
+  int: (value) => v.isInt(_toStr(value)),
+  // Unlike validator's own isDecimal (which also accepts whole numbers),
+  // iz's decimal rule specifically required a fractional part - preserve that.
+  decimal: (value) => v.isDecimal(_toStr(value)) &amp;&amp; !v.isInt(_toStr(value)),
+  boolean: (value) => typeof value === "boolean" || v.isBoolean(_toStr(value)),
+  email: (value) => v.isEmail(_toStr(value)),
+  alphaNumeric: (value) => v.isAlphanumeric(_toStr(value)),
+  anArray: (value) => Array.isArray(value),
+  date: (value) => v.isDate(_toStr(value)),
+  ip: (value) => v.isIP(_toStr(value)),
+  cc: (value) => v.isCreditCard(_toStr(value)),
+  phone: (value) => v.isMobilePhone(_toStr(value), "en-US"),
+  postal: (value) => v.isPostalCode(_toStr(value), "US"),
+  ssn: (value) => {
+    const digits = _toStr(value).replace(/[^0-9]/g, "");
+    return v.isInt(digits) &amp;&amp; digits.length === 9;
+  },
+};
+
 // Post-command tasks:
 // - if there's no command, display help then exit
 // - if command is unknown, display error message then exit
@@ -196,14 +244,8 @@ function _preCommand(commands) {
 function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
   const commanderArgs = commanderArg.args;
 
-  // add custom validator required which checks if value is not empty
-  validators.required = function (value) {
-    return !validators.empty(value);
-  };
-
   function _validate(value, name, desc) {
     return function (rule) {
-      iz({ value: value, validators: validators });
       if (Object.keys(validators).indexOf(rule) !== -1) {
         const isValid = validators[rule](value);
         if (isValid === null || isValid === false) {
@@ -432,7 +474,7 @@ function execute(command, fallthrough, collectOutput, cb) {
     if (collectOutput) {
       collectedStdOut += data.toString().trim();
     } else {
-      process.stdout.write(colors.green(data.toString()));
+      process.stdout.write(chalk.green(data.toString()));
     }
   });
 
@@ -440,7 +482,7 @@ function execute(command, fallthrough, collectOutput, cb) {
     if (collectOutput) {
       collectedStdErr += data.toString().trim();
     } else {
-      process.stderr.write(colors.red(data.toString()));
+      process.stderr.write(chalk.red(data.toString()));
     }
   });
 }
@@ -458,7 +500,7 @@ function execute(command, fallthrough, collectOutput, cb) {
  */
 function exit(err) {
   if (err) {
-    console.error(colors.red(err.message || JSON.stringify(err)));
+    console.error(chalk.red(err.message || JSON.stringify(err)));
     process.exit(1);
   } else {
     process.exit(0);
@@ -477,13 +519,13 @@ function exit(err) {
 function exitCb(errorCb, successCb) {
   if (!errorCb) {
     errorCb = function (err) {
-      console.error(colors.red(err.message || JSON.stringify(err)));
+      console.error(chalk.red(err.message || JSON.stringify(err)));
     };
   }
 
   if (!successCb) {
     successCb = function (result) {
-      console.log(colors.green(result.toString()));
+      console.log(chalk.green(result.toString()));
     };
   }
 
@@ -526,7 +568,7 @@ function files(items, opts) {
     if (stat.isFile()) {
       addMatch(item);
     } else if (stat.isDirectory()) {
-      const _items = wrench.readdirSyncRecursive(item);
+      const _items = fs.readdirSync(item, { recursive: true });
       _items.forEach((_item) => {
         _item = p.join(item, _item);
         if (fs.statSync(_item).isFile()) {
@@ -681,11 +723,11 @@ function spawn(command, args, cb) {
   const _spawn = child.spawn(command, args);
 
   _spawn.stdout.on("data", function (data) {
-    process.stdout.write(colors.green(data.toString()));
+    process.stdout.write(chalk.green(data.toString()));
   });
 
   _spawn.stderr.on("data", function (data) {
-    process.stderr.write(colors.red(data.toString()));
+    process.stderr.write(chalk.red(data.toString()));
   });
 
   _spawn.on("exit", function (code) {
@@ -800,7 +842,7 @@ export { exports as default };
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Aug 22 2026 00:31:08 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Aug 22 2026 00:51:41 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
