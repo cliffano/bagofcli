@@ -111,8 +111,8 @@ This means the old convention like `command.parent.args[1]` is now undefined.
 
 Argument retrieval should be updated:
 
-- `command.parent.args[1]` to `command.args[0]`
-- `command.parent.args[2]` to `command.args[1]`
+* `command.parent.args[1]` to `command.args[0]`
+* `command.parent.args[2]` to `command.args[1]`
 
 Mock command for testing should also be updated:
 
@@ -128,6 +128,7 @@ actions.commands.mycommand.action(command);
 ```
 
 To:
+
 ```javascript
 const command = {
   args: ["arg1", "arg2"]
