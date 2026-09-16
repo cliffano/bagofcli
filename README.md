@@ -121,16 +121,18 @@ From:
 ```javascript
 const command = {
   parent: {
-    args: ["foo", "bar"]
+    args: ["mycommand", "arg1", "arg2"]
   }
 }
+actions.commands.mycommand.action(command);
 ```
 
 To:
 ```javascript
 const command = {
-  args: ["foo", "bar"]
+  args: ["arg1", "arg2"]
 }
+actions.commands.mycommand.action(command);
 ```
 
 ## Colophon
