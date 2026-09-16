@@ -92,7 +92,7 @@ Check out [lib/bagofcli.js](https://github.com/cliffano/bagofcli/blob/master/lib
 
 ## Upgrade
 
-From 0.0.x to 0.1.x .
+### From 0.0.x to 0.1.x
 
 Update commands.json argument validation rules:
 
@@ -102,6 +102,36 @@ Update commands.json argument validation rules:
 
 Argument/option validation rules are backed by [validator](https://www.npmjs.com/package/validator). Available rule names:
 `required`, `empty`, `blank`, `string`, `number`, `int`, `decimal`, `boolean`, `email`, `alphaNumeric`, `anArray`, `date`, `ip`, `cc`, `phone`, `postal`, `ssn`.
+
+### From 0.0.x to 3.1.0+
+
+Raw Commander Command object with a .parent property has been replaced by a plain object with .args directly.
+
+This means the old convention like `command.parent.args[1]` is now undefined.
+
+Argument retrieval should be updated:
+
+- `command.parent.args[1]` to `command.args[0]`
+- `command.parent.args[2]` to `command.args[1]`
+
+Mock command for testing should also be updated:
+
+From:
+
+```javascript
+const command = {
+  parent: {
+    args: ["foo", "bar"]
+  }
+}
+```
+
+To:
+```javascript
+const command = {
+  args: ["foo", "bar"]
+}
+```
 
 ## Colophon
 
