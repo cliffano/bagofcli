@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgrade Suntory to 1.9.0
 
+### Fixed
+- Fix global option and command option validation rules always failing
+
 ## 3.1.0 - 2026-08-22
 ### Added
 - Add examples

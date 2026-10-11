@@ -966,6 +966,71 @@ describe("cli - _postCommand", function () {
     done(err);
   });
 
+  it("should log error message when command option value is retrieved from the matching subcommand instead of the top-level commander (regression test for command option rule always failing)", function (done) {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs(
+        chalk.red("Invalid option: <-s, --some-arg <someArg>> must be number"),
+      );
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.someArg = 12345;
+    this.mockCommander.args = ["somecommand"];
+    this.mockCommander.commands = [
+      {
+        name: () => "somecommand",
+        args: [],
+        opts: sinon.stub().returns({ someArg: "abcdef" }),
+      },
+    ];
+    const commandsConfig = {
+      somecommand: {
+        options: [
+          {
+            arg: "-s, --some-arg <someArg>",
+            rules: ["number"],
+          },
+        ],
+      },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.equals(this.mockCommander.commands[0].opts.callCount, 1);
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
+  it("should return without error when global option value is retrieved from the top-level commander opts (regression test for global option rule always failing)", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.opts = sinon.stub().returns({ someArg: "12345" });
+    this.mockCommander.args = ["somecommand"];
+    const commandsConfig = { somecommand: {} },
+      globalOptsConfig = [
+        {
+          arg: "-s, --some-arg <someArg>",
+          rules: ["number"],
+        },
+      ];
+    let err, result;
+    try {
+      result = bag._postCommand(
+        this.mockCommander,
+        commandsConfig,
+        globalOptsConfig,
+      );
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.equals(this.mockCommander.opts.callCount, 1);
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
   it("should log error message when command has invalid global option", function (done) {
     this.mockConsole
       .expects("error")
@@ -975,7 +1040,7 @@ describe("cli - _postCommand", function () {
       );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
-    this.mockCommander.parent = { someArg: "abcdef" };
+    this.mockCommander.someArg = "abcdef";
     this.mockCommander.args = ["somecommand"];
     const commandsConfig = { somecommand: {} },
       globalOptsConfig = [
@@ -1000,7 +1065,7 @@ describe("cli - _postCommand", function () {
 
   it("should return without error when there is no invalid global option", function (done) {
     this.mockCommander._name = "someprogram";
-    this.mockCommander.parent = { someArg: 12345 };
+    this.mockCommander.someArg = 12345;
     this.mockCommander.args = ["somecommand"];
     const commandsConfig = { somecommand: {} },
       globalOptsConfig = [
@@ -1023,7 +1088,7 @@ describe("cli - _postCommand", function () {
     done(err);
   });
 
-  it("should log error message when global option source is undefined", function (done) {
+  it("should log error message when global option is not specified", function (done) {
     this.mockConsole
       .expects("error")
       .once()
@@ -1032,7 +1097,6 @@ describe("cli - _postCommand", function () {
       );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
-    this.mockCommander.parent = undefined;
     this.mockCommander.args = ["somecommand"];
     const commandsConfig = { somecommand: {} },
       globalOptsConfig = [
@@ -1057,7 +1121,7 @@ describe("cli - _postCommand", function () {
 
   it("should return without error when global option does not have any validation rule", function (done) {
     this.mockCommander._name = "someprogram";
-    this.mockCommander.parent = { someArg: "abcdef" };
+    this.mockCommander.someArg = "abcdef";
     this.mockCommander.args = ["somecommand"];
     const commandsConfig = { somecommand: {} },
       globalOptsConfig = [
