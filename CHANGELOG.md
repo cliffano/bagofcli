@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix global option and command option validation rules always failing
+- Fix lookupConfig prompt masking non-password values while displaying password values
 
 ## 3.1.0 - 2026-08-22
 ### Added

@@ -1787,13 +1787,13 @@ describe("cli - lookupConfig", function () {
         name: "somepasswordkey",
         message: "somepasswordkey",
         default: false,
-        type: "input",
+        type: "password",
       },
       {
         name: "anotherkey",
         message: "anotherkey",
         default: false,
-        type: "password",
+        type: "input",
       },
     ];
     const mockThen = {
@@ -1828,13 +1828,13 @@ describe("cli - lookupConfig", function () {
         name: "somepasswordkey",
         message: "somepasswordkey",
         default: false,
-        type: "input",
+        type: "password",
       },
       {
         name: "inexistingkey",
         message: "inexistingkey",
         default: false,
-        type: "password",
+        type: "input",
       },
     ];
     const mockThen = {
