@@ -245,7 +245,9 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs(chalk.red("Usage: someprogram somecommand <arg1> <arg2> [arg3]"));
+      .withExactArgs(
+        chalk.red("Usage: someprogram somecommand <arg1> <arg2> [arg3]"),
+      );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand"];
@@ -266,7 +268,9 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs(chalk.red("Usage: someprogram somecommand <arg1> [arg2] [arg3]"));
+      .withExactArgs(
+        chalk.red("Usage: someprogram somecommand <arg1> [arg2] [arg3]"),
+      );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand"];
@@ -462,7 +466,9 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs(chalk.red("Invalid argument: <arg1> must be alphaNumeric"));
+      .withExactArgs(
+        chalk.red("Invalid argument: <arg1> must be alphaNumeric"),
+      );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand", "abc-123"];
@@ -864,7 +870,9 @@ describe("cli - _postCommand", function () {
       .expects("error")
       .once()
       .withExactArgs(
-        chalk.red("Unknown command: someunknowncommand, use --help for more info"),
+        chalk.red(
+          "Unknown command: someunknowncommand, use --help for more info",
+        ),
       );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
@@ -990,7 +998,9 @@ describe("cli - _postCommand", function () {
     this.mockConsole
       .expects("error")
       .once()
-      .withExactArgs(chalk.red("Invalid option: <-s, --some-arg> must be number"));
+      .withExactArgs(
+        chalk.red("Invalid option: <-s, --some-arg> must be number"),
+      );
     this.mockProcess.expects("exit").once().withExactArgs(1);
     this.mockCommander._name = "someprogram";
     this.mockCommander.args = ["somecommand"];
@@ -1416,7 +1426,10 @@ describe("cli - exit", function () {
   });
 
   it("should exit with status code 1 and logs the error message when error exists", function (done) {
-    this.mockConsole.expects("error").once().withExactArgs(chalk.red("someerror"));
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs(chalk.red("someerror"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     bag.exit(new Error("someerror"));
     done();
@@ -1459,14 +1472,20 @@ describe("cli - exitCb", function () {
   });
 
   it("should exit with status code 0 and logs the result when error does not exist and no success callback is specified", function (done) {
-    this.mockConsole.expects("log").once().withExactArgs(chalk.green("some success"));
+    this.mockConsole
+      .expects("log")
+      .once()
+      .withExactArgs(chalk.green("some success"));
     this.mockProcess.expects("exit").once().withExactArgs(0);
     bag.exitCb()(null, "some success");
     done();
   });
 
   it("should exit with status code 1 and logs the error message when error exists and no error callback is specified", function (done) {
-    this.mockConsole.expects("error").once().withExactArgs(chalk.red("some error"));
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs(chalk.red("some error"));
     this.mockProcess.expects("exit").once().withExactArgs(1);
     bag.exitCb()(new Error("some error"));
     done();
