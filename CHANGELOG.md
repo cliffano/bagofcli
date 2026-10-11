@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Upgrade Suntory to 1.9.0
+- Improve code comments for JSDoc documentation generation
 
 ### Fixed
 - Fix global option and command option validation rules always failing
