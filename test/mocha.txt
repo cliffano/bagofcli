@@ -48,6 +48,8 @@
   [32m  [32m✔[39m[0m[90m should log error message when a non-empty string is passed on empty rule[0m
   [32m  [32m✔[39m[0m[90m should log error message when rule does not exist[0m
   [32m  [32m✔[39m[0m[90m should return without error when command has valid argument as configured in commands setup file[0m
+  [32m  [32m✔[39m[0m[90m should use the program name function for usage message when commander exposes name as a function[0m
+  [32m  [32m✔[39m[0m[90m should match the subcommand by its _name property when the subcommand does not expose name as a function[0m
   [32m  [32m✔[39m[0m[90m should validate against the matching subcommand's own args instead of the top-level commander args when a command has both declared args and its own options (regression test for command-scoped option leaking into the top-level arg count)[0m
   [32m  [32m✔[39m[0m[90m should log error message and exit when command is unknown[0m
   [32m  [32m✔[39m[0m[90m should log error message when command has invalid command option[0m
@@ -134,5 +136,5 @@
   [32m  [32m✔[39m[0m[90m should pass command and global options as direct properties while still exposing positional args and name() to the action handler (regression test for issue #20)[0m
 
 
-[92m [0m[32m 106 passing[0m[90m (115ms)[0m
+[92m [0m[32m 108 passing[0m[90m (119ms)[0m
 
