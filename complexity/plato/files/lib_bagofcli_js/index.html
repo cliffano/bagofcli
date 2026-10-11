@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">791</p>
+      <p class="stat">796</p>
     </div>
   </div>
   <div class="row historical">
@@ -171,8 +171,10 @@ function command(base, actions, opts) {
         // .args (positional arguments) and .name() from the Command instance,
         // since bagofcli commands don&#039;t register positional args with commander -
         // args and name() are otherwise only reachable there.
+        // Global options are included alongside the command&#039;s own options, so
+        // that action handlers don&#039;t have to reach for the commander program.
         command.action(
-          Object.assign(commandArg.opts(), {
+          Object.assign(commandArg.optsWithGlobals(), {
             args: commandArg.args,
             name: () =&gt; commandArg.name(),
           }),
@@ -421,22 +423,25 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
     }
 
     // validate command opts as configured in commands setup
+    // command opts are parsed by the invoked subcommand, hence its values
+    // have to be retrieved from the subcommand rather than the top-level commander
     if (commandConfigOpts) {
       commandConfigOpts.forEach((commandOpt) =&gt; {
         if (commandOpt.rules) {
           const name = commandOpt.arg,
-            value = _getOptionValue(commanderArg, name);
+            value = _getOptionValue(subCommand || commanderArg, name);
           commandOpt.rules.forEach(_validate(value, name, &quot;option&quot;));
         }
       });
     }
 
     // validate global opts as configured in commands setup
+    // global opts are parsed by the top-level commander, which has no parent
     if (globalOptsConfig) {
       globalOptsConfig.forEach((globalOptConfig) =&gt; {
         if (globalOptConfig.rules) {
           const name = globalOptConfig.arg,
-            value = _getOptionValue(commanderArg.parent, name);
+            value = _getOptionValue(commanderArg, name);
           globalOptConfig.rules.forEach(_validate(value, name, &quot;option&quot;));
         }
       });

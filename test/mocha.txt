@@ -55,9 +55,11 @@
   [32m  [32m✔[39m[0m[90m should return without error when command option does not have any validation rule[0m
   [32m  [32m✔[39m[0m[90m should log error message when command option value is retrieved from opts[0m
   [32m  [32m✔[39m[0m[90m should log error message when command option arg does not contain value placeholder[0m
+  [32m  [32m✔[39m[0m[90m should log error message when command option value is retrieved from the matching subcommand instead of the top-level commander (regression test for command option rule always failing)[0m
+  [32m  [32m✔[39m[0m[90m should return without error when global option value is retrieved from the top-level commander opts (regression test for global option rule always failing)[0m
   [32m  [32m✔[39m[0m[90m should log error message when command has invalid global option[0m
   [32m  [32m✔[39m[0m[90m should return without error when there is no invalid global option[0m
-  [32m  [32m✔[39m[0m[90m should log error message when global option source is undefined[0m
+  [32m  [32m✔[39m[0m[90m should log error message when global option is not specified[0m
   [32m  [32m✔[39m[0m[90m should return without error when global option does not have any validation rule[0m
 
 [0m  cli - exec[0m
@@ -129,8 +131,8 @@
   [32m  [32m✔[39m[0m[90m should write coloured message with labels via console error[0m
 
 [0m  cli - command action wrapper[0m
-  [32m  [32m✔[39m[0m[90m should pass options as direct properties while still exposing positional args and name() to the action handler (regression test for issue #20)[0m
+  [32m  [32m✔[39m[0m[90m should pass command and global options as direct properties while still exposing positional args and name() to the action handler (regression test for issue #20)[0m
 
 
-[92m [0m[32m 104 passing[0m[90m (115ms)[0m
+[92m [0m[32m 106 passing[0m[90m (72ms)[0m
 
