@@ -778,6 +778,54 @@ describe("cli - _postCommand", function () {
     done(err);
   });
 
+  it("should use the program name function for usage message when commander exposes name as a function", function () {
+    this.mockConsole
+      .expects("error")
+      .once()
+      .withExactArgs(chalk.red("Usage: someprogram somecommand <arg1> <arg2>"));
+    this.mockProcess.expects("exit").once().withExactArgs(1);
+    this.mockCommander.name = () => "someprogram";
+    this.mockCommander.args = ["somecommand"];
+    const commandsConfig = {
+        somecommand: {
+          args: [
+            { name: "arg1", rules: ["number"] },
+            { name: "arg2", rules: ["number"] },
+          ],
+        },
+      },
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    referee.assert.isUndefined(result);
+  });
+
+  it("should match the subcommand by its _name property when the subcommand does not expose name as a function", function (done) {
+    this.mockCommander._name = "someprogram";
+    this.mockCommander.args = ["somecommand", "123", "--some-command-opt"];
+    this.mockCommander.commands = [
+      {
+        _name: "someothercommand",
+        args: [],
+      },
+      {
+        _name: "somecommand",
+        args: ["123"],
+      },
+    ];
+    const commandsConfig = {
+      somecommand: {
+        args: [{ name: "arg1", rules: ["number"] }],
+      },
+    };
+    let err, result;
+    try {
+      result = bag._postCommand(this.mockCommander, commandsConfig);
+    } catch (e) {
+      err = e;
+    }
+    referee.assert.isUndefined(result);
+    done(err);
+  });
+
   it("should validate against the matching subcommand's own args instead of the top-level commander args when a command has both declared args and its own options (regression test for command-scoped option leaking into the top-level arg count)", function (done) {
     this.mockCommander._name = "someprogram";
     // Simulates an option registered only on the subcommand: the top-level
