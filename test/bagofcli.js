@@ -2128,7 +2128,7 @@ describe("cli - command action wrapper", function () {
   // for the lifetime of the process once command() runs it for real (unmocked), so only
   // one test in this describe block can call bag.command() without mocking
   // commander.version() - hence a single combined test rather than two separate ones.
-  it("should pass options as direct properties while still exposing positional args and name() to the action handler (regression test for issue #20)", function () {
+  it("should pass command and global options as direct properties while still exposing positional args and name() to the action handler (regression test for issue #20)", function () {
     const actionSpy = sinon.spy();
     const mockFs = sinon.mock(fs);
     mockFs
@@ -2142,6 +2142,9 @@ describe("cli - command action wrapper", function () {
       .withExactArgs("/some/conf/commands.json")
       .returns(
         JSON.stringify({
+          options: [
+            { arg: "--salutation <salutation>", desc: "Global description" },
+          ],
           commands: {
             greet: {
               desc: "Greet command",
@@ -2152,7 +2155,15 @@ describe("cli - command action wrapper", function () {
       );
     sinon
       .stub(process, "argv")
-      .value(["node", "cli.js", "greet", "Ada", "--flag"]);
+      .value([
+        "node",
+        "cli.js",
+        "greet",
+        "Ada",
+        "--flag",
+        "--salutation",
+        "Countess",
+      ]);
     bag.command("/some/dir", {
       commands: {
         greet: { action: actionSpy },
@@ -2165,6 +2176,9 @@ describe("cli - command action wrapper", function () {
     // instance, since bagofcli never registers positional args with commander -
     // must still be available too.
     referee.assert.isTrue(calledWith.flag);
+    // Global option must surface as a direct property too, so that the action
+    // handler doesn't have to reach for the commander program.
+    referee.assert.equals(calledWith.salutation, "Countess");
     referee.assert.equals(calledWith.args, ["Ada"]);
     referee.assert.equals(calledWith.name(), "greet");
   });

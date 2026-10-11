@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Add global options to the object passed to command action handlers
+
 ### Changed
 - Upgrade Suntory to 1.9.0
 

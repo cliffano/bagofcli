@@ -74,7 +74,10 @@ var actions = {
   commands: {
     command1: {
       action: function (args) {
+        // command option
         console.log(args.registry);
+        // global option
+        console.log(args.file);
       }
     },
     command2: {
@@ -132,6 +135,85 @@ To:
 ```javascript
 const command = {
   args: ["arg1", "arg2"]
+}
+actions.commands.mycommand.action(command);
+```
+
+### From 0.0.x to 3.2.0+
+
+Global options (the ones declared at the top level of commands.json) are now passed to the action handler as direct properties, alongside the command's own options.
+
+This means the old convention like `command.parent.myopt`, and the 3.1.x convention of importing Commander to call `program.opts().myopt`, are no longer needed.
+
+Global option retrieval should be updated:
+
+* `command.parent.myopt` to `command.myopt`
+* `program.opts().myopt` to `command.myopt`
+
+From (before 3.1.0):
+
+```javascript
+const actions = {
+  commands: {
+    mycommand: {
+      action: function (command) {
+        console.log(command.parent.myopt);
+      }
+    }
+  }
+};
+```
+
+From (3.1.x):
+
+```javascript
+import { program } from "commander";
+
+const actions = {
+  commands: {
+    mycommand: {
+      action: function (command) {
+        console.log(program.opts().myopt);
+      }
+    }
+  }
+};
+```
+
+To:
+
+```javascript
+const actions = {
+  commands: {
+    mycommand: {
+      action: function (command) {
+        console.log(command.myopt);
+      }
+    }
+  }
+};
+```
+
+When a global option and a command option share the same name, the global option value takes precedence.
+
+Mock command for testing should also be updated:
+
+From:
+
+```javascript
+const command = {
+  parent: {
+    myopt: "somevalue"
+  }
+}
+actions.commands.mycommand.action(command);
+```
+
+To:
+
+```javascript
+const command = {
+  myopt: "somevalue"
 }
 actions.commands.mycommand.action(command);
 ```

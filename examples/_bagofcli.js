@@ -13,7 +13,6 @@
  *   node examples/bagofcli.js --help
  */
 import bag from "bagofcli";
-import { program as commander } from "commander";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -28,12 +27,12 @@ const actions = {
         // opts.name() returns the command name that was invoked.
         console.log("Running %s with args: %s", opts.name(), opts.args.join(", "));
         // myopt1/myopt2 are global options (declared at the top level of
-        // commands.json), so they live on the top-level commander program
-        // rather than on opts, which only carries this command's own options.
+        // commands.json), they are available on opts alongside this command's
+        // own options.
         console.log(
           "Global opts: myopt1=%s myopt2=%s",
-          commander.opts().myopt1,
-          commander.opts().myopt2,
+          opts.myopt1,
+          opts.myopt2,
         );
       },
     },
@@ -41,8 +40,7 @@ const actions = {
       action: function (opts) {
         console.log("Running %s with args: %s", opts.name(), opts.args.join(", "));
         // mycmd2opt is a command option (declared under mycommand2 in
-        // commands.json), so unlike global options it's already on opts -
-        // no need to go through the top-level commander program for it.
+        // commands.json), it's available on opts just like global options.
         console.log("Command opt: mycmd2opt=%s", opts.mycmd2opt);
       },
     },
