@@ -91,6 +91,20 @@ var actions = {
 bag.command(__dirname, actions);
 ```
 
+By default, a command accepts extra positional arguments beyond the ones declared in its `args`, and passes them to the action handler in `args`. A command can reject them by setting `allowExcessArguments` to `false`:
+
+```javascript
+"serve": { "desc": "Start the server", "allowExcessArguments": false, "options": [ ... ] }
+```
+
+When the command receives more positional arguments than declared in its `args`, the command's action isn't executed, and the process exits with status code 1 and an error message:
+
+```
+error: too many arguments for 'serve'. Expected 0 arguments but got 1: stray.
+```
+
+Options and their values aren't counted as positional arguments.
+
 An option (either a global option or a command option) can restrict its value to a fixed list using `choices`:
 
 ```javascript

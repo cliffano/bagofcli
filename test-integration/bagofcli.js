@@ -204,6 +204,137 @@ describe('bagofcli - integration', function () {
     }
   });
 
+  describe('allowExcessArguments', function () {
+    const commandsConfig = {
+      options: [
+        {
+          arg: '--log-level <logLevel>',
+          desc: 'Log level'
+        }
+      ],
+      commands: {
+        serve: {
+          desc: 'Start the server',
+          allowExcessArguments: false,
+          options: [
+            { arg: '--port <port>', desc: 'Port number' },
+            { arg: '-v, --verbose', desc: 'Verbose output' }
+          ]
+        },
+        greet: {
+          desc: 'Greet a person',
+          allowExcessArguments: false,
+          args: [
+            { name: 'name', rules: ['required'] },
+            { name: 'title', optional: true }
+          ],
+          options: [
+            { arg: '--greeting <greeting>', desc: 'Greeting word' },
+            { arg: '--shout', desc: 'Shout the greeting' }
+          ]
+        },
+        legacy: {
+          desc: 'Command without allowExcessArguments',
+          options: [
+            { arg: '--port <port>', desc: 'Port number' }
+          ]
+        }
+      }
+    };
+    const actionSource = `{
+      commands: {
+        serve: {
+          action: function (opts) {
+            console.log(JSON.stringify({ args: opts.args, port: opts.port, verbose: opts.verbose, logLevel: opts.logLevel }));
+          }
+        },
+        greet: {
+          action: function (opts) {
+            console.log(JSON.stringify({ args: opts.args, greeting: opts.greeting, shout: opts.shout }));
+          }
+        },
+        legacy: {
+          action: function (opts) {
+            console.log(JSON.stringify({ args: opts.args, port: opts.port }));
+          }
+        }
+      }
+    }`;
+    let tempDir;
+
+    beforeEach(function () {
+      tempDir = createTempProject(commandsConfig);
+    });
+
+    afterEach(function () {
+      rmSync(tempDir, { recursive: true, force: true });
+    });
+
+    it('should exit with an error without running the action when a command with allowExcessArguments false receives a stray argument', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', 'stray'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, "error: too many arguments for 'serve'. Expected 0 arguments but got 1: stray.\n");
+    });
+
+    it('should exit with an error when a stray argument is mixed with options on a command with allowExcessArguments false', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port', '8080', 'stray', '--verbose'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, "error: too many arguments for 'serve'. Expected 0 arguments but got 1: stray.\n");
+    });
+
+    it('should run the action when a command with allowExcessArguments false only receives options', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port', '8080', '--verbose'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"args":[],"port":"8080","verbose":true}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should not count global and command option tokens as arguments on a command with allowExcessArguments false (regression test for option tokens leaking into the top-level args)', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--log-level', 'debug', 'serve', '--port', '8080'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"args":[],"port":"8080","logLevel":"debug"}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should still accept extra arguments on a command without allowExcessArguments', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'legacy', 'stray', '--port', '8080'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"args":["stray"],"port":"8080"}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should run the action when a command with declared args and allowExcessArguments false receives its args and options', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'greet', '--greeting', 'hello', 'Ada', '--shout'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"args":["Ada"],"greeting":"hello","shout":true}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should exit with an error when a command with declared args and allowExcessArguments false receives more args than declared', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'greet', 'Ada', 'Countess', 'stray'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, "error: too many arguments for 'greet'. Expected 2 arguments but got 3: Ada, Countess, stray.\n");
+    });
+
+    it('should still exit with the usage message when a command with declared args and allowExcessArguments false misses a mandatory arg', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'greet', '--shout'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.isTrue(result.stderr.includes('Usage: cli greet <name> [title]'));
+    });
+  });
+
   describe('rules', function () {
     const commandsConfig = {
       options: [

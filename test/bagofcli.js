@@ -97,6 +97,50 @@ describe("cli - command", function () {
     sinon.stub(process, "argv").value(["arg1", "arg2"]);
     bag.command(this.base);
   });
+
+  it("should allow excess arguments without registering args when command does not specify allowExcessArguments", function () {
+    this.mockCommander.expects("version").once().withExactArgs("1.2.3");
+    this.mockCommander.expects("parse").once().withExactArgs(["arg1", "arg2"]);
+    this.commands.commands.command1.args = [{ name: "arg1" }];
+    this.mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("/some/conf/commands.json")
+      .returns(JSON.stringify(this.commands));
+    sinon.stub(process, "argv").value(["arg1", "arg2"]);
+    bag.command(this.base);
+    const command1 = commander.commands.find((c) => c.name() === "command1");
+    referee.assert.isTrue(command1._allowExcessArguments);
+    referee.assert.equals(command1.registeredArguments.length, 0);
+  });
+
+  it("should disallow excess arguments and register args as optional when command specifies allowExcessArguments false", function () {
+    this.mockCommander.expects("version").once().withExactArgs("1.2.3");
+    this.mockCommander.expects("parse").once().withExactArgs(["arg1", "arg2"]);
+    this.commands.commands.command1.allowExcessArguments = false;
+    this.commands.commands.command1.args = [
+      { name: "arg1", rules: ["required"] },
+      { name: "arg2", optional: true },
+    ];
+    this.mockFs
+      .expects("readFileSync")
+      .once()
+      .withExactArgs("/some/conf/commands.json")
+      .returns(JSON.stringify(this.commands));
+    sinon.stub(process, "argv").value(["arg1", "arg2"]);
+    bag.command(this.base);
+    const command1 = commander.commands.find((c) => c.name() === "command1");
+    const command2 = commander.commands.find((c) => c.name() === "command2");
+    referee.assert.isFalse(command1._allowExcessArguments);
+    referee.assert.equals(
+      command1.registeredArguments.map((arg) => [arg.name(), arg.required]),
+      [
+        ["arg1", false],
+        ["arg2", false],
+      ],
+    );
+    referee.assert.isTrue(command2._allowExcessArguments);
+  });
 });
 
 describe("cli - _addOption", function () {

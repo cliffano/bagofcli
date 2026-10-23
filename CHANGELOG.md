@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add choices field to global and command options for restricting option value to a fixed list
 - Add min, max, and integer fields to global and command options for restricting option value to a numeric range, listed in the help output
+- Add allowExcessArguments field to commands for rejecting unexpected positional arguments
 
 ### Changed
 - Upgrade Suntory to 1.10.0
