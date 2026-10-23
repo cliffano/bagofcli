@@ -173,7 +173,7 @@ bag.command(import.meta.dirname, actions);</code></pre>
 
     
 
-    <h4 class="name" id=".command"><span class="type-signature">(static) </span>command<span class="signature">(base, actions, opts<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {void}</span></h4>
+    <h4 class="name" id=".command"><span class="type-signature">(static) </span>command<span class="signature">(base, actions<span class="signature-attributes">opt</span>, opts<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {void}</span></h4>
 
     
 
@@ -236,7 +236,7 @@ without calling the action handler when any of them is invalid.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line117">line 117</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line142">line 142</a>
     </li></ul></dd>
     
 
@@ -325,7 +325,7 @@ Ideally this is the directory of the client's module, e.g. `lib`.
             <td class="type">
             
                 
-<span class="param-type"><code>Object</code></span>
+<span class="param-type"><code>Actions</code></span>
 
 
             
@@ -333,6 +333,8 @@ Ideally this is the directory of the client's module, e.g. `lib`.
 
             
                 <td class="attributes">
+                
+                    &lt;optional><br>
                 
 
                 
@@ -344,10 +346,7 @@ Ideally this is the directory of the client's module, e.g. `lib`.
             
 
             <td class="description last">
-                Action handlers for commands in the form
-`{ commands: { <command>: { action: function (command) {} } } }`.
-The command name in `actions` is mapped to the command name specified in the command file.
-Each action handler is called with a <a href="module-bagofcli.html#~CommandArg">module:bagofcli~CommandArg</a>.
+                Action handlers for commands, see <a href="module-bagofcli.html#~Actions">module:bagofcli~Actions</a>.
                 
             </td>
         </tr>
@@ -585,7 +584,7 @@ and they all have to be executed regardless of success/error on either one of th
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line645">line 645</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line670">line 670</a>
     </li></ul></dd>
     
 
@@ -688,7 +687,7 @@ in which case the error is passed as the result.
             <td class="type">
             
                 
-<span class="param-type"><code>function</code></span>
+<span class="param-type"><code>ExecCallback</code></span>
 
 
             
@@ -800,7 +799,7 @@ and they all have to be executed regardless of success/error on either one of th
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line673">line 673</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line698">line 698</a>
     </li></ul></dd>
     
 
@@ -903,7 +902,7 @@ in which case the error is passed as the result.
             <td class="type">
             
                 
-<span class="param-type"><code>function</code></span>
+<span class="param-type"><code>ExecAndCollectCallback</code></span>
 
 
             
@@ -966,7 +965,7 @@ in which case the error is passed as the result.
 
     
 
-    <h4 class="name" id=".exit"><span class="type-signature">(static) </span>exit<span class="signature">(err<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {void}</span></h4>
+    <h4 class="name" id=".exit"><span class="type-signature">(static) </span>exit<span class="signature">(err<span class="signature-attributes">opt, nullable</span>)</span><span class="type-signature"> &rarr; {void}</span></h4>
 
     
 
@@ -1016,7 +1015,7 @@ the process simply exits with status code 0 when there is no error.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line741">line 741</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line767">line 767</a>
     </li></ul></dd>
     
 
@@ -1068,7 +1067,7 @@ the process simply exits with status code 0 when there is no error.
             <td class="type">
             
                 
-<span class="param-type"><code>Error</code></span>
+<span class="param-type"><code>ExitError</code></span>
 
 
             
@@ -1081,6 +1080,8 @@ the process simply exits with status code 0 when there is no error.
                 
 
                 
+                    &lt;nullable><br>
+                
 
                 
                 </td>
@@ -1089,7 +1090,8 @@ the process simply exits with status code 0 when there is no error.
             
 
             <td class="description last">
-                Error object, its existence indicates the occurrence of an error.
+                Error object, its existence indicates the occurrence of an error,
+a non-Error object is logged as JSON.
                 
             </td>
         </tr>
@@ -1141,7 +1143,7 @@ the process simply exits with status code 0 when there is no error.
 
     
 
-    <h4 class="name" id=".exitCb"><span class="type-signature">(static) </span>exitCb<span class="signature">(errorCb<span class="signature-attributes">opt</span>, successCb<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id=".exitCb"><span class="type-signature">(static) </span>exitCb<span class="signature">(errorCb<span class="signature-attributes">opt</span>, successCb<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {ExitCallback.&lt;T>}</span></h4>
 
     
 
@@ -1186,7 +1188,7 @@ Exit status code 1 indicates an error, exit status code 0 indicates a success.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line762">line 762</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line789">line 789</a>
     </li></ul></dd>
     
 
@@ -1238,7 +1240,7 @@ Exit status code 1 indicates an error, exit status code 0 indicates a success.
             <td class="type">
             
                 
-<span class="param-type"><code>function</code></span>
+<span class="param-type"><code>ExitErrorCallback</code></span>
 
 
             
@@ -1275,7 +1277,7 @@ defaults to logging the error message to console error.
             <td class="type">
             
                 
-<span class="param-type"><code>function</code></span>
+<span class="param-type"><code>ExitSuccessCallback.&lt;T></code></span>
 
 
             
@@ -1330,7 +1332,7 @@ defaults to logging the result to console log.
     </dt>
     <dd>
         
-<span class="param-type"><code>function</code></span>
+<span class="param-type"><code>ExitCallback.&lt;T></code></span>
 
 
     </dd>
@@ -1397,7 +1399,7 @@ When a directory is specified, all files contained within that directory and its
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line797">line 797</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line824">line 824</a>
     </li></ul></dd>
     
 
@@ -1667,7 +1669,7 @@ only the matching files will be included.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1011">line 1011</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1038">line 1038</a>
     </li></ul></dd>
     
 
@@ -1932,7 +1934,7 @@ only the matching files will be included.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1071">line 1071</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1098">line 1098</a>
     </li></ul></dd>
     
 
@@ -2197,7 +2199,7 @@ only the matching files will be included.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1031">line 1031</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1058">line 1058</a>
     </li></ul></dd>
     
 
@@ -2462,7 +2464,7 @@ only the matching files will be included.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1051">line 1051</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1078">line 1078</a>
     </li></ul></dd>
     
 
@@ -2736,7 +2738,7 @@ The file is located using <a href="module-bagofcli.html#.lookupFile">module:bago
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line850">line 850</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line877">line 877</a>
     </li></ul></dd>
     
 
@@ -2952,7 +2954,7 @@ The file is located using <a href="module-bagofcli.html#.lookupFile">module:bago
             <td class="type">
             
                 
-<span class="param-type"><code>function</code></span>
+<span class="param-type"><code>LookupConfigCallback</code></span>
 
 
             
@@ -3097,7 +3099,7 @@ This allows simple file lookup which allows various locations.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line942">line 942</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line969">line 969</a>
     </li></ul></dd>
     
 
@@ -3401,7 +3403,7 @@ process.stdout and process.stderr of this process, without any additional newlin
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line984">line 984</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1011">line 1011</a>
     </li></ul></dd>
     
 
@@ -3503,7 +3505,7 @@ process.stdout and process.stderr of this process, without any additional newlin
             <td class="type">
             
                 
-<span class="param-type"><code>function</code></span>
+<span class="param-type"><code>SpawnCallback</code></span>
 
 
             
@@ -3578,101 +3580,20 @@ bag.spawn("make", ["-f", "somemakefile", "target1", "target2", "target3"], cb);<
         
                 
 <div class="section-members">
-<h4 class="name" id="~CommandArg">CommandArg</h4>
+<h4 class="name" id="~Actions">Actions</h4>
 
 
 
 
 <div class="description">
-    Object passed to a command action handler.
+    Action handlers for commands in the form
+`{ commands: { <command>: { action: function (command) {} } } }`.
+The command name is mapped to the command name specified in the command file.
+Each action handler is called with a <a href="module-bagofcli.html#~CommandArg">module:bagofcli~CommandArg</a>.
 
-Besides the properties listed below, every parsed option is available as a
-direct property keyed by the option's long flag in camel case
-(e.g. `--some-opt <value>` is available as `someOpt`).
-This covers both the command's own options and the global options.
-When a global option and a command option share the same name,
-the global option value takes precedence.
+The TypeScript type is defined in types.d.ts.
 </div>
 
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>args</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Array.&lt;string></code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Positional arguments, in the order they were passed in.</td>
-        </tr>
-
-        
-
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>function</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Function that returns the name of the invoked command.</td>
-        </tr>
-
-        
-
-    
-    </tbody>
-</table>
 
 
 
@@ -3706,7 +3627,7 @@ the global option value takes precedence.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line41">line 41</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line73">line 73</a>
     </li></ul></dd>
     
 
@@ -3723,7 +3644,92 @@ the global option value takes precedence.
     <ul>
         <li>
             
-<span class="param-type"><code>Object</code></span>
+<span class="param-type"><code>ActionsType</code></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</div>
+
+            
+                
+<div class="section-members">
+<h4 class="name" id="~CommandArg">CommandArg</h4>
+
+
+
+
+<div class="description">
+    Object passed to a command action handler, with these properties:
+- `args` (`Array<string>`): positional arguments, in the order they were passed in
+- `name` (`Function`): function that returns the name of the invoked command
+
+Besides those, every parsed option is available as a
+direct property keyed by the option's long flag in camel case
+(e.g. `--some-opt <value>` is available as `someOpt`).
+This covers both the command's own options and the global options.
+When a global option and a command option share the same name,
+the global option value takes precedence.
+
+The TypeScript type is defined in types.d.ts.
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><code>CommandArgType</code></span>
 
 
         </li>
@@ -3751,7 +3757,7 @@ the global option value takes precedence.
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Fri Oct 23 2026 14:13:32 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Fri Oct 23 2026 14:31:22 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1102/1102</span>
+                <span class='fraction'>1129/1129</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1102/1102</span>
+                <span class='fraction'>1129/1129</span>
             </div>
         
             
@@ -1165,7 +1165,59 @@
 <a name='L1100'></a><a href='#L1100'>1100</a>
 <a name='L1101'></a><a href='#L1101'>1101</a>
 <a name='L1102'></a><a href='#L1102'>1102</a>
-<a name='L1103'></a><a href='#L1103'>1103</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L1103'></a><a href='#L1103'>1103</a>
+<a name='L1104'></a><a href='#L1104'>1104</a>
+<a name='L1105'></a><a href='#L1105'>1105</a>
+<a name='L1106'></a><a href='#L1106'>1106</a>
+<a name='L1107'></a><a href='#L1107'>1107</a>
+<a name='L1108'></a><a href='#L1108'>1108</a>
+<a name='L1109'></a><a href='#L1109'>1109</a>
+<a name='L1110'></a><a href='#L1110'>1110</a>
+<a name='L1111'></a><a href='#L1111'>1111</a>
+<a name='L1112'></a><a href='#L1112'>1112</a>
+<a name='L1113'></a><a href='#L1113'>1113</a>
+<a name='L1114'></a><a href='#L1114'>1114</a>
+<a name='L1115'></a><a href='#L1115'>1115</a>
+<a name='L1116'></a><a href='#L1116'>1116</a>
+<a name='L1117'></a><a href='#L1117'>1117</a>
+<a name='L1118'></a><a href='#L1118'>1118</a>
+<a name='L1119'></a><a href='#L1119'>1119</a>
+<a name='L1120'></a><a href='#L1120'>1120</a>
+<a name='L1121'></a><a href='#L1121'>1121</a>
+<a name='L1122'></a><a href='#L1122'>1122</a>
+<a name='L1123'></a><a href='#L1123'>1123</a>
+<a name='L1124'></a><a href='#L1124'>1124</a>
+<a name='L1125'></a><a href='#L1125'>1125</a>
+<a name='L1126'></a><a href='#L1126'>1126</a>
+<a name='L1127'></a><a href='#L1127'>1127</a>
+<a name='L1128'></a><a href='#L1128'>1128</a>
+<a name='L1129'></a><a href='#L1129'>1129</a>
+<a name='L1130'></a><a href='#L1130'>1130</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1905,6 +1957,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">31x</span>
@@ -1913,6 +1966,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -2308,18 +2362,46 @@ import yaml from "yaml-js";
  */
 &nbsp;
 /**
- * Object passed to a command action handler.
+ * @import {
+ *   Actions as ActionsType,
+ *   CommandArg as CommandArgType,
+ *   ExecAndCollectCallback,
+ *   ExecCallback,
+ *   ExitCallback,
+ *   ExitError,
+ *   ExitErrorCallback,
+ *   ExitSuccessCallback,
+ *   LookupConfigCallback,
+ *   SpawnCallback,
+ * } from "./types.js"
+ */
+&nbsp;
+/**
+ * Object passed to a command action handler, with these properties:
+ * - `args` (`Array&lt;string&gt;`): positional arguments, in the order they were passed in
+ * - `name` (`Function`): function that returns the name of the invoked command
  *
- * Besides the properties listed below, every parsed option is available as a
+ * Besides those, every parsed option is available as a
  * direct property keyed by the option's long flag in camel case
  * (e.g. `--some-opt &lt;value&gt;` is available as `someOpt`).
  * This covers both the command's own options and the global options.
  * When a global option and a command option share the same name,
  * the global option value takes precedence.
  *
- * @typedef {Object} CommandArg
- * @property {Array&lt;string&gt;} args Positional arguments, in the order they were passed in.
- * @property {Function} name Function that returns the name of the invoked command.
+ * The TypeScript type is defined in types.d.ts.
+ *
+ * @typedef {CommandArgType} CommandArg
+ */
+&nbsp;
+/**
+ * Action handlers for commands in the form
+ * `{ commands: { &lt;command&gt;: { action: function (command) {} } } }`.
+ * The command name is mapped to the command name specified in the command file.
+ * Each action handler is called with a {@link module:bagofcli~CommandArg}.
+ *
+ * The TypeScript type is defined in types.d.ts.
+ *
+ * @typedef {ActionsType} Actions
  */
 &nbsp;
 /**
@@ -2350,10 +2432,7 @@ import yaml from "yaml-js";
  * Used as the base directory to locate the command file and the package.json file,
  * which is expected to be at `../package.json` relative to `base`.
  * Ideally this is the directory of the client's module, e.g. `lib`.
- * @param {Object} actions Action handlers for commands in the form
- * `{ commands: { &lt;command&gt;: { action: function (command) {} } } }`.
- * The command name in `actions` is mapped to the command name specified in the command file.
- * Each action handler is called with a {@link module:bagofcli~CommandArg}.
+ * @param {Actions} [actions] Action handlers for commands, see {@link module:bagofcli~Actions}.
  * @param {Object} [opts] Optional settings.
  * @param {string} [opts.commandFile='../conf/commands.json'] Relative path to the command file from `base`.
  * @returns {void}
@@ -2908,7 +2987,7 @@ function _postCommand(commanderArg, commandsConfig, globalOptsConfig) {
  * @param {string} command Command to execute.
  * @param {boolean} fallthrough Allow error to be camouflaged as a non-error,
  * in which case the error is passed as the result.
- * @param {Function} cb Standard `cb(err, result)` callback.
+ * @param {ExecCallback} cb Standard `cb(err, result)` callback.
  * @returns {void}
  */
 function exec(command, fallthrough, cb) {
@@ -2936,7 +3015,7 @@ function exec(command, fallthrough, cb) {
  * @param {string} command Command to execute.
  * @param {boolean} fallthrough Allow error to be camouflaged as a non-error,
  * in which case the error is passed as the result.
- * @param {Function} cb `cb(err, stdOutOutput, stdErrOutput, result)` callback.
+ * @param {ExecAndCollectCallback} cb `cb(err, stdOutOutput, stdErrOutput, result)` callback.
  * @returns {void}
  */
 function execAndCollect(command, fallthrough, cb) {
@@ -2958,7 +3037,7 @@ function execAndCollect(command, fallthrough, cb) {
  * @param {string} command Command to execute.
  * @param {boolean} fallthrough Allow error to be camouflaged as a non-error.
  * @param {boolean} collectOutput Pass child output to the callback instead of writing it.
- * @param {Function} cb `cb(err, stdOutOutput, stdErrOutput, result)` callback.
+ * @param {ExecAndCollectCallback} cb `cb(err, stdOutOutput, stdErrOutput, result)` callback.
  * @returns {void}
  * @private
  */
@@ -3004,7 +3083,8 @@ function execute(command, fallthrough, collectOutput, cb) {
  * the process simply exits with status code 0 when there is no error.
  *
  * @alias module:bagofcli.exit
- * @param {Error} [err] Error object, its existence indicates the occurrence of an error.
+ * @param {?ExitError} [err] Error object, its existence indicates the occurrence of an error,
+ * a non-Error object is logged as JSON.
  * @returns {void}
  */
 function exit(err) {
@@ -3022,11 +3102,12 @@ function exit(err) {
  * Exit status code 1 indicates an error, exit status code 0 indicates a success.
  *
  * @alias module:bagofcli.exitCb
- * @param {Function} [errorCb] Error callback in the form `errorCb(err)`,
+ * @template T
+ * @param {ExitErrorCallback} [errorCb] Error callback in the form `errorCb(err)`,
  * defaults to logging the error message to console error.
- * @param {Function} [successCb] Success callback in the form `successCb(result)`,
+ * @param {ExitSuccessCallback&lt;T&gt;} [successCb] Success callback in the form `successCb(result)`,
  * defaults to logging the result to console log.
- * @returns {Function} Standard `cb(err, result)` exit callback.
+ * @returns {ExitCallback&lt;T&gt;} Standard `cb(err, result)` exit callback.
  */
 function exitCb(errorCb, successCb) {
   if (!errorCb) {
@@ -3111,7 +3192,7 @@ function files(items, opts) {
  * @param {Object} opts Settings.
  * @param {string} [opts.file] File name to look up configuration values from.
  * @param {boolean} [opts.prompt=false] Prompt the user for missing configuration values.
- * @param {Function} cb Standard `cb(err, result)` callback,
+ * @param {LookupConfigCallback} cb Standard `cb(err, result)` callback,
  * the result is an object of configuration values keyed by configuration key.
  * @returns {void}
  * @throws {Error} When the configuration file extension is not supported.
@@ -3243,7 +3324,7 @@ function lookupFile(file, opts) {
  * @alias module:bagofcli.spawn
  * @param {string} command Command to execute.
  * @param {Array&lt;string&gt;} args Command arguments.
- * @param {Function} cb Standard `cb(err, result)` callback,
+ * @param {SpawnCallback} cb Standard `cb(err, result)` callback,
  * the result is the exit code, and the error exists when the exit code is not 0.
  * @returns {void}
  * @example
@@ -3376,7 +3457,7 @@ export { exports as default };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-10-23T14:13:30.775Z
+                at 2026-10-23T14:31:20.499Z
             </div>
         <script src="prettify.js"></script>
         <script>
