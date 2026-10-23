@@ -105,6 +105,24 @@ error: option '--transport <transport>' argument 'sse' is invalid. Allowed choic
 
 An omitted option isn't checked against its choices. `choices` can be combined with validation `rules`, in which case the value has to satisfy both.
 
+An option can also restrict its value to a numeric range using `min` and `max` (both inclusive, either can be given alone), and `integer` to only accept whole numbers:
+
+```javascript
+{ "arg": "--port <port>", "desc": "Port number", "min": 0, "max": 65535, "integer": true }
+```
+
+When the option is supplied with a value that isn't a number (or isn't an integer when `integer` is `true`), or is outside the range, the command's action isn't executed, and the process exits with status code 1 and an error message naming the option and the expected range:
+
+```
+error: option '--port <port>' argument '70000' is invalid. --port must be an integer between 0 and 65535.
+```
+
+The range is listed in `--help` output, e.g. `--port <port>  Port number (integer, range: 0 to 65535)`, or `(min: 0)` / `(max: 10)` when only one bound is given.
+
+A negative value can be given either separated by a space or by an equals sign, e.g. `--offset -5` or `--offset=-5`.
+
+An omitted option isn't checked against its range. The value is still passed to the action handler as the original string, e.g. `"8080"`, not `8080`. `min`, `max`, and `integer` can be combined with `choices` and validation `rules`, in which case the value has to satisfy all of them.
+
 Check out [lib/bagofcli.js](https://github.com/cliffano/bagofcli/blob/master/lib/bagofcli.js) for more utility functions.
 
 ## Upgrade

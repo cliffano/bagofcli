@@ -4,7 +4,7 @@ import async from "async";
 import bag from "../lib/bagofcli.js";
 import chalk from "chalk";
 import childProcess from "child_process";
-import { program as commander } from "commander";
+import { program as commander, Help, Option } from "commander";
 import fs from "fs";
 import inquirer from "inquirer";
 import referee from "@sinonjs/referee";
@@ -195,6 +195,183 @@ describe("cli - _addOption", function () {
       { message: "Allowed choices are stdio, streamable-http." },
     );
     referee.assert.equals(action.callCount, 0);
+  });
+
+  describe("range", function () {
+    beforeEach(function () {
+      const self = this;
+      this.mockProgram
+        .expects("addOption")
+        .once()
+        .callsFake(function (opt) {
+          self.option = opt;
+        });
+      this.addOption = function (config) {
+        bag._addOption(
+          self.program,
+          Object.assign({ arg: "--port <port>", desc: "Port" }, config),
+        );
+        return self.option;
+      };
+    });
+
+    it("should register option via addOption() with default value when option has range", function () {
+      const option = this.addOption({ min: 0, max: 65535, action: "8080" });
+      referee.assert.equals(option.defaultValue, "8080");
+    });
+
+    it("should set range description for help output when option has min and max", function () {
+      const option = this.addOption({ min: 0, max: 65535, integer: true });
+      referee.assert.equals(
+        option.rangeDescription,
+        "integer, range: 0 to 65535",
+      );
+    });
+
+    it("should set range description for help output when option only has min", function () {
+      const option = this.addOption({ min: 0 });
+      referee.assert.equals(option.rangeDescription, "min: 0");
+    });
+
+    it("should set range description for help output when option only has max", function () {
+      const option = this.addOption({ max: 10 });
+      referee.assert.equals(option.rangeDescription, "max: 10");
+    });
+
+    it("should set range description for help output when option only has integer", function () {
+      const option = this.addOption({ integer: true });
+      referee.assert.equals(option.rangeDescription, "integer");
+    });
+
+    it("should return the original string when value is within range", function () {
+      const option = this.addOption({ min: 0, max: 65535, integer: true });
+      referee.assert.equals(option.parseArg("8080"), "8080");
+      referee.assert.equals(option.parseArg("0"), "0");
+      referee.assert.equals(option.parseArg("65535"), "65535");
+    });
+
+    it("should throw error when value is outside min and max", function () {
+      const option = this.addOption({ min: 0, max: 65535, integer: true });
+      const message = "--port must be an integer between 0 and 65535.";
+      referee.assert.exception(() => option.parseArg("-1"), { message });
+      referee.assert.exception(() => option.parseArg("65536"), { message });
+    });
+
+    it("should throw error when value is not a number", function () {
+      const option = this.addOption({ min: 0, max: 10 });
+      referee.assert.exception(() => option.parseArg("abc"), {
+        message: "--port must be a number between 0 and 10.",
+      });
+    });
+
+    it("should accept a decimal when integer is not set", function () {
+      const option = this.addOption({ min: 0, max: 10 });
+      referee.assert.equals(option.parseArg("1.5"), "1.5");
+    });
+
+    it("should throw error when value is a decimal and integer is true", function () {
+      const option = this.addOption({ min: 0, max: 10, integer: true });
+      referee.assert.exception(() => option.parseArg("1.5"), {
+        message: "--port must be an integer between 0 and 10.",
+      });
+    });
+
+    it("should only check min when max is not set", function () {
+      const option = this.addOption({ min: 1 });
+      referee.assert.equals(option.parseArg("1000000"), "1000000");
+      referee.assert.exception(() => option.parseArg("0"), {
+        message: "--port must be a number greater than or equal to 1.",
+      });
+    });
+
+    it("should only check max when min is not set", function () {
+      const option = this.addOption({ max: 10 });
+      referee.assert.equals(option.parseArg("-5"), "-5");
+      referee.assert.exception(() => option.parseArg("11"), {
+        message: "--port must be a number less than or equal to 10.",
+      });
+    });
+
+    it("should only check that value is an integer when integer is set without min and max", function () {
+      const option = this.addOption({ integer: true });
+      referee.assert.equals(option.parseArg("-5"), "-5");
+      referee.assert.exception(() => option.parseArg("1.5"), {
+        message: "--port must be an integer.",
+      });
+    });
+
+    it("should use the short flag in error message when option does not have a long flag", function () {
+      const option = this.addOption({ arg: "-p <port>", max: 10 });
+      referee.assert.exception(() => option.parseArg("11"), {
+        message: "-p must be a number less than or equal to 10.",
+      });
+    });
+
+    it("should check choices before range when option has both", function () {
+      const option = this.addOption({
+        choices: ["80", "443", "99999"],
+        max: 65535,
+      });
+      referee.assert.equals(option.parseArg("443"), "443");
+      referee.assert.exception(() => option.parseArg("8080"), {
+        message: "Allowed choices are 80, 443, 99999.",
+      });
+      referee.assert.exception(() => option.parseArg("99999"), {
+        message: "--port must be a number less than or equal to 65535.",
+      });
+    });
+
+    it("should pass value within range to action function", function () {
+      const action = sinon.stub().returns(8080);
+      const option = this.addOption({ min: 0, max: 65535, action: action });
+      referee.assert.equals(option.parseArg("8080", undefined), 8080);
+      referee.assert.isTrue(action.calledOnceWithExactly("8080", undefined));
+      referee.assert.exception(() => option.parseArg("70000"));
+      referee.assert.equals(action.callCount, 1);
+    });
+  });
+});
+
+describe("cli - _optionDescription", function () {
+  beforeEach(function () {
+    this.help = new Help();
+  });
+
+  it("should use commander's option description when option does not have range description", function () {
+    const option = new Option("--mode <mode>", "Mode").choices(["a", "b"]);
+    referee.assert.equals(
+      bag._optionDescription.call(this.help, option),
+      'Mode (choices: "a", "b")',
+    );
+  });
+
+  it("should add range description when option does not have any other extra info", function () {
+    const option = new Option("--port <port>", "Port number");
+    option.rangeDescription = "integer, range: 0 to 65535";
+    referee.assert.equals(
+      bag._optionDescription.call(this.help, option),
+      "Port number (integer, range: 0 to 65535)",
+    );
+  });
+
+  it("should combine range description with commander's extra info", function () {
+    const option = new Option("--port <port>", "Port number")
+      .choices(["80", "443"])
+      .default("80");
+    option.rangeDescription = "max: 1000";
+    referee.assert.equals(
+      bag._optionDescription.call(this.help, option),
+      'Port number (max: 1000, choices: "80", "443", default: "80")',
+    );
+  });
+
+  it("should only show the extra info when option does not have description", function () {
+    const option = new Option("--port <port>");
+    option.rangeDescription = "min: 0";
+    referee.assert.equals(
+      bag._optionDescription.call(this.help, option),
+      "(min: 0)",
+    );
   });
 });
 

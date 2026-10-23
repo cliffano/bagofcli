@@ -319,6 +319,246 @@ describe('bagofcli - integration', function () {
     });
   });
 
+  describe('range', function () {
+    const commandsConfig = {
+      options: [
+        {
+          arg: '--retries <retries>',
+          desc: 'Number of retries',
+          min: 0,
+          max: 5,
+          integer: true
+        }
+      ],
+      commands: {
+        serve: {
+          desc: 'Start the server',
+          options: [
+            {
+              arg: '--port <port>',
+              desc: 'Port number',
+              min: 0,
+              max: 65535,
+              integer: true
+            },
+            {
+              arg: '--ratio <ratio>',
+              desc: 'Sampling ratio',
+              min: 0
+            },
+            {
+              arg: '--delay <delay>',
+              desc: 'Delay in seconds',
+              max: 10
+            }
+          ]
+        },
+        scale: {
+          desc: 'Scale the app',
+          options: [
+            {
+              arg: '--replicas <replicas>',
+              desc: 'Number of replicas',
+              choices: ['1', '5', '50'],
+              max: 10,
+              rules: ['required']
+            }
+          ]
+        }
+      }
+    };
+    const actionSource = `{
+      commands: {
+        serve: {
+          action: function (opts) {
+            console.log(JSON.stringify({ port: opts.port, ratio: opts.ratio, delay: opts.delay, retries: opts.retries }));
+          }
+        },
+        scale: {
+          action: function (opts) {
+            console.log(JSON.stringify({ replicas: opts.replicas }));
+          }
+        }
+      }
+    }`;
+    let tempDir;
+
+    function invalidMessage(option, value, expected) {
+      return `error: option '${option}' argument '${value}' is invalid. ${expected}\n`;
+    }
+
+    beforeEach(function () {
+      tempDir = createTempProject(commandsConfig);
+    });
+
+    afterEach(function () {
+      rmSync(tempDir, { recursive: true, force: true });
+    });
+
+    it('should pass the original string value to the action when it is within range', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port', '8080'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"port":"8080"}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should pass the value to the action when it is at the min bound', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port', '0'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"port":"0"}\n');
+    });
+
+    it('should pass the value to the action when it is at the max bound', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port', '65535'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"port":"65535"}\n');
+    });
+
+    it('should exit with an error without running the action when the value is below min', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port=-1'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, invalidMessage('--port <port>', '-1', '--port must be an integer between 0 and 65535.'));
+    });
+
+    it('should accept a negative value separated by a space as well as by an equals sign', function () {
+      const spaced = runScenario(tempDir, ['node', 'cli.js', 'serve', '--delay', '-100'], actionSource);
+      assert.equals(spaced.status, 0);
+      assert.equals(spaced.stdout, '{"delay":"-100"}\n');
+
+      const belowMin = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port', '-1'], actionSource);
+      assert.equals(belowMin.status, 1);
+      assert.equals(belowMin.stderr, invalidMessage('--port <port>', '-1', '--port must be an integer between 0 and 65535.'));
+    });
+
+    it('should list the range of a global option in the help output', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--help'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.isTrue(result.stdout.includes('Number of retries (integer, range: 0 to 5)'));
+    });
+
+    it('should list the range of command options in the command help output', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--help'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.isTrue(result.stdout.includes('Port number (integer, range: 0 to 65535)'));
+      assert.isTrue(result.stdout.includes('Sampling ratio (min: 0)'));
+      assert.isTrue(result.stdout.includes('Delay in seconds (max: 10)'));
+    });
+
+    it('should list the range alongside the choices in the command help output', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'scale', '--help'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.isTrue(result.stdout.includes('Number of replicas (max: 10, choices: "1", "5", "50")'));
+    });
+
+    it('should exit with an error without running the action when the value is above max', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port', '65536'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, invalidMessage('--port <port>', '65536', '--port must be an integer between 0 and 65535.'));
+    });
+
+    it('should exit with an error without running the action when the value is not a number', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port', 'http'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, invalidMessage('--port <port>', 'http', '--port must be an integer between 0 and 65535.'));
+    });
+
+    it('should exit with an error without running the action when the value is a decimal and integer is true', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--port', '80.5'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, invalidMessage('--port <port>', '80.5', '--port must be an integer between 0 and 65535.'));
+    });
+
+    it('should only check min when max is not set', function () {
+      const valid = runScenario(tempDir, ['node', 'cli.js', 'serve', '--ratio', '1000.5'], actionSource);
+      assert.equals(valid.status, 0);
+      assert.equals(valid.stdout, '{"ratio":"1000.5"}\n');
+
+      const invalid = runScenario(tempDir, ['node', 'cli.js', 'serve', '--ratio=-0.1'], actionSource);
+      assert.equals(invalid.status, 1);
+      assert.equals(invalid.stdout, '');
+      assert.equals(invalid.stderr, invalidMessage('--ratio <ratio>', '-0.1', '--ratio must be a number greater than or equal to 0.'));
+    });
+
+    it('should only check max when min is not set', function () {
+      const valid = runScenario(tempDir, ['node', 'cli.js', 'serve', '--delay=-100'], actionSource);
+      assert.equals(valid.status, 0);
+      assert.equals(valid.stdout, '{"delay":"-100"}\n');
+
+      const invalid = runScenario(tempDir, ['node', 'cli.js', 'serve', '--delay', '10.1'], actionSource);
+      assert.equals(invalid.status, 1);
+      assert.equals(invalid.stdout, '');
+      assert.equals(invalid.stderr, invalidMessage('--delay <delay>', '10.1', '--delay must be a number less than or equal to 10.'));
+    });
+
+    it('should run the action without error when options with range are omitted', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should pass a global option value to the action when it is within range', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--retries', '5', 'serve'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"retries":"5"}\n');
+    });
+
+    it('should exit with an error without running the action when a global option value is out of range', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--retries', '6', 'serve'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, invalidMessage('--retries <retries>', '6', '--retries must be an integer between 0 and 5.'));
+    });
+
+    it('should pass an option value to the action when it satisfies its choices, range and rules', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'scale', '--replicas', '5'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"replicas":"5"}\n');
+    });
+
+    it('should exit with the range error when an option value is one of the choices but out of range', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'scale', '--replicas', '50'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, invalidMessage('--replicas <replicas>', '50', '--replicas must be a number less than or equal to 10.'));
+    });
+
+    it('should exit with the choices error when an option value is within range but not one of the choices', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'scale', '--replicas', '3'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, invalidMessage('--replicas <replicas>', '3', 'Allowed choices are 1, 5, 50.'));
+    });
+
+    it('should exit with the required rule error when an option with range and required rule is omitted', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'scale'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.isTrue(result.stderr.includes('Invalid option: <--replicas <replicas>> must be required'));
+    });
+  });
+
   describe('choices', function () {
     const commandsConfig = {
       options: [
