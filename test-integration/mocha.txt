@@ -1,69 +1,69 @@
 
 [0m[0m
 [0m  bagofcli - integration[0m
-  [32m  [32m✔[39m[0m[90m should execute a configured command and pass positional arguments and name() to the action[0m[31m (195ms)[0m
-  [32m  [32m✔[39m[0m[90m should execute a configured command and pass a flag directly on the action argument (regression test for issue #20)[0m[31m (186ms)[0m
-  [32m  [32m✔[39m[0m[90m should execute a configured command and pass both a flag and positional arguments/name() to the action[0m[31m (188ms)[0m
-  [32m  [32m✔[39m[0m[90m should not falsely reject a command with declared args and its own command-scoped option[0m[31m (199ms)[0m
-  [32m  [32m✔[39m[0m[90m should exit with an error when an unknown command is passed[0m[31m (195ms)[0m
+  [32m  [32m✔[39m[0m[90m should execute a configured command and pass positional arguments and name() to the action[0m[31m (155ms)[0m
+  [32m  [32m✔[39m[0m[90m should execute a configured command and pass a flag directly on the action argument (regression test for issue #20)[0m[31m (148ms)[0m
+  [32m  [32m✔[39m[0m[90m should execute a configured command and pass both a flag and positional arguments/name() to the action[0m[31m (151ms)[0m
+  [32m  [32m✔[39m[0m[90m should not falsely reject a command with declared args and its own command-scoped option[0m[31m (152ms)[0m
+  [32m  [32m✔[39m[0m[90m should exit with an error when an unknown command is passed[0m[31m (150ms)[0m
 [0m    allowExcessArguments[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a command with allowExcessArguments false receives a stray argument[0m[31m (194ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error when a stray argument is mixed with options on a command with allowExcessArguments false[0m[31m (206ms)[0m
-    [32m  [32m✔[39m[0m[90m should run the action when a command with allowExcessArguments false only receives options[0m[31m (195ms)[0m
-    [32m  [32m✔[39m[0m[90m should not count global and command option tokens as arguments on a command with allowExcessArguments false (regression test for option tokens leaking into the top-level args)[0m[31m (194ms)[0m
-    [32m  [32m✔[39m[0m[90m should still accept extra arguments on a command without allowExcessArguments[0m[31m (199ms)[0m
-    [32m  [32m✔[39m[0m[90m should run the action when a command with declared args and allowExcessArguments false receives its args and options[0m[31m (195ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error when a command with declared args and allowExcessArguments false receives more args than declared[0m[31m (194ms)[0m
-    [32m  [32m✔[39m[0m[90m should still exit with the usage message when a command with declared args and allowExcessArguments false misses a mandatory arg[0m[31m (192ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a command with allowExcessArguments false receives a stray argument[0m[31m (148ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error when a stray argument is mixed with options on a command with allowExcessArguments false[0m[31m (153ms)[0m
+    [32m  [32m✔[39m[0m[90m should run the action when a command with allowExcessArguments false only receives options[0m[31m (156ms)[0m
+    [32m  [32m✔[39m[0m[90m should not count global and command option tokens as arguments on a command with allowExcessArguments false (regression test for option tokens leaking into the top-level args)[0m[31m (151ms)[0m
+    [32m  [32m✔[39m[0m[90m should still accept extra arguments on a command without allowExcessArguments[0m[31m (154ms)[0m
+    [32m  [32m✔[39m[0m[90m should run the action when a command with declared args and allowExcessArguments false receives its args and options[0m[31m (152ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error when a command with declared args and allowExcessArguments false receives more args than declared[0m[31m (153ms)[0m
+    [32m  [32m✔[39m[0m[90m should still exit with the usage message when a command with declared args and allowExcessArguments false misses a mandatory arg[0m[31m (153ms)[0m
 [0m    rules[0m
-    [32m  [32m✔[39m[0m[90m should run the action when arguments and options satisfy their rules[0m[31m (183ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when an argument does not satisfy its rule[0m[31m (186ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a global option does not satisfy its rule[0m[31m (199ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a required command option is omitted[0m[31m (194ms)[0m
-    [32m  [32m✔[39m[0m[90m should still exit with an error when a required command option is omitted on a command without action handler[0m[31m (194ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit without error when a command without action handler satisfies its rules[0m[31m (187ms)[0m
+    [32m  [32m✔[39m[0m[90m should run the action when arguments and options satisfy their rules[0m[31m (159ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when an argument does not satisfy its rule[0m[31m (153ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a global option does not satisfy its rule[0m[31m (159ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a required command option is omitted[0m[31m (154ms)[0m
+    [32m  [32m✔[39m[0m[90m should still exit with an error when a required command option is omitted on a command without action handler[0m[31m (149ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit without error when a command without action handler satisfies its rules[0m[31m (151ms)[0m
 [0m    range[0m
-    [32m  [32m✔[39m[0m[90m should pass the original string value to the action when it is within range[0m[31m (191ms)[0m
-    [32m  [32m✔[39m[0m[90m should pass the value to the action when it is at the min bound[0m[31m (198ms)[0m
-    [32m  [32m✔[39m[0m[90m should pass the value to the action when it is at the max bound[0m[31m (188ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when the value is below min[0m[31m (186ms)[0m
-    [32m  [32m✔[39m[0m[90m should accept a negative value separated by a space as well as by an equals sign[0m[31m (393ms)[0m
-    [32m  [32m✔[39m[0m[90m should list the range of a global option in the help output[0m[31m (196ms)[0m
-    [32m  [32m✔[39m[0m[90m should list the range of command options in the command help output[0m[31m (201ms)[0m
-    [32m  [32m✔[39m[0m[90m should list the range alongside the choices in the command help output[0m[31m (195ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when the value is above max[0m[31m (196ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when the value is not a number[0m[31m (192ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when the value is a decimal and integer is true[0m[31m (192ms)[0m
-    [32m  [32m✔[39m[0m[90m should only check min when max is not set[0m[31m (379ms)[0m
-    [32m  [32m✔[39m[0m[90m should only check max when min is not set[0m[31m (447ms)[0m
-    [32m  [32m✔[39m[0m[90m should run the action without error when options with range are omitted[0m[31m (181ms)[0m
-    [32m  [32m✔[39m[0m[90m should pass a global option value to the action when it is within range[0m[31m (200ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a global option value is out of range[0m[31m (189ms)[0m
-    [32m  [32m✔[39m[0m[90m should pass an option value to the action when it satisfies its choices, range and rules[0m[31m (194ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with the range error when an option value is one of the choices but out of range[0m[31m (190ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with the choices error when an option value is within range but not one of the choices[0m[31m (202ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with the required rule error when an option with range and required rule is omitted[0m[31m (192ms)[0m
+    [32m  [32m✔[39m[0m[90m should pass the original string value to the action when it is within range[0m[31m (149ms)[0m
+    [32m  [32m✔[39m[0m[90m should pass the value to the action when it is at the min bound[0m[31m (146ms)[0m
+    [32m  [32m✔[39m[0m[90m should pass the value to the action when it is at the max bound[0m[31m (153ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when the value is below min[0m[31m (150ms)[0m
+    [32m  [32m✔[39m[0m[90m should accept a negative value separated by a space as well as by an equals sign[0m[31m (302ms)[0m
+    [32m  [32m✔[39m[0m[90m should list the range of a global option in the help output[0m[31m (149ms)[0m
+    [32m  [32m✔[39m[0m[90m should list the range of command options in the command help output[0m[31m (147ms)[0m
+    [32m  [32m✔[39m[0m[90m should list the range alongside the choices in the command help output[0m[31m (148ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when the value is above max[0m[31m (149ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when the value is not a number[0m[31m (148ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when the value is a decimal and integer is true[0m[31m (150ms)[0m
+    [32m  [32m✔[39m[0m[90m should only check min when max is not set[0m[31m (293ms)[0m
+    [32m  [32m✔[39m[0m[90m should only check max when min is not set[0m[31m (304ms)[0m
+    [32m  [32m✔[39m[0m[90m should run the action without error when options with range are omitted[0m[31m (153ms)[0m
+    [32m  [32m✔[39m[0m[90m should pass a global option value to the action when it is within range[0m[31m (150ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a global option value is out of range[0m[31m (150ms)[0m
+    [32m  [32m✔[39m[0m[90m should pass an option value to the action when it satisfies its choices, range and rules[0m[31m (154ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with the range error when an option value is one of the choices but out of range[0m[31m (146ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with the choices error when an option value is within range but not one of the choices[0m[31m (153ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with the required rule error when an option with range and required rule is omitted[0m[31m (153ms)[0m
 [0m    choices[0m
-    [32m  [32m✔[39m[0m[90m should pass a command option value to the action when it is one of the choices[0m[31m (183ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a command option value is not one of the choices[0m[31m (197ms)[0m
-    [32m  [32m✔[39m[0m[90m should pass a global option value to the action when it is one of the choices[0m[31m (188ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a global option value is not one of the choices[0m[31m (189ms)[0m
-    [32m  [32m✔[39m[0m[90m should run the action without error when options with choices are omitted[0m[31m (195ms)[0m
-    [32m  [32m✔[39m[0m[90m should list the choices of a global option in the help output[0m[31m (186ms)[0m
-    [32m  [32m✔[39m[0m[90m should list the choices of a command option in the command help output[0m[31m (185ms)[0m
-    [32m  [32m✔[39m[0m[90m should pass an option value to the action when it is one of the choices and satisfies its rule[0m[31m (191ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with the rule error when an option value is one of the choices but does not satisfy its rule[0m[31m (185ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with the choices error when an option value is not one of the choices even though it satisfies its rule[0m[31m (194ms)[0m
-    [32m  [32m✔[39m[0m[90m should pass an option value to the action when it is one of the choices and the option is required[0m[31m (188ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with the required rule error when an option with choices and required rule is omitted[0m[31m (193ms)[0m
-    [32m  [32m✔[39m[0m[90m should exit with the choices error without running the action when an option with required rule is not one of the choices[0m[31m (197ms)[0m
+    [32m  [32m✔[39m[0m[90m should pass a command option value to the action when it is one of the choices[0m[31m (147ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a command option value is not one of the choices[0m[31m (149ms)[0m
+    [32m  [32m✔[39m[0m[90m should pass a global option value to the action when it is one of the choices[0m[31m (151ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with an error without running the action when a global option value is not one of the choices[0m[31m (148ms)[0m
+    [32m  [32m✔[39m[0m[90m should run the action without error when options with choices are omitted[0m[31m (152ms)[0m
+    [32m  [32m✔[39m[0m[90m should list the choices of a global option in the help output[0m[31m (152ms)[0m
+    [32m  [32m✔[39m[0m[90m should list the choices of a command option in the command help output[0m[31m (153ms)[0m
+    [32m  [32m✔[39m[0m[90m should pass an option value to the action when it is one of the choices and satisfies its rule[0m[31m (149ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with the rule error when an option value is one of the choices but does not satisfy its rule[0m[31m (150ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with the choices error when an option value is not one of the choices even though it satisfies its rule[0m[31m (148ms)[0m
+    [32m  [32m✔[39m[0m[90m should pass an option value to the action when it is one of the choices and the option is required[0m[31m (155ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with the required rule error when an option with choices and required rule is omitted[0m[31m (153ms)[0m
+    [32m  [32m✔[39m[0m[90m should exit with the choices error without running the action when an option with required rule is not one of the choices[0m[31m (151ms)[0m
 
 [0m  bagofcli - typescript[0m
-  [32m  [32m✔[39m[0m[90m should have lib/bagofcli.d.ts up to date with the JSDoc in lib/bagofcli.js (run `npm run types` when this fails)[0m[31m (152ms)[0m
+  [32m  [32m✔[39m[0m[90m should have lib/bagofcli.d.ts up to date with the JSDoc in lib/bagofcli.js (run `npm run types` when this fails)[0m[31m (157ms)[0m
   [32m  [32m✔[39m[0m[90m should point package.json types to the declaration file[0m
-  [32m  [32m✔[39m[0m[90m should type-check a TypeScript consumer importing bagofcli under strict mode[0m[31m (582ms)[0m
-  [32m  [32m✔[39m[0m[90m should include the declaration files in the published package[0m[31m (337ms)[0m
+  [32m  [32m✔[39m[0m[90m should type-check a TypeScript consumer importing bagofcli under strict mode[0m[31m (589ms)[0m
+  [32m  [32m✔[39m[0m[90m should include the declaration files in the published package[0m[31m (335ms)[0m
 
 
-[92m [0m[32m 56 passing[0m[90m (12s)[0m
+[92m [0m[32m 56 passing[0m[90m (9s)[0m
 
