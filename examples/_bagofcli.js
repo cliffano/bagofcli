@@ -6,11 +6,20 @@
  * declared in commands.json (sitting alongside this file) rather than in
  * code - this script just wires up the action handler for each command.
  *
+ * Arguments and options are validated before the action handler is called,
+ * so an action handler only runs when everything is valid:
+ * - choices, min, max, and integer are checked by commander while parsing
+ * - rules are checked by bagofcli right before the action handler is called
+ *
  * Try it, e.g.:
  *
- *   node examples/bagofcli.js mycommand1 someval1 someval2
- *   node examples/bagofcli.js mycommand2 someval1 someval2 --myopt2
- *   node examples/bagofcli.js --help
+ *   node _bagofcli.js --help
+ *   node _bagofcli.js serve --help
+ *   node _bagofcli.js greet Ada --shout
+ *   node _bagofcli.js serve --transport streamable-http --port 3000
+ *   node _bagofcli.js deploy --env staging --replicas 3
+ *
+ * See bagofcli-lib.sh for the full list of scenarios, valid and invalid.
  */
 import bag from "bagofcli";
 import path from "path";
@@ -18,30 +27,68 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+/**
+ * Log the global options (declared at the top level of commands.json),
+ * which are available on opts alongside the command's own options.
+ *
+ * @param {Object} opts Object passed to the action handler.
+ */
+function logGlobalOpts(opts) {
+  console.log(
+    "Global opts: quiet=%s logLevel=%s retries=%s",
+    opts.quiet,
+    opts.logLevel,
+    opts.retries,
+  );
+}
+
 const actions = {
   commands: {
-    mycommand1: {
+    greet: {
       action: function (opts) {
-        // opts.args holds the positional arguments (myarg1a, myarg1b as
-        // configured in commands.json), in the order they were passed in.
+        // opts.args holds the positional arguments in the order they were passed in.
         // opts.name() returns the command name that was invoked.
         console.log("Running %s with args: %s", opts.name(), opts.args.join(", "));
-        // myopt1/myopt2 are global options (declared at the top level of
-        // commands.json), they are available on opts alongside this command's
-        // own options.
-        console.log(
-          "Global opts: myopt1=%s myopt2=%s",
-          opts.myopt1,
-          opts.myopt2,
-        );
+        // greeting falls back to its default value (the "action" field in
+        // commands.json) when it isn't supplied.
+        const message = `${opts.greeting}, ${opts.args[0]}!`;
+        console.log(opts.shout ? message.toUpperCase() : message);
+        logGlobalOpts(opts);
       },
     },
-    mycommand2: {
+    echo: {
+      action: function (opts) {
+        // echo doesn't declare any args, so it accepts any positional arguments.
+        console.log("Running %s with args: %s", opts.name(), opts.args.join(", "));
+      },
+    },
+    notify: {
       action: function (opts) {
         console.log("Running %s with args: %s", opts.name(), opts.args.join(", "));
-        // mycmd2opt is a command option (declared under mycommand2 in
-        // commands.json), it's available on opts just like global options.
-        console.log("Command opt: mycmd2opt=%s", opts.mycmd2opt);
+        console.log("Command opts: priority=%s", opts.priority);
+        logGlobalOpts(opts);
+      },
+    },
+    serve: {
+      action: function (opts) {
+        // Option values are passed as the original strings, including the
+        // ones restricted to a numeric range, e.g. port is "8080", not 8080.
+        console.log("Running %s with args: %s", opts.name(), opts.args.join(", "));
+        console.log(
+          "Command opts: transport=%s port=%s (%s) offset=%s",
+          opts.transport,
+          opts.port,
+          typeof opts.port,
+          opts.offset,
+        );
+        logGlobalOpts(opts);
+      },
+    },
+    deploy: {
+      action: function (opts) {
+        console.log("Running %s", opts.name());
+        console.log("Command opts: env=%s replicas=%s", opts.env, opts.replicas);
+        logGlobalOpts(opts);
       },
     },
   },

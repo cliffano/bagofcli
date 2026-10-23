@@ -91,7 +91,7 @@ var actions = {
 bag.command(__dirname, actions);
 ```
 
-By default, a command accepts extra positional arguments beyond the ones declared in its `args`, and passes them to the action handler in `args`. A command can reject them by setting `allowExcessArguments` to `false`:
+By default, a command that doesn't declare any `args` accepts any positional arguments, and passes them to the action handler in `args`. (A command that declares `args` already exits with the usage message when the number of positional arguments doesn't match its mandatory `args`.) A command can reject unexpected positional arguments by setting `allowExcessArguments` to `false`:
 
 ```javascript
 "serve": { "desc": "Start the server", "allowExcessArguments": false, "options": [ ... ] }
