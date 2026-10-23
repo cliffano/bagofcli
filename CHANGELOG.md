@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgrade Suntory to 1.10.0
 - Upgrade workflow runner to Ubuntu 26.04
+- Validate arguments and options against their rules before calling the command action handler instead of after
 
 ## 3.2.0 - 2026-10-11
 ### Added

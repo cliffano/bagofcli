@@ -117,6 +117,8 @@ Update commands.json argument validation rules:
 * `isNumeric` to `number`
 * `isEmail` to `email`
 
+Arguments and options are validated against their rules before the command's action is executed. When any of them is invalid, the action isn't executed, and the process exits with status code 1.
+
 Argument/option validation rules are backed by [validator](https://www.npmjs.com/package/validator). Available rule names:
 `required`, `empty`, `blank`, `string`, `number`, `int`, `decimal`, `boolean`, `email`, `alphaNumeric`, `anArray`, `date`, `ip`, `cc`, `phone`, `postal`, `ssn`.
 

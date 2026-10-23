@@ -204,6 +204,121 @@ describe('bagofcli - integration', function () {
     }
   });
 
+  describe('rules', function () {
+    const commandsConfig = {
+      options: [
+        {
+          arg: '--port <port>',
+          desc: 'Port number',
+          rules: ['int']
+        }
+      ],
+      commands: {
+        notify: {
+          desc: 'Notify someone',
+          args: [
+            {
+              name: 'recipient',
+              rules: ['email']
+            }
+          ]
+        },
+        deploy: {
+          desc: 'Deploy the app',
+          options: [
+            {
+              arg: '--env <env>',
+              desc: 'Target environment',
+              rules: ['required']
+            }
+          ]
+        },
+        build: {
+          desc: 'Build the app',
+          options: [
+            {
+              arg: '--target <target>',
+              desc: 'Build target',
+              rules: ['required']
+            }
+          ]
+        }
+      }
+    };
+    // build intentionally has no action handler
+    const actionSource = `{
+      commands: {
+        notify: {
+          action: function (opts) {
+            console.log(JSON.stringify({ args: opts.args, port: opts.port }));
+          }
+        },
+        deploy: {
+          action: function (opts) {
+            console.log(JSON.stringify({ env: opts.env }));
+          }
+        }
+      }
+    }`;
+    let tempDir;
+
+    beforeEach(function () {
+      tempDir = createTempProject(commandsConfig);
+    });
+
+    afterEach(function () {
+      rmSync(tempDir, { recursive: true, force: true });
+    });
+
+    it('should run the action when arguments and options satisfy their rules', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--port', '8080', 'notify', 'ada@example.com'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"args":["ada@example.com"],"port":"8080"}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should exit with an error without running the action when an argument does not satisfy its rule', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--port', '8080', 'notify', 'ada'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.isTrue(result.stderr.includes('Invalid argument: <recipient> must be email'));
+    });
+
+    it('should exit with an error without running the action when a global option does not satisfy its rule', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--port', 'abc', 'notify', 'ada@example.com'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.isTrue(result.stderr.includes('Invalid option: <--port <port>> must be int'));
+    });
+
+    it('should exit with an error without running the action when a required command option is omitted', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--port', '8080', 'deploy'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.isTrue(result.stderr.includes('Invalid option: <--env <env>> must be required'));
+    });
+
+    it('should still exit with an error when a required command option is omitted on a command without action handler', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--port', '8080', 'build'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.isTrue(result.stderr.includes('Invalid option: <--target <target>> must be required'));
+    });
+
+    it('should exit without error when a command without action handler satisfies its rules', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--port', '8080', 'build', '--target', 'web'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '');
+      assert.equals(result.stderr, '');
+    });
+  });
+
   describe('choices', function () {
     const commandsConfig = {
       options: [
@@ -349,6 +464,7 @@ describe('bagofcli - integration', function () {
       const result = runScenario(tempDir, ['node', 'cli.js', 'export', '--format', 'yaml-1'], actionSource);
 
       assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
       assert.isTrue(result.stderr.includes('Invalid option: <--format <format>> must be alphaNumeric'));
     });
 
@@ -375,6 +491,7 @@ describe('bagofcli - integration', function () {
       const result = runScenario(tempDir, ['node', 'cli.js', 'deploy'], actionSource);
 
       assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
       assert.isTrue(result.stderr.includes('Invalid option: <--env <env>> must be required'));
     });
 
