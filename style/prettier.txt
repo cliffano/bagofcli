@@ -1,3 +1,3 @@
-[90mlib/bagofcli.js[39m 109ms (unchanged)
-[90mlib/types.d.ts[39m 41ms (unchanged)
-[90mtest/bagofcli.js[39m 131ms (unchanged)
+[90mlib/bagofcli.js[39m 113ms (unchanged)
+[90mlib/types.d.ts[39m 57ms (unchanged)
+[90mtest/bagofcli.js[39m 132ms (unchanged)
