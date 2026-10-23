@@ -1,10 +1,41 @@
-test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/22.23.3/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  cli - command[0m
   [32m  [32m✔[39m[0m[90m should use optional command file when specified[0m
   [32m  [32m✔[39m[0m[90m should fall back to default command file location when optional command file is not specified[0m
   [32m  [32m✔[39m[0m[90m should set global options when specified[0m
+  [32m  [32m✔[39m[0m[90m should allow excess arguments without registering args when command does not specify allowExcessArguments[0m
+  [32m  [32m✔[39m[0m[90m should disallow excess arguments and register args as optional when command specifies allowExcessArguments false[0m
+
+[0m  cli - _addOption[0m
+  [32m  [32m✔[39m[0m[90m should register option via option() with action passed through when option does not have choices[0m
+  [32m  [32m✔[39m[0m[90m should register option with choices via addOption() when option has choices[0m
+  [32m  [32m✔[39m[0m[90m should pass valid value to action function when option has choices[0m
+  [32m  [32m✔[39m[0m[90m should throw error without calling action function when option has choices and value is invalid[0m
+[0m    range[0m
+    [32m  [32m✔[39m[0m[90m should register option via addOption() with default value when option has range[0m
+    [32m  [32m✔[39m[0m[90m should set range description for help output when option has min and max[0m
+    [32m  [32m✔[39m[0m[90m should set range description for help output when option only has min[0m
+    [32m  [32m✔[39m[0m[90m should set range description for help output when option only has max[0m
+    [32m  [32m✔[39m[0m[90m should set range description for help output when option only has integer[0m
+    [32m  [32m✔[39m[0m[90m should return the original string when value is within range[0m
+    [32m  [32m✔[39m[0m[90m should throw error when value is outside min and max[0m
+    [32m  [32m✔[39m[0m[90m should throw error when value is not a number[0m
+    [32m  [32m✔[39m[0m[90m should accept a decimal when integer is not set[0m
+    [32m  [32m✔[39m[0m[90m should throw error when value is a decimal and integer is true[0m
+    [32m  [32m✔[39m[0m[90m should only check min when max is not set[0m
+    [32m  [32m✔[39m[0m[90m should only check max when min is not set[0m
+    [32m  [32m✔[39m[0m[90m should only check that value is an integer when integer is set without min and max[0m
+    [32m  [32m✔[39m[0m[90m should use the short flag in error message when option does not have a long flag[0m
+    [32m  [32m✔[39m[0m[90m should check choices before range when option has both[0m
+    [32m  [32m✔[39m[0m[90m should pass value within range to action function[0m
+
+[0m  cli - _optionDescription[0m
+  [32m  [32m✔[39m[0m[90m should use commander's option description when option does not have range description[0m
+  [32m  [32m✔[39m[0m[90m should add range description when option does not have any other extra info[0m
+  [32m  [32m✔[39m[0m[90m should combine range description with commander's extra info[0m
+  [32m  [32m✔[39m[0m[90m should only show the extra info when option does not have description[0m
 
 [0m  cli - _preCommand[0m
   [32m  [32m✔[39m[0m[90m should not log anything when commands have empty examples array[0m
@@ -137,7 +168,7 @@ test | /opt/hostedtoolcache/node/26.11.1/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m should pass command and global options as direct properties while still exposing positional args and name() to the action handler (regression test for issue #20)[0m
 
 
-[92m [0m[32m 108 passing[0m[90m (120ms)[0m
+[92m [0m[32m 134 passing[0m[90m (98ms)[0m
 
 SUCCESS | exit code 0
 -------------|---------|----------|---------|---------|-------------------

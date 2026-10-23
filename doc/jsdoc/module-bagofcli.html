@@ -96,7 +96,7 @@ and coloured console logging.</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line14">line 14</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -188,9 +188,19 @@ Commands, their positional arguments, and the global and command options
 are declared in the command file, while `actions` provides the action handler
 of each command.
 
+A command without declared args accepts any positional arguments by default,
+a command declared with `allowExcessArguments: false` rejects unexpected ones while parsing,
+before the action handler is called, and the process exits with status code 1.
+
+An option declared with `choices` only accepts one of the listed values,
+commander rejects any other value while parsing, before the action handler is called,
+and the process exits with status code 1.
+Likewise, an option declared with `min`, `max`, or `integer` only accepts a number
+(or an integer when `integer` is true) within the inclusive range.
+
 Arguments and options are validated against the rules declared in the command file
-after the action handler is called, the process exits with status code 1
-when any of them is invalid.
+before the action handler is called, the process exits with status code 1
+without calling the action handler when any of them is invalid.
 </div>
 
 
@@ -226,7 +236,7 @@ when any of them is invalid.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line102">line 102</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line117">line 117</a>
     </li></ul></dd>
     
 
@@ -575,7 +585,7 @@ and they all have to be executed regardless of success/error on either one of th
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line453">line 453</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line645">line 645</a>
     </li></ul></dd>
     
 
@@ -790,7 +800,7 @@ and they all have to be executed regardless of success/error on either one of th
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line481">line 481</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line673">line 673</a>
     </li></ul></dd>
     
 
@@ -1006,7 +1016,7 @@ the process simply exits with status code 0 when there is no error.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line549">line 549</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line741">line 741</a>
     </li></ul></dd>
     
 
@@ -1176,7 +1186,7 @@ Exit status code 1 indicates an error, exit status code 0 indicates a success.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line570">line 570</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line762">line 762</a>
     </li></ul></dd>
     
 
@@ -1387,7 +1397,7 @@ When a directory is specified, all files contained within that directory and its
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line605">line 605</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line797">line 797</a>
     </li></ul></dd>
     
 
@@ -1657,7 +1667,7 @@ only the matching files will be included.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line819">line 819</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1011">line 1011</a>
     </li></ul></dd>
     
 
@@ -1922,7 +1932,7 @@ only the matching files will be included.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line879">line 879</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1071">line 1071</a>
     </li></ul></dd>
     
 
@@ -2187,7 +2197,7 @@ only the matching files will be included.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line839">line 839</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1031">line 1031</a>
     </li></ul></dd>
     
 
@@ -2452,7 +2462,7 @@ only the matching files will be included.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line859">line 859</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line1051">line 1051</a>
     </li></ul></dd>
     
 
@@ -2726,7 +2736,7 @@ The file is located using <a href="module-bagofcli.html#.lookupFile">module:bago
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line658">line 658</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line850">line 850</a>
     </li></ul></dd>
     
 
@@ -3087,7 +3097,7 @@ This allows simple file lookup which allows various locations.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line750">line 750</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line942">line 942</a>
     </li></ul></dd>
     
 
@@ -3391,7 +3401,7 @@ process.stdout and process.stderr of this process, without any additional newlin
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line792">line 792</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line984">line 984</a>
     </li></ul></dd>
     
 
@@ -3696,7 +3706,7 @@ the global option value takes precedence.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line36">line 36</a>
+        <a href="bagofcli.js.html">bagofcli.js</a>, <a href="bagofcli.js.html#line41">line 41</a>
     </li></ul></dd>
     
 
@@ -3741,7 +3751,7 @@ the global option value takes precedence.
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Tue Oct 13 2026 09:28:36 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Fri Oct 23 2026 14:11:29 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

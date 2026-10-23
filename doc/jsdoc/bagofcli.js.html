@@ -44,7 +44,12 @@ import _ from "lodash";
 import async from "async";
 import chalk from "chalk";
 import child from "child_process";
-import { program as commander } from "commander";
+import {
+  program as commander,
+  Help,
+  InvalidArgumentError,
+  Option,
+} from "commander";
 import fs from "fs";
 import p from "path";
 import inquirer from "inquirer";
@@ -98,9 +103,19 @@ import yaml from "yaml-js";
  * are declared in the command file, while `actions` provides the action handler
  * of each command.
  *
+ * A command without declared args accepts any positional arguments by default,
+ * a command declared with `allowExcessArguments: false` rejects unexpected ones while parsing,
+ * before the action handler is called, and the process exits with status code 1.
+ *
+ * An option declared with `choices` only accepts one of the listed values,
+ * commander rejects any other value while parsing, before the action handler is called,
+ * and the process exits with status code 1.
+ * Likewise, an option declared with `min`, `max`, or `integer` only accepts a number
+ * (or an integer when `integer` is true) within the inclusive range.
+ *
  * Arguments and options are validated against the rules declared in the command file
- * after the action handler is called, the process exits with status code 1
- * when any of them is invalid.
+ * before the action handler is called, the process exits with status code 1
+ * without calling the action handler when any of them is invalid.
  *
  * @alias module:bagofcli.command
  * @param {string} base Base directory where the client module is located.
@@ -163,26 +178,49 @@ function command(base, actions, opts) {
   }
 
   commander.version(pkg.version);
+  // subcommands inherit the help configuration when they're created,
+  // so this has to be configured before registering the commands
+  commander.configureHelp({ optionDescription: _optionDescription });
 
   if (commands.options) {
     _.each(commands.options, function (option) {
-      commander.option(option.arg, option.desc, option.action);
+      _addOption(commander, option);
     });
   }
 
+  // whether _postCommand validation has already been run by an action handler
+  let isValidated = false;
+
   _.each(commands.commands, function (command, name) {
-    const program = commander
-      .command(name)
-      .description(command.desc)
-      .allowExcessArguments(true);
+    const allowExcessArguments = command.allowExcessArguments !== false,
+      program = commander
+        .command(name)
+        .description(command.desc)
+        .allowExcessArguments(allowExcessArguments);
+
+    // commander counts excess arguments against its registered arguments,
+    // so register the declared args, otherwise every positional argument would be excess.
+    // They're registered as optional, so a missing mandatory argument
+    // is still reported with the usage message by _postCommand.
+    if (!allowExcessArguments) {
+      _.each(command.args, function (arg) {
+        program.argument(util.format("[%s]", arg.name));
+      });
+    }
 
     _.each(command.options, function (option) {
-      program.option(option.arg, option.desc, option.action);
+      _addOption(program, option);
     });
 
     if (command.action) {
       program.action(function (...args) {
         const commandArg = this;
+        // Validate arguments and options before calling the action handler,
+        // so that the action handler isn't called when any of them is invalid.
+        // commander.args and the subcommand's .args are already populated by
+        // the time commander calls the action.
+        _postCommand(commander, commands.commands, commands.options);
+        isValidated = true;
         // Pass a plain object with parsed options as direct properties (so flags
         // aren't silently ignored, see issue #20), while still carrying over
         // .args (positional arguments) and .name() from the Command instance,
@@ -204,10 +242,162 @@ function command(base, actions, opts) {
 
   commander.parse(process.argv);
 
+  // Validate when no action handler was called, e.g. no command was specified,
+  // or the command doesn't have any action handler.
   // NOTE: commander.args is populated by commander#parse,
   // hence _postCommand relies on commander#parse finishing without exiting or throwing error,
   // otherwise _postCommand won't be executed
-  _postCommand(commander, commands.commands, commands.options);
+  if (!isValidated) {
+    _postCommand(commander, commands.commands, commands.options);
+  }
+}
+
+/**
+ * Register an option, as configured in the command file, on a commander program.
+ *
+ * An option without `choices`, `min`, `max`, or `integer` is registered via commander's option(),
+ * with `action` passed through as either the argument parser function or the default value.
+ * Otherwise the option is registered via addOption() using commander's Option,
+ * which rejects an invalid value while parsing (only when the option is supplied):
+ * - `choices` rejects a value that isn't one of the choices, and lists the choices in the help output
+ * - `min`, `max`, and `integer` reject a value that isn't a number (or an integer when `integer` is true),
+ *   or is outside the inclusive range, the value is passed on unchanged as a string
+ *
+ * @param {Object} program Commander program or command to register the option on.
+ * @param {Object} option Option configuration with `arg`, `desc`, and optional `action`,
+ * `choices`, `min`, `max`, and `integer`.
+ * @returns {void}
+ * @private
+ */
+function _addOption(program, option) {
+  const hasRange =
+    option.min !== undefined ||
+    option.max !== undefined ||
+    option.integer === true;
+
+  if (!option.choices &amp;&amp; !hasRange) {
+    program.option(option.arg, option.desc, option.action);
+    return;
+  }
+
+  const commanderOption = new Option(option.arg, option.desc);
+  if (option.choices) {
+    commanderOption.choices(option.choices);
+  }
+  if (typeof option.action !== "function") {
+    commanderOption.default(option.action);
+  }
+
+  if (hasRange) {
+    commanderOption.rangeDescription = _rangeDescription(option);
+  }
+
+  if (hasRange || typeof option.action === "function") {
+    // choices() sets its own argument parser to check the value,
+    // so check the value against the choices before the range,
+    // then pass the value to action
+    const choicesParser = commanderOption.parseArg;
+    const name = commanderOption.long || commanderOption.short;
+    commanderOption.argParser(function (value, previous) {
+      let result = choicesParser ? choicesParser(value, previous) : value;
+      if (hasRange) {
+        _checkRange(value, name, option);
+      }
+      if (typeof option.action === "function") {
+        result = option.action(value, previous);
+      }
+      return result;
+    });
+  }
+  program.addOption(commanderOption);
+}
+
+/**
+ * Describe an option's numeric range for the help output,
+ * e.g. `integer, range: 0 to 65535`, `min: 0`, or `max: 10`.
+ *
+ * @param {Object} option Option configuration with optional `min`, `max`, and `integer`.
+ * @returns {string} Range description.
+ * @private
+ */
+function _rangeDescription(option) {
+  const info = [];
+  if (option.integer === true) {
+    info.push("integer");
+  }
+  if (option.min !== undefined &amp;&amp; option.max !== undefined) {
+    info.push(util.format("range: %s to %s", option.min, option.max));
+  } else if (option.min !== undefined) {
+    info.push(util.format("min: %s", option.min));
+  } else if (option.max !== undefined) {
+    info.push(util.format("max: %s", option.max));
+  }
+  return info.join(", ");
+}
+
+/**
+ * Help configuration override for commander's option description,
+ * which adds the option's range description (if any) to commander's
+ * extra info, e.g. `Port number (integer, range: 0 to 65535, default: "8080")`.
+ *
+ * @param {Object} option Commander Option.
+ * @returns {string} Option description for the help output.
+ * @this {Help}
+ * @private
+ */
+function _optionDescription(option) {
+  if (!option.rangeDescription) {
+    return Help.prototype.optionDescription.call(this, option);
+  }
+  // describe the option without its description to get only commander's
+  // extra info, e.g. `(choices: "1", "5", default: "1")`, or an empty string
+  const extraDescription = Help.prototype.optionDescription.call(
+      this,
+      Object.assign(Object.create(option), { description: "" }),
+    ),
+    extraInfo = [option.rangeDescription];
+  if (extraDescription) {
+    extraInfo.push(extraDescription.slice(1, -1));
+  }
+  const rangeDescription = util.format("(%s)", extraInfo.join(", "));
+  return option.description
+    ? util.format("%s %s", option.description, rangeDescription)
+    : rangeDescription;
+}
+
+/**
+ * Check that an option value is a number (or an integer when `integer` is true)
+ * within the inclusive range between `min` and `max`, either of which is optional.
+ *
+ * @param {string} value Option value to check.
+ * @param {string} name Option flag, used in the error message.
+ * @param {Object} option Option configuration with optional `min`, `max`, and `integer`.
+ * @returns {void}
+ * @throws {InvalidArgumentError} When the value is not a number, not an integer, or out of range.
+ * @private
+ */
+function _checkRange(value, name, option) {
+  const str = _toStr(value),
+    isNumber = option.integer === true ? v.isInt(str) : v.isNumeric(str),
+    number = Number(str);
+
+  if (
+    !isNumber ||
+    (option.min !== undefined &amp;&amp; number &lt; option.min) ||
+    (option.max !== undefined &amp;&amp; number > option.max)
+  ) {
+    let expected = option.integer === true ? "an integer" : "a number";
+    if (option.min !== undefined &amp;&amp; option.max !== undefined) {
+      expected += util.format(" between %s and %s", option.min, option.max);
+    } else if (option.min !== undefined) {
+      expected += util.format(" greater than or equal to %s", option.min);
+    } else if (option.max !== undefined) {
+      expected += util.format(" less than or equal to %s", option.max);
+    }
+    throw new InvalidArgumentError(
+      util.format("%s must be %s.", name, expected),
+    );
+  }
 }
 
 /**
@@ -300,7 +490,9 @@ const validators = {
 };
 
 /**
- * Post-command tasks, to be run after commander parses the command line arguments.
+ * Post-command tasks, to be run after commander parses the command line arguments,
+ * either right before the command's action handler is called,
+ * or after parsing when no action handler is called.
  * Validate command arguments and options:
  * - if there's no command, return without validating anything
  * - if command is unknown, log an error message then exit
@@ -930,6 +1122,8 @@ function logStepItemError(message, opts) {
 
 const exports = {
   command: command,
+  _addOption: _addOption,
+  _optionDescription: _optionDescription,
   _preCommand: _preCommand,
   _postCommand: _postCommand,
   exec: exec,
@@ -959,7 +1153,7 @@ export { exports as default };
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Tue Oct 13 2026 09:28:36 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Fri Oct 23 2026 14:11:29 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
