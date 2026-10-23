@@ -204,6 +204,192 @@ describe('bagofcli - integration', function () {
     }
   });
 
+  describe('choices', function () {
+    const commandsConfig = {
+      options: [
+        {
+          arg: '--log-level <logLevel>',
+          desc: 'Log level',
+          choices: ['info', 'debug']
+        }
+      ],
+      commands: {
+        serve: {
+          desc: 'Start the server',
+          options: [
+            {
+              arg: '--transport <transport>',
+              desc: 'Transport type',
+              choices: ['stdio', 'streamable-http']
+            }
+          ]
+        },
+        export: {
+          desc: 'Export the data',
+          options: [
+            {
+              arg: '--format <format>',
+              desc: 'Output format',
+              choices: ['json', 'yaml-1'],
+              rules: ['alphaNumeric']
+            }
+          ]
+        },
+        deploy: {
+          desc: 'Deploy the app',
+          options: [
+            {
+              arg: '--env <env>',
+              desc: 'Target environment',
+              choices: ['staging', 'production'],
+              rules: ['required']
+            }
+          ]
+        }
+      }
+    };
+    const actionSource = `{
+      commands: {
+        serve: {
+          action: function (opts) {
+            console.log(JSON.stringify({ transport: opts.transport, logLevel: opts.logLevel }));
+          }
+        },
+        export: {
+          action: function (opts) {
+            console.log(JSON.stringify({ format: opts.format }));
+          }
+        },
+        deploy: {
+          action: function (opts) {
+            console.log(JSON.stringify({ env: opts.env }));
+          }
+        }
+      }
+    }`;
+    let tempDir;
+
+    beforeEach(function () {
+      tempDir = createTempProject(commandsConfig);
+    });
+
+    afterEach(function () {
+      rmSync(tempDir, { recursive: true, force: true });
+    });
+
+    it('should pass a command option value to the action when it is one of the choices', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--transport', 'streamable-http'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"transport":"streamable-http"}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should exit with an error without running the action when a command option value is not one of the choices', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--transport', 'sse'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(
+        result.stderr,
+        "error: option '--transport <transport>' argument 'sse' is invalid. Allowed choices are stdio, streamable-http.\n"
+      );
+    });
+
+    it('should pass a global option value to the action when it is one of the choices', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--log-level', 'debug', 'serve'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"logLevel":"debug"}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should exit with an error without running the action when a global option value is not one of the choices', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--log-level', 'trace', 'serve'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(
+        result.stderr,
+        "error: option '--log-level <logLevel>' argument 'trace' is invalid. Allowed choices are info, debug.\n"
+      );
+    });
+
+    it('should run the action without error when options with choices are omitted', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should list the choices of a global option in the help output', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', '--help'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.isTrue(result.stdout.includes('(choices: "info", "debug")'));
+    });
+
+    it('should list the choices of a command option in the command help output', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'serve', '--help'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.isTrue(result.stdout.includes('(choices: "stdio", "streamable-http")'));
+    });
+
+    it('should pass an option value to the action when it is one of the choices and satisfies its rule', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'export', '--format', 'json'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"format":"json"}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should exit with the rule error when an option value is one of the choices but does not satisfy its rule', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'export', '--format', 'yaml-1'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.isTrue(result.stderr.includes('Invalid option: <--format <format>> must be alphaNumeric'));
+    });
+
+    it('should exit with the choices error when an option value is not one of the choices even though it satisfies its rule', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'export', '--format', 'xml'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(
+        result.stderr,
+        "error: option '--format <format>' argument 'xml' is invalid. Allowed choices are json, yaml-1.\n"
+      );
+    });
+
+    it('should pass an option value to the action when it is one of the choices and the option is required', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'deploy', '--env', 'staging'], actionSource);
+
+      assert.equals(result.status, 0);
+      assert.equals(result.stdout, '{"env":"staging"}\n');
+      assert.equals(result.stderr, '');
+    });
+
+    it('should exit with the required rule error when an option with choices and required rule is omitted', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'deploy'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.isTrue(result.stderr.includes('Invalid option: <--env <env>> must be required'));
+    });
+
+    it('should exit with the choices error without running the action when an option with required rule is not one of the choices', function () {
+      const result = runScenario(tempDir, ['node', 'cli.js', 'deploy', '--env', 'dev'], actionSource);
+
+      assert.equals(result.status, 1);
+      assert.equals(result.stdout, '');
+      assert.equals(
+        result.stderr,
+        "error: option '--env <env>' argument 'dev' is invalid. Allowed choices are staging, production.\n"
+      );
+    });
+  });
+
   it('should exit with an error when an unknown command is passed', function () {
     const tempDir = createTempProject({
       commands: {

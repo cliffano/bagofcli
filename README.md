@@ -91,6 +91,20 @@ var actions = {
 bag.command(__dirname, actions);
 ```
 
+An option (either a global option or a command option) can restrict its value to a fixed list using `choices`:
+
+```javascript
+{ "arg": "--transport <transport>", "desc": "Transport type", "choices": ["stdio", "streamable-http"] }
+```
+
+The choices are listed in `--help` output. When the option is supplied with a value that isn't one of the choices, the command's action isn't executed, and the process exits with status code 1 and an error message naming the option, the value given, and the allowed choices:
+
+```
+error: option '--transport <transport>' argument 'sse' is invalid. Allowed choices are stdio, streamable-http.
+```
+
+An omitted option isn't checked against its choices. `choices` can be combined with validation `rules`, in which case the value has to satisfy both.
+
 Check out [lib/bagofcli.js](https://github.com/cliffano/bagofcli/blob/master/lib/bagofcli.js) for more utility functions.
 
 ## Upgrade

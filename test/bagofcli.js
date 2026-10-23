@@ -99,6 +99,105 @@ describe("cli - command", function () {
   });
 });
 
+describe("cli - _addOption", function () {
+  beforeEach(function () {
+    this.program = {
+      option: function () {},
+      addOption: function () {},
+    };
+    this.mockProgram = sinon.mock(this.program);
+  });
+
+  afterEach(function () {
+    this.mockProgram.verify();
+    this.mockProgram.restore();
+  });
+
+  it("should register option via option() with action passed through when option does not have choices", function () {
+    const action = function () {};
+    this.mockProgram
+      .expects("option")
+      .once()
+      .withExactArgs(
+        "--transport <transport>",
+        "Transport description",
+        action,
+      );
+    this.mockProgram.expects("addOption").never();
+    bag._addOption(this.program, {
+      arg: "--transport <transport>",
+      desc: "Transport description",
+      action: action,
+    });
+  });
+
+  it("should register option with choices via addOption() when option has choices", function () {
+    this.mockProgram.expects("option").never();
+    this.mockProgram
+      .expects("addOption")
+      .once()
+      .withArgs(
+        sinon.match(function (option) {
+          return (
+            option.flags === "--transport <transport>" &&
+            option.description === "Transport description" &&
+            option.argChoices.join(",") === "stdio,streamable-http" &&
+            option.defaultValue === "stdio"
+          );
+        }),
+      );
+    bag._addOption(this.program, {
+      arg: "--transport <transport>",
+      desc: "Transport description",
+      choices: ["stdio", "streamable-http"],
+      action: "stdio",
+    });
+  });
+
+  it("should pass valid value to action function when option has choices", function () {
+    let option;
+    this.mockProgram
+      .expects("addOption")
+      .once()
+      .callsFake(function (opt) {
+        option = opt;
+      });
+    bag._addOption(this.program, {
+      arg: "--transport <transport>",
+      desc: "Transport description",
+      choices: ["stdio", "streamable-http"],
+      action: function (value) {
+        return value.toUpperCase();
+      },
+    });
+    referee.assert.equals(option.parseArg("stdio"), "STDIO");
+  });
+
+  it("should throw error without calling action function when option has choices and value is invalid", function () {
+    let option;
+    const action = sinon.spy();
+    this.mockProgram
+      .expects("addOption")
+      .once()
+      .callsFake(function (opt) {
+        option = opt;
+      });
+    bag._addOption(this.program, {
+      arg: "--transport <transport>",
+      desc: "Transport description",
+      choices: ["stdio", "streamable-http"],
+      action: action,
+    });
+    referee.assert.exception(
+      function () {
+        option.parseArg("sse");
+      },
+      { message: "Allowed choices are stdio, streamable-http." },
+    );
+    referee.assert.equals(action.callCount, 0);
+  });
+});
+
 describe("cli - _preCommand", function () {
   beforeEach(function () {
     this.mockCommander = sinon.mock(commander);

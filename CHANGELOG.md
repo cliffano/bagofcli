@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Add choices field to global and command options for restricting option value to a fixed list
+
 ### Changed
 - Upgrade Suntory to 1.10.0
 - Upgrade workflow runner to Ubuntu 26.04
